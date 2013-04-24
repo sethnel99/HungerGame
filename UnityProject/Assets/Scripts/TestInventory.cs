@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class Inventory : MonoBehaviour {
+public class TestInventory : MonoBehaviour {
 	
 	public static int charge = 0;
 	public AudioClip collectSound;
@@ -36,5 +36,9 @@ public class Inventory : MonoBehaviour {
 		if(!chargeHudGUI.enabled){
 			chargeHudGUI.enabled = true;
 		}
+	}
+	
+	void Gather () {
+		AudioSource.PlayClipAtPoint(collectSound, transform.position);
 	}
 }
