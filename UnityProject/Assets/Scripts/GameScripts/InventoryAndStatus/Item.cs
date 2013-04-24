@@ -9,12 +9,13 @@ public class Item  {
 	public static uint clothing = 16; //mask for fifth bit
 		
 	public int weight; //weight of the item
-	public string name; //name of the item. Unique per item.
+	public string name; //name of the item. Unique per item
 	private uint itemType; //a bit-string representing the types assocaited with the item
 	public int quantity = 0; //the quantity of the item possessed
 	
-	public int inventoryLocation;
+	public int inventoryLocation; //this item's location in the inventory
 	
+	//Constructor - requires a name and weight for the item
 	public Item(string n, int w){
 		name = n;
 		weight = w;

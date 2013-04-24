@@ -17,14 +17,7 @@ public class Inventory : MonoBehaviour{
 	
 	
 	void Update () {
-		if(Input.GetButtonUp("Fire1")){
-			Debug.Log (inventory.Count);
-			Debug.Log (inventoryNamesArray[0]);
-		}
-	}
-	
-	public bool testFunc(){
-		return true;
+
 	}
 	
 	//add an item. Item types, quantity, etc. expected on the item
@@ -83,12 +76,7 @@ public class Inventory : MonoBehaviour{
 	
 	//checks if the given item name is contained in the array
 	public bool contains(string itemName){
-		for(int i = 0; i < inventoryNamesArray.Length; i++){
-			if(inventoryNamesArray[i].Equals (itemName)){
-				return true;
-			}
-		}
-		return false;
+		return inventory[itemName] != null;
 	}
 	
 	//returns the item at a specific location in the inventory
