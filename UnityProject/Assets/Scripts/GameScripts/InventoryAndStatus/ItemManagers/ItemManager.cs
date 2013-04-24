@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 public class ItemManager : MonoBehaviour {
-	Item item;
+	protected Item item;
 	
 	bool inZone;
 	float buttonDownTime;
@@ -19,7 +19,7 @@ public class ItemManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (inZone && Input.GetButton ("Fire1")) {
+		if (inZone && Input.GetButton ("Interact")) {
 			buttonDownTime += Time.deltaTime;
 			if (buttonDownTime > gatherTime) {
 				GameObject player  = GameObject.FindWithTag("Player");

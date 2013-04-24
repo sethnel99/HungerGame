@@ -37,17 +37,18 @@
     <Reference Include="System.XML" />
 	<Reference Include="System.Core" />
 	<Reference Include="UnityEngine">
-	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
+	  <HintPath>/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEngine.dll</HintPath>
 	</Reference>
 	<Reference Include="UnityEditor">
-	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
+	  <HintPath>/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEditor.dll</HintPath>
 	</Reference>
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\DoorManager.cs" />
      <Compile Include="Assets\Scripts\GameScripts\InventoryAndStatus\Inventory.cs" />
      <Compile Include="Assets\Scripts\GameScripts\InventoryAndStatus\Item.cs" />
-     <Compile Include="Assets\Scripts\GameScripts\InventoryAndStatus\ItemManager.cs" />
+     <Compile Include="Assets\Scripts\GameScripts\InventoryAndStatus\ItemManagers\ItemManager.cs" />
+     <Compile Include="Assets\Scripts\GameScripts\InventoryAndStatus\ItemManagers\StoneManager.cs" />
      <Compile Include="Assets\Scripts\GameScripts\InventoryAndStatus\PlayerStatus.cs" />
      <Compile Include="Assets\Scripts\Gatherable.cs" />
      <Compile Include="Assets\Scripts\PlayerCollisions.cs" />
