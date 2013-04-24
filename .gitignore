@@ -1,16 +1,20 @@
-.DS_Store
-UnityProject/Library/AssetImportState
-UnityProject/Library/AssetServerCacheV3
-UnityProject/Library/FailedAssetImports.txt
-UnityProject/Library/ScriptAssemblies
-UnityProject/Library/ScriptMapper
-UnityProject/Library/assetDatabase3
-UnityProject/Library/cache
-UnityProject/Library/expandedItems
-UnityProject/Library/metadata
-UnityProject/Library/previews
-UnityProject/Library/guidmapper
-UnityProject/Temp
+UnityProject/Library/
+UnityProject/Temp/
 *.pidb
-build
+*.DS_store
+*.csproj
+*.unityproj
+*.sl
+*.userprefs
+[Bb]uilds/
+
+#######
+# Git
+#######
+*.orig
+*.orig.meta
+*.BASE.*
+*.LOCAL.*
+*.REMOTE.*
+*.MERGED.*
 
