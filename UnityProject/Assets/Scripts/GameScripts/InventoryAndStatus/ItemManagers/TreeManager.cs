@@ -2,11 +2,11 @@ using UnityEngine;
 using System.Collections;
 
 
-public class StoneManager : ItemManager {
+public class TreeManager : ItemManager {
 	
 	// Use this for initialization
 	void Start () {
-		item = new Item("Sharp Stone", "Sharp Stones", 2,Random.Range(1,4));
+		item = new Item("Piece of Wood", "Pieces of Wood", 1,Random.Range(2,5));
 		item.addItemType(Item.material);
 	}
 

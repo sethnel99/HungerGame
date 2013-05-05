@@ -20,7 +20,11 @@ public class Inventory : MonoBehaviour{
 
 	}
 	
-	//add an item. Item types, quantity, etc. expected on the item
+	//void OnDrawGizmosSelected() {
+	//Gizmos.DrawSphere(transform.position, 5);
+	//}
+	
+	//add ddan item. Item types, quantity, etc. expected on the item
 	public bool addItem(Item i){
 		
 		//if you already have this item in your inventory, utilize stacking
