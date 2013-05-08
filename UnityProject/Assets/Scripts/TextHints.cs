@@ -15,7 +15,7 @@ public class TextHints : MonoBehaviour {
 		if(guiText.enabled){
 			timer+= Time.deltaTime;
 			
-			if(timer>=4){
+			if(timer>=7){
 				guiText.enabled = false;
 				timer =0.0f;
 			}

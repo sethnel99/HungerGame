@@ -5,6 +5,7 @@ public class TestInventory : MonoBehaviour {
 	
 	public static int charge = 0;
 	public AudioClip collectSound;
+	public AudioClip winSound;
 	
 	// HUD
 	public Texture2D[] hudCharge;
@@ -40,5 +41,9 @@ public class TestInventory : MonoBehaviour {
 	
 	void Gather () {
 		AudioSource.PlayClipAtPoint(collectSound, transform.position);
+	}
+	
+	public void Win() {
+		AudioSource.PlayClipAtPoint(winSound, transform.position);
 	}
 }
