@@ -13,19 +13,19 @@ public class EquippedItem : MonoBehaviour {
 	public GameObject[] equippableItems;
 	public GameObject equippedItem;
 	
-	private Vector3[] equippableTransform;
-	private Vector3[] equippableRotate;
+	public Vector3[] equippableTransform;
+	public Vector3[] equippableRotate;
 	
 	// Use this for initialization
 	void Start () {
 		equippableTransform = new Vector3[(int)Equippable.MAX];
 		equippableRotate = new Vector3[(int)Equippable.MAX];
 		
-		equippableTransform[(int)Equippable.Axe] = new Vector3(.5f,-1f,.2f);
-		equippableRotate[(int)Equippable.Axe] = new Vector3(15,90,0);
+		equippableTransform[(int)Equippable.Axe] = new Vector3(.4f,-1f, 1f);
+		equippableRotate[(int)Equippable.Axe] = new Vector3(12,90,0);
 		
-		equippableTransform[(int)Equippable.Plank] = new Vector3(-.32f,-.3f,1.8f);
-		//equippableRotate[(int)Equippable.Plank] = new Vector3(0,0,0);
+		equippableTransform[(int)Equippable.Plank] = new Vector3(0f,-.18f,2.8f);
+		equippableRotate[(int)Equippable.Plank] = new Vector3(0,0,0);
 		
 		//EquipItem((int)Equippable.Plank);
 		EquipItem((int)Equippable.Axe);
@@ -35,6 +35,11 @@ public class EquippedItem : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		
+//		if(Input.GetButtonDown("Undo"))
+//		{
+//			EquipItem((int)EquippedItem.Equippable.Plank);
+//		}
 	}
 	
 	public void EquipItem (int equippable){
@@ -42,17 +47,32 @@ public class EquippedItem : MonoBehaviour {
 		{
 			GameObject.Destroy(equippedItem);
 		}
-		equippedItem = Instantiate(equippableItems[equippable], transform.position+equippableTransform[equippable], Quaternion.identity) as GameObject;
-
-		equippedItem.transform.parent = gameObject.transform;
+		equippedItem = Instantiate(equippableItems[equippable], Camera.main.transform.position, Camera.main.transform.rotation) as GameObject;
 		
-		equippedItem.transform.rotation = transform.rotation;
-		if(equippableRotate[equippable] != null)
-		{
-			equippedItem.transform.Rotate(equippableRotate[equippable]);
-		}
+		Reset(equippable);
+		
+//		equippedItem.transform.parent = gameObject.transform;
+//		
+//		equippedItem.transform.rotation = transform.rotation;
+//		if(equippableRotate[equippable] != null)
+//		{
+//			equippedItem.transform.Rotate(equippableRotate[equippable]);
+//		}
 		
 		//equippedItem.transform.localScale = Vector3.one;	
 		//equippedItem.transform.position = new Vector3(0, -.8f, 0);
+	}
+	
+	public void Reset(int equippable){
+		if(equippedItem != null)
+		{
+			
+			equippedItem.transform.parent = Camera.main.transform;
+			equippedItem.transform.Translate(equippableTransform[equippable]);
+			//equippedItem.transform.rotation = transform.rotation;
+			//equippedItem.transform.rotation = transform.rotation;
+			equippedItem.transform.Rotate(equippableRotate[equippable]);
+			
+		}
 	}
 }

@@ -17,11 +17,21 @@ public class Star : MonoBehaviour {
 	public GUIText textHints;
 	void OnTriggerEnter(Collider col){
 		if(col.gameObject.tag == "Player"){
+			if(!GameObject.Find("EquippablePlank(Clone)"))
+			{
+				textHints.SendMessage("ShowHint",
+						"You can now build by placing planks!\nGo outside and build a house-like structure.\n" +
+						"Let the devs know when you are happy with what you have built.");
+			}
+			else
+			{
+				textHints.SendMessage("ShowHint",
+						"That wasn't too hard now was it?\nThanks for playing!");
+			}
 			col.gameObject.GetComponentInChildren<EquippedItem>().EquipItem((int)EquippedItem.Equippable.Plank);
 			col.gameObject.GetComponent<TestInventory>().Win();
-			textHints.SendMessage("ShowHint",
-					"You can now build by placing planks!\nGo outside and build a house-like structure." +
-					" Let the devs know when you are happy with what you have built.");
+			
+
 			Destroy(gameObject);
 		}
 	}

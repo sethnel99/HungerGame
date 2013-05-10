@@ -2,11 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class PlankBuild : MonoBehaviour {
-	
-	public bool isSet = false;
-	bool snappingOn = true;
-	
+
 	public class SnapCollision {
 		public GameObject Corner;
 		public GameObject SnapCorner;
@@ -19,8 +15,12 @@ public class PlankBuild : MonoBehaviour {
 			Priority = priority;
 		}
 	}
+
+public class PlankBuild : MonoBehaviour {
 	
-	public GameObject[] Corners;
+	public bool isSet = false;
+	bool snappingOn = true;
+
 	
 	List<SnapCollision> SnapHits = new List<SnapCollision>();
 	
@@ -41,19 +41,17 @@ public class PlankBuild : MonoBehaviour {
 	void LateUpdate() {
 		if(!isSet && snappingOn && SnapHits.Count!=0)
 		{
-			int currentHighestPriority = -1;
 			float bestAngle = 360;
 			Quaternion snapRotate = transform.rotation;
-			Vector3 snapTranslate = new Vector3(0,0,0);
+			SnapCollision bestHit = new SnapCollision(null, null, -1);
 			foreach(SnapCollision snapHit in SnapHits)
 			{
-				if(snapHit.Priority >= currentHighestPriority)
+				if(snapHit.Priority >= bestHit.Priority)
 				{
 					if(snapHit.Priority == 0)//Ground
 					{
 						snapRotate = transform.rotation; //Hit the ground, don't snap any rotation
-						snapTranslate = new Vector3(0f,-.08f,0f); //Move it down a little
-						currentHighestPriority = 0;
+						bestHit = snapHit;
 					}
 					else
 					{
@@ -61,23 +59,32 @@ public class PlankBuild : MonoBehaviour {
 						if(angle < bestAngle) //if this Structure piece has a more similar angle to ours than what we've seen
 						{
 							bestAngle = angle;
-							if(angle < 23) //if the angle is less than 20, we will snap to it
+							if(angle < 27) //if the angle is less than 20, we will snap to it
 							{
-								snapRotate = snapHit.SnapCorner.transform.parent.transform.rotation;
+								snapRotate = snapHit.SnapCorner.transform.rotation;
 							}
 							else
 							{
 								snapRotate = transform.rotation;
 							}
-							snapTranslate = snapHit.SnapCorner.transform.position-snapHit.Corner.transform.position;
-							currentHighestPriority = snapHit.Priority;
+							
+							bestHit = snapHit;
 						}
 					}
 				}
 			}
 					
 			transform.rotation = snapRotate;
-			transform.position += snapTranslate;
+//			Debug.Log(bestHit.Corner.transform.position.ToString() +" snap to " + bestHit.SnapCorner.transform.position.ToString() +
+//							" movement= " + (bestHit.SnapCorner.transform.position-bestHit.Corner.transform.position).ToString());
+			if(bestHit.Priority == 0)
+			{
+				transform.Translate(new Vector3(0f,-.08f,0f),  Space.World);
+			}
+			else
+			{
+				transform.Translate(bestHit.SnapCorner.transform.position-bestHit.Corner.transform.position,  Space.World);
+			}
 			isSet = true;
 		}
 	}
@@ -92,22 +99,6 @@ public class PlankBuild : MonoBehaviour {
 	}
 	public void SnapSpotCollision(GameObject corner, GameObject snapSpot, int priority)
 	{
-//		if(snappingOn)
-//		{
-//			
-//			//ASK IAN ABOUT THIS
-//			if(Quaternion.Angle(transform.rotation, snapSpot.transform.parent.transform.rotation) < 20f)
-//			{
-//				transform.rotation = snapSpot.transform.parent.transform.rotation;
-//			}
-//			
-//			Vector3 snapVector = snapSpot.transform.position-corner.transform.position;
-//			transform.position += snapVector;
-//			
-//
-//			
-//			isSet = true;
-//		}
 		SnapHits.Add(new SnapCollision(corner, snapSpot, priority));
 	}
 }

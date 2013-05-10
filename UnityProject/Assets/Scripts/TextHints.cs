@@ -8,6 +8,7 @@ public class TextHints : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 	
+		
 	}
 	
 	// Update is called once per frame
@@ -24,6 +25,7 @@ public class TextHints : MonoBehaviour {
 	
 	void ShowHint(string message){
 		guiText.text = message;
+		timer = 0.0f;
 		if(!guiText.enabled){guiText.enabled=true;}
 	}
 }
