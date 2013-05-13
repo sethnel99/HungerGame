@@ -14,14 +14,6 @@ public class EquippedPlank : MonoBehaviour {
 	bool isInAction = false;
 	// Use this for initialization
 	void Start () {
-		//float alpha = .5f;
-		//gameObject.renderer.material.color.a = alpha;
-//		Color color = renderer.material.GetColor("_Color");
-//		color.r = 1f;
-//		color.g = .1f;
-//		color.b = .1f;
-//		color.a = 1f;
-//		renderer.material.SetColor("_Color", color);
 		createdPlanks = new Stack<GameObject>();
 		textHints = GameObject.Find("TextHintGUI");
 		parentScript = transform.parent.GetComponent<EquippedItem>() as EquippedItem;
@@ -31,6 +23,13 @@ public class EquippedPlank : MonoBehaviour {
 	List<SnapCollision> SnapHits = new List<SnapCollision>();
 	// Update is called once per frame
 	void Update () {
+		
+		//FIX ROTATION HACK
+		Quaternion rotation = transform.rotation;
+		rotation.x = 0;
+		rotation.z = 0;
+		transform.rotation = rotation;
+		
 		if(Input.GetButtonDown("Fire1") && !isInAction){
 			if(snapRenderer != null)
 			{
@@ -98,7 +97,7 @@ public class EquippedPlank : MonoBehaviour {
 			SnapCollision bestHit = new SnapCollision(null, null, -1);
 			foreach(SnapCollision snapHit in SnapHits)
 			{
-				if(snapHit.Priority >= bestHit.Priority)
+				if(snapHit.Priority >= bestHit.Priority && snapHit.SnapCorner != null)
 				{
 					if(snapHit.Priority == 0)//Ground
 					{
