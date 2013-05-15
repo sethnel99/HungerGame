@@ -3,6 +3,8 @@ using System.Collections;
 
 public class Star : MonoBehaviour {
 	
+	public string HintString;
+	
 	Vector3 rot = new Vector3(5f, 5f, 5f);
 	// Use this for initialization
 	void Start () {
@@ -17,18 +19,32 @@ public class Star : MonoBehaviour {
 	public GUIText textHints;
 	void OnTriggerEnter(Collider col){
 		if(col.gameObject.tag == "Player"){
-			if(!GameObject.Find("EquippablePlank(Clone)"))
+			
+			EquippedItem equipScript = col.gameObject.GetComponentInChildren<EquippedItem>() as EquippedItem;
+			if(!equipScript.hasFirstStar)
 			{
-				textHints.SendMessage("ShowHint",
-						"You can now build by placing planks!\nGo outside and build a house-like structure.\n" +
-						"Let the devs know when you are happy with what you have built.");
+				equipScript.EquipItem((int)EquippedItem.Equippable.Plank);
+				equipScript.hasFirstStar = true;
 			}
-			else
-			{
+//			if(equipScript.stars == 0)
+//			{
 				textHints.SendMessage("ShowHint",
-						"That wasn't too hard now was it?\nThanks for playing!");
-			}
-			col.gameObject.GetComponentInChildren<EquippedItem>().EquipItem((int)EquippedItem.Equippable.Plank);
+						HintString);
+//						"You can now build by placing planks!\nGo outside and build a house-like structure.\n" +
+//						"Let the devs know when you are happy with what you have built.");
+//			}
+//			else if(equipScript.stars == 1)
+//			{
+//				textHints.SendMessage("ShowHint",
+//						"That wasn't too hard now was it?\nThanks for playing!");
+//			}
+//			else if(equipScript.stars == 2)
+//			{
+//				equipScript.hasSecondStar=true;
+//				textHints.SendMessage("ShowHint",
+//						"That wasn't too hard now was it?\nThanks for playing!");
+//			}
+
 			col.gameObject.GetComponent<TestInventory>().Win();
 			
 

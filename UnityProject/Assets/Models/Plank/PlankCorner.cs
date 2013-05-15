@@ -3,27 +3,10 @@ using System.Collections;
 
 public class PlankCorner : MonoBehaviour {
 	
-	enum ParentTypeEnum{
-		Build,
-		Equipped,
-		Max};
-	ParentTypeEnum ParentType;
-	PlankBuild parentBuildScript;
-	EquippedPlank parentEquippedScript;
+	StructurePiece parentScript;
 	// Use this for initialization
 	void Start () {
-		
-		parentBuildScript = transform.parent.GetComponent("PlankBuild") as PlankBuild;
-		parentEquippedScript = transform.parent.GetComponent("EquippedPlank") as EquippedPlank;
-		
-		if(parentBuildScript != null)
-		{
-			ParentType = ParentTypeEnum.Build;
-		}
-		else if(parentEquippedScript != null)
-		{
-			ParentType = ParentTypeEnum.Equipped;
-		}
+		parentScript = transform.parent.GetComponent<StructurePiece>() as StructurePiece;
 	}
 	
 	// Update is called once per frame
@@ -31,7 +14,7 @@ public class PlankCorner : MonoBehaviour {
 	}
 	
 	void OnTriggerEnter(Collider col){
-    	if (ParentType == ParentTypeEnum.Equipped || !parentBuildScript.isSet)
+		if (parentScript!=null && !parentScript.isSet)
 		{
 			if(col.gameObject.tag == "Terrain"){
 				//Debug.Log("TERRAIN HIT");
@@ -43,7 +26,9 @@ public class PlankCorner : MonoBehaviour {
 			}
 			else if(col.gameObject.tag == "StructurePiece" && col.gameObject != transform.parent.gameObject){
 				//Debug.Log("STRUCTURE HIT");
-				//What should we do here?
+				//THIS STILL NEEDS SOME WORK
+				
+				//SendSnapCollisionToParent(gameObject, col.gameObject, 0);
 			}
 //			else if(col.gameObject.tag == "StructureGhost"){
 //				Debug.Log("GHOST HIT");
@@ -52,7 +37,10 @@ public class PlankCorner : MonoBehaviour {
 			else{
 				
 			}
+			//Debug.Log("STRUCTURE HIT");
 		}
+	}
+	void OnCollisionEnter(Collision cols){
 	}
 	
 	void OnTriggerStay(Collider col){
@@ -61,14 +49,7 @@ public class PlankCorner : MonoBehaviour {
 	
 	void SendSnapCollisionToParent(GameObject corner, GameObject collider, int priority)
 	{
-		if(ParentType == ParentTypeEnum.Build)
-		{
-			parentBuildScript.SnapSpotCollision(corner, collider, priority);
-		}
-		else if(ParentType == ParentTypeEnum.Equipped)
-		{
-			parentEquippedScript.SnapSpotCollision(corner, collider, priority);
-		}
+		parentScript.SnapSpotCollision(corner, collider, priority);
 	}
 	
 }

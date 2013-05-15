@@ -2,10 +2,13 @@ using UnityEngine;
 using System.Collections;
 
 public class Dog : MonoBehaviour {
-
+	
+	float timer = 0f;
+	
 	// Use this for initialization
 	void Start () {
-		StartCoroutine(COMainBehavior());
+		timer = 0f;
+		//StartCoroutine(COMainBehavior());
 	}
 	
 	IEnumerator COMainBehavior() {
@@ -22,6 +25,14 @@ public class Dog : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+		if(timer<8f)
+		{
+			timer += Time.deltaTime;
+		}
+		else
+		{
+			timer=0;
+			StartCoroutine(COMainBehavior());
+		}
 	}
 }

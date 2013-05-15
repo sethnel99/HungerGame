@@ -7,6 +7,7 @@ public class EquippedItem : MonoBehaviour {
 	public enum Equippable{
 		Axe,
 		Plank,
+		RoofPiece1,
 		MAX
 	};
 	
@@ -15,6 +16,8 @@ public class EquippedItem : MonoBehaviour {
 	
 	public Vector3[] equippableTransform;
 	public Vector3[] equippableRotate;
+	
+	public bool hasFirstStar=false;
 	
 	// Use this for initialization
 	void Start () {
@@ -27,6 +30,9 @@ public class EquippedItem : MonoBehaviour {
 		equippableTransform[(int)Equippable.Plank] = new Vector3(0f,-.18f,2.8f);
 		equippableRotate[(int)Equippable.Plank] = new Vector3(0,0,0);
 		
+		equippableTransform[(int)Equippable.RoofPiece1] = new Vector3(0f,-.18f,2.8f);
+		equippableRotate[(int)Equippable.RoofPiece1] = new Vector3(0,0,0);
+		
 		//EquipItem((int)Equippable.Plank);
 		EquipItem((int)Equippable.Axe);
 	}
@@ -35,11 +41,17 @@ public class EquippedItem : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
-//		if(Input.GetButtonDown("Undo"))
-//		{
-//			EquipItem((int)EquippedItem.Equippable.Plank);
-//		}
+		if(hasFirstStar)
+		{
+			if(Input.GetButtonDown("1"))
+			{
+				EquipItem((int)EquippedItem.Equippable.Plank);
+			}
+			else if(Input.GetButtonDown("2"))
+			{
+				EquipItem((int)EquippedItem.Equippable.RoofPiece1);
+			}
+		}
 	}
 	
 	public void EquipItem (int equippable){

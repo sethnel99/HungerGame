@@ -2,27 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-
-	public class SnapCollision {
-		public GameObject Corner;
-		public GameObject SnapCorner;
-		public int Priority; //Plank = 1, Ground = 0
-		
-		public SnapCollision(GameObject corner, GameObject snapCorner, int priority)
-		{
-			Corner = corner;
-			SnapCorner = snapCorner;
-			Priority = priority;
-		}
-	}
-
-public class PlankBuild : MonoBehaviour {
-	
-	public bool isSet = false;
-	bool snappingOn = true;
-
-	
-	List<SnapCollision> SnapHits = new List<SnapCollision>();
+public class PlankBuild : StructurePiece {
 	
 	// Use this for initialization
 	void Start () {
@@ -30,12 +10,8 @@ public class PlankBuild : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
-		//If we aren't set, let's drop it a bit for next frame to check again
-		if(!isSet)
-		{
-			transform.Translate(new Vector3(0f,-.005f,0f));
-		}
+	protected override void Update () {
+		base.Update();
 	}
 	
 	void LateUpdate() {
@@ -89,16 +65,4 @@ public class PlankBuild : MonoBehaviour {
 		}
 	}
 	
-	
-	public void GroundCollision()
-	{
-		//always snap to ground?
-		//transform.position += new Vector3(0f,-.05f,0f);
-		//isSet = true;
-		
-	}
-	public void SnapSpotCollision(GameObject corner, GameObject snapSpot, int priority)
-	{
-		SnapHits.Add(new SnapCollision(corner, snapSpot, priority));
-	}
 }
