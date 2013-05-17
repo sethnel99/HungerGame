@@ -21,10 +21,14 @@ public class Inventory : MonoBehaviour{
     public GUIText StatusTextGUI;
     public AudioClip collectSound;
 
+    //temp for demo
+     GameObject textHints;
+
     void Start() {
         initializeCraftingDictionary();
 	
-
+        //temp for demo
+        textHints = GameObject.Find("TextHintGUI");
     }
 
     void initializeCraftingDictionary() {
@@ -42,8 +46,10 @@ public class Inventory : MonoBehaviour{
 	//Gizmos.DrawSphere(transform.position, 5);
 	//}
 	
-	//add ddan item. Item types, quantity, etc. expected on the item
+	//add an item. Item types, quantity, etc. expected on the item
 	public bool addItem(Item i){
+        //temp for demo
+        textHints.SendMessage("ShowHint", "Gathered items don't have any use in this demo.\n But have fun collecting them!");
 
         //if the inventory is full, return false
         if (inventory.Count > maxSize) {
