@@ -46,5 +46,10 @@ public class PlayerVitals : MonoBehaviour
 	{
 		return CurrentThirst/MaxThirst;
 	}
+	
+	public void HealThirst(float amount)
+	{
+		CurrentThirst+= amount;
+	}
 }
 
