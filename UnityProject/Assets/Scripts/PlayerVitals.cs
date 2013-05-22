@@ -8,6 +8,8 @@ public class PlayerVitals : MonoBehaviour
 	
 	private float CurrentHealth = 100;
 	private float CurrentThirst = 100;
+
+    private bool isNearFire = false;
 	
 	
 	// Use this for initialization
@@ -46,5 +48,14 @@ public class PlayerVitals : MonoBehaviour
 	{
 		return CurrentThirst/MaxThirst;
 	}
+
+    public void setIsNearFire(bool nearFire) {
+        isNearFire = nearFire;
+    }
+
+    public bool IsNearFire() {
+        return isNearFire;
+    }
 }
+
 

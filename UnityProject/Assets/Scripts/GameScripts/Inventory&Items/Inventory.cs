@@ -21,21 +21,20 @@ public class Inventory : MonoBehaviour{
     public GUIText StatusTextGUI;
     public AudioClip collectSound;
 
-    //temp for demo
-     GameObject textHints;
 
     void Start() {
         initializeCraftingDictionary();
 	
-        //temp for demo
-        textHints = GameObject.Find("TextHintGUI");
     }
 
     void initializeCraftingDictionary() {
         craftingDictionary = new Dictionary<Item, Item[]>();
 
         craftingDictionary.Add(new FireItem(1), new Item[] { new SharpStoneItem(2), new WoodItem(3)});
-        craftingDictionary.Add(new BerryItem(2), new Item[] { new WoodItem(2) });
+        craftingDictionary.Add(new SmallCookedMeatItem(1), new Item[] { new SharpStoneItem(1) });
+        craftingDictionary.Add(new LargeCookedMeatItem(1), new Item[] { new LargeUncookedMeatItem(1) });
+        craftingDictionary.Add(new LargeHideItem(1), new Item[] { new SmallHideItem(3) });
+        craftingDictionary.Add(new StringItem(2), new Item[] { new SmallHideItem(1) });
     }
 	
 	void Update () {
@@ -48,8 +47,7 @@ public class Inventory : MonoBehaviour{
 	
 	//add an item. Item types, quantity, etc. expected on the item
 	public bool addItem(Item i){
-        //temp for demo
-        textHints.SendMessage("ShowHint", "Gathered items don't have any use in this demo.\n But have fun collecting them!");
+
 
         //if the inventory is full, return false
         if (inventory.Count > maxSize) {
@@ -153,13 +151,23 @@ public class Inventory : MonoBehaviour{
 
 	}
 
-
+    public bool useItem(Item i) {
+        i.useItem();
+        return removeItem(i.name, 1);
+    }
 
 
     /*Crafting Code from here down*/
 
     public bool canCraft(Item targetCraft) {
         Item[] craftIngredients = craftingDictionary[targetCraft];
+
+        //special case: meat must be cooked near a fire. Is the player near a fire?
+        if (targetCraft is SmallCookedMeatItem || targetCraft is LargeCookedMeatItem){
+            if (!GameObject.FindWithTag("Player").GetComponent<PlayerVitals>().IsNearFire()) {
+                return false;
+            }
+        }
 
         for (int i = 0; i < craftIngredients.Length; i++) {
             if (!this.contains(craftIngredients[i].name, craftIngredients[i].quantity)) {
@@ -194,5 +202,7 @@ public class Inventory : MonoBehaviour{
         addItem(targetCraft);
         return true;
     }
+
+
 	
 }

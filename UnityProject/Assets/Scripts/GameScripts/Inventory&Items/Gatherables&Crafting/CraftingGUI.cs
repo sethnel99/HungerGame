@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 
 public class CraftingGUI : MonoBehaviour {
 	
@@ -22,6 +23,8 @@ public class CraftingGUI : MonoBehaviour {
 
      float craftProgress = 0.0f;
      public float craftTime = 1.0f;
+
+     public static string meatMessage = "You must be near a fire to cook meat";
 	
 	// Use this for initialization
 	void Start () {
@@ -61,7 +64,7 @@ public class CraftingGUI : MonoBehaviour {
 
 	Vector2 scrollPosition = Vector2.zero;
 
-    GUIStyle chooseLabelStyle(Item key) {
+    GUIStyle chooseLeftLabelStyle(Item key) {
         Color cannotCraftColor =  new Color(255.0f / 255, 40.0f / 255, 51.0f / 255, 1.0f);
 
         GUIStyle cannotCraftLabelStyle = new GUIStyle(GUI.skin.label);
@@ -89,17 +92,42 @@ public class CraftingGUI : MonoBehaviour {
             return cannotCraftLabelStyle;
         }
     }
+
+    GUIStyle chooseQuantityLabelStyle(Item ingredient) {
+        Color cannotCraftColor = new Color(255.0f / 255, 40.0f / 255, 51.0f / 255, 1.0f);
+
+        GUIStyle cannotCraftLabelStyle = new GUIStyle(GUI.skin.label);
+        cannotCraftLabelStyle.normal.textColor = cannotCraftColor;
+        cannotCraftLabelStyle.fontSize = 20;
+
+        GUIStyle canCraftLabelStyle = new GUIStyle(GUI.skin.label);
+        canCraftLabelStyle.fontSize = 20;
+
+        //for quantity of result
+        if (ingredient == null) {
+            return canCraftLabelStyle;
+        }
+
+        return inventory.contains(ingredient.name, ingredient.quantity) ? canCraftLabelStyle : cannotCraftLabelStyle;
+
+    }
+
+    GUIStyle chooseMeatWarningLabelStyle() {
+         Color cannotCraftColor = new Color(255.0f / 255, 40.0f / 255, 51.0f / 255, 1.0f);
+
+        GUIStyle cannotCraftLabelStyle = new GUIStyle(GUI.skin.label);
+        cannotCraftLabelStyle.normal.textColor = cannotCraftColor;
+
+        GUIStyle canCraftLabelStyle = new GUIStyle(GUI.skin.label);
+
+        return GameObject.FindWithTag("Player").GetComponent<PlayerVitals>().IsNearFire() ? canCraftLabelStyle : cannotCraftLabelStyle;
+    }
 	
 	void OnGUI(){
 		GUI.skin = craftingSkin;
 		
 		//set up custom styles
         
-
-        GUIStyle quantityLabelStyle = new GUIStyle(GUI.skin.label);
-        quantityLabelStyle.fontSize = 20;
-
-
 		
 		
 		//Crafting GUI
@@ -112,12 +140,14 @@ public class CraftingGUI : MonoBehaviour {
         foreach (KeyValuePair<Item, Item[]> entry in inventory.craftingDictionary)
 		{
 
-            if (GUI.Button(new Rect(10, listYLoc, craftingRect.width / 4 - 20, 22), entry.Key.name, chooseLabelStyle(entry.Key))) {
+            int yHeight = entry.Key.name.Length > 16 ? 36 : 22;
+
+            if (GUI.Button(new Rect(10, listYLoc, craftingRect.width / 4 - 20, yHeight), entry.Key.name, chooseLeftLabelStyle(entry.Key))) {
 				selectedItem = entry.Key;
 			}
-			
 
-			listYLoc += 22;
+
+            listYLoc += yHeight;
 		}
         // End the scroll view that we began above.
         GUI.EndScrollView ();
@@ -137,7 +167,7 @@ public class CraftingGUI : MonoBehaviour {
         int i = 0;
         for (; i < ingredientsList.Length; i++) {
                GUI.DrawTexture(new Rect(paddingPixels + paddingWithinIconSection + i*pixelsPerIcon, craftDetailRectNormalized.height/3, 80, 80), ingredientsList[i].icon);
-               GUI.Label(new Rect(paddingPixels + paddingWithinIconSection + i * pixelsPerIcon + 69, craftDetailRectNormalized.height / 3 + 58, 30, 30), ingredientsList[i].quantity.ToString(), quantityLabelStyle);
+               GUI.Label(new Rect(paddingPixels + paddingWithinIconSection + i * pixelsPerIcon + 69, craftDetailRectNormalized.height / 3 + 58, 30, 30), ingredientsList[i].quantity.ToString(), chooseQuantityLabelStyle(ingredientsList[i]));
         }
 
         //draw the arrow
@@ -145,7 +175,14 @@ public class CraftingGUI : MonoBehaviour {
         i++;
         //draw the crafted result
         GUI.DrawTexture(new Rect(paddingPixels + paddingWithinIconSection + i * pixelsPerIcon, craftDetailRectNormalized.height / 3, 80, 80), selectedItem.icon);
-        GUI.Label(new Rect(paddingPixels + paddingWithinIconSection + i * pixelsPerIcon + 69, craftDetailRectNormalized.height / 3 + 58, 30, 30), selectedItem.quantity.ToString(), quantityLabelStyle);
+        GUI.Label(new Rect(paddingPixels + paddingWithinIconSection + i * pixelsPerIcon + 69, craftDetailRectNormalized.height / 3 + 58, 30, 30), selectedItem.quantity.ToString(), chooseQuantityLabelStyle(null));
+
+        //special case: the selected craft item is a cooked meat, add a label telling the player they need to be near fire
+        if (selectedItem is SmallCookedMeatItem || selectedItem is LargeCookedMeatItem) {
+            Rect labelRect = GUILayoutUtility.GetRect(new GUIContent(meatMessage), "label");
+            GUI.Label(new Rect(craftDetailRectNormalized.width / 2 - labelRect.width / 2, craftDetailRectNormalized.height - 100, labelRect.width, labelRect.height), meatMessage, chooseMeatWarningLabelStyle());
+        }
+
 
         //draw the craft button
         if (!inventory.canCraft(selectedItem)) {

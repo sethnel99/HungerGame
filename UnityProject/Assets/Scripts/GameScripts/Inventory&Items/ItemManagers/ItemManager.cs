@@ -22,8 +22,7 @@ public class ItemManager : MonoBehaviour {
 	public void Start () {
 		inZone = false;
 		buttonDownTime = 0.0f;
-        Debug.Log(GameObject.FindGameObjectWithTag("Player"));
-        Debug.Log(GameObject.FindGameObjectWithTag("Player").GetComponent<InteractionManager>());
+       
         interactionManager = GameObject.FindGameObjectWithTag("Player").GetComponent<InteractionManager>();
 
         displayName = "TestObject";
@@ -58,7 +57,7 @@ public class ItemManager : MonoBehaviour {
 
                 interactionManager.removePotentialInteractor(gameObject);
                 interactionTimer.GetComponent<InteractionTimer>().setInteractionTimerLevel(0, gameObject);
-				Destroy (gameObject);
+                gameObject.transform.parent.SendMessage("removeNode");
 			}	
 		}
 		else {

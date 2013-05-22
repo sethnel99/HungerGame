@@ -7,6 +7,8 @@ public class FireItem : Item {
         : base("Fire", "Fire", 4, q) {
         addItemType(Item.tool);
         icon = (Texture2D)Resources.Load("fire_icon");
+        usable = true;
+        useText = "Create a fire in front of your location";
 	}
 
     public FireItem(FireItem other)
@@ -14,6 +16,6 @@ public class FireItem : Item {
     }
 
     public override void useItem() {
-
+        GameObject.Instantiate(Resources.Load("Fire"));
     }
 }
