@@ -16,6 +16,7 @@ public class FireItem : Item {
     }
 
     public override void useItem() {
+        Debug.Log("making a fire");
         GameObject.Instantiate(Resources.Load("Fire"));
     }
 }

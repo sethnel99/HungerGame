@@ -2,12 +2,10 @@ using UnityEngine;
 using System.Collections;
 
 public abstract class Item  {
-	public static readonly uint weapon = 1; //mask for first bit
+	public static readonly uint equipment = 1; //mask for first bit
 	public static readonly uint food = 1<<1; //mask for second bit
 	public static readonly uint material = 1<<2; //mask for third bit
-	public static readonly uint tool = 1<<3; //mask for fourth bit
-	public static readonly uint clothing = 1<<4; //mask for fifth bit
-
+    public static readonly uint tool = 1 << 3; //mask for the fourth bit
 
     public bool usable = false; //whether or not this item is usable. If it is, it ought to have a use text.
 	public int weight; //weight of the item
@@ -44,12 +42,12 @@ public abstract class Item  {
     }
 	
 	//add an item type to the item
-	public void addItemType(uint type){
+	protected void addItemType(uint type){
 		itemType = itemType | type;	
 	}
 	
 	//remove an item type from the item
-	public void removeItemType(uint type){
+    protected void removeItemType(uint type) {
 		itemType = itemType & ~type;	
 	}
 	

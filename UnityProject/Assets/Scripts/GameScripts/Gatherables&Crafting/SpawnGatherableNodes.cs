@@ -55,7 +55,6 @@ public class SpawnGatherableNodes : MonoBehaviour {
                 randomList.Add(r);
             }
         }
-        Debug.Log(randomList.ToString());
 
         //now tell the nodes at those locations in unSpawnedNodes to spawn
         for (int i = 0; i < randomList.Count(); i++) {

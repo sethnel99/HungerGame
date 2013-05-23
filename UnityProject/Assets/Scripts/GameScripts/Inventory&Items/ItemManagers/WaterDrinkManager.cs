@@ -9,7 +9,7 @@ public class WaterDrinkManager : ItemManager {
         base.Start();
         displayName = "Fresh Water";
 
-        numberOfItemsDropped = 0;
+        numberOfItemsDropped = new int[0];
 	}
 	
 	override public string collectMessage() {

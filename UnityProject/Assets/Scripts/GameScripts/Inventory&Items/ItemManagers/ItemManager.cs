@@ -1,11 +1,12 @@
 using UnityEngine;
 using System.Collections;
+using System.Linq;
 
 public class ItemManager : MonoBehaviour {
 	
-	protected Item[] lootTable; //the possible drops from this object
-    protected int[] lootFrequencyTable; //the frequencies of these drops (must add up to 100)
-    protected int numberOfItemsDropped;
+	protected Item[][] lootTables; //the possible drops from this object
+    protected int[][] lootFrequencyTables; //the frequencies of these drops (must add up to 100)
+    protected int[] numberOfItemsDropped;
 
     public string displayName;
 
@@ -27,11 +28,11 @@ public class ItemManager : MonoBehaviour {
 
         displayName = "TestObject";
 
-        lootTable = new Item[0];
-        lootFrequencyTable = new int[0];
+        lootTables = new Item[0][];
+        lootFrequencyTables = new int[0][];
        
 
-        numberOfItemsDropped = 0;
+        numberOfItemsDropped = new int[0];
 	}
 
 
@@ -83,21 +84,26 @@ public class ItemManager : MonoBehaviour {
 	}
 
     public virtual Item[] chooseLoot(){
+        int totalNumItem = numberOfItemsDropped.Sum(c => c);
+        Item[] drops = new Item[totalNumItem];
 
-        Item[] drops = new Item[numberOfItemsDropped];
+        int dropIndex = 0;
 
-        for(int i = 0; i < numberOfItemsDropped; i++){
-            int roll = Random.Range(1, 101);
-            
-            int c = 0;
-            for (int j = 0; j < lootFrequencyTable.Length; j++) {
-                c += lootFrequencyTable[j];
-                if (roll < c) {
-                    drops[i] = lootTable[j];
-            
-                    break;
+        for(int i = 0; i < lootTables.Length; i++){
+            for (int j = 0; j < numberOfItemsDropped[i]; j++) {
+                int roll = Random.Range(1, 101);
+
+                int c = 0;
+                for (int k = 0; k < lootFrequencyTables[i].Length; k++) {
+                    c += lootFrequencyTables[i][k];
+                    if (roll < c) {
+                        drops[dropIndex++] = lootTables[i][k];
+                        break;
+                    }
                 }
             }
+            
+            
         }
 
         return drops;

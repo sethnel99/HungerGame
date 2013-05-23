@@ -9,19 +9,23 @@ public class TreeManager : ItemManager {
         base.Start();
         displayName = "Tree";
 
-        lootTable = new Item[3];
+        lootTables = new Item[1][];
+        lootTables[0] = new Item[3];
 
-        lootTable[0] = new WoodItem(2);
-        lootTable[1] = new WoodItem(3);
-        lootTable[2] = new WoodItem(4);
+        lootTables[0][0] = new WoodItem(2);
+        lootTables[0][1] = new WoodItem(3);
+        lootTables[0][2] = new WoodItem(4);
 
 
-        lootFrequencyTable = new int[3];
-        lootFrequencyTable[0] = 20;
-        lootFrequencyTable[1] = 60;
-        lootFrequencyTable[2] = 20;
+        lootFrequencyTables = new int[1][];
+        lootFrequencyTables[0] = new int[3];
 
-        numberOfItemsDropped = 1;
+        lootFrequencyTables[0][0] = 20;
+        lootFrequencyTables[0][1] = 60;
+        lootFrequencyTables[0][2] = 20;
+
+        numberOfItemsDropped = new int[1];
+        numberOfItemsDropped[0] = 1;
 	}
 
 
