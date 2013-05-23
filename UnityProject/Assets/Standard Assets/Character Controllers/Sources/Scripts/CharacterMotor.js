@@ -19,6 +19,8 @@ var inputMoveDirection : Vector3 = Vector3.zero;
 @System.NonSerialized
 var inputJump : boolean = false;
 
+var isSwimming : boolean = false;
+
 class CharacterMotorMovement {
 	// The maximum horizontal speed when moving
 	var maxForwardSpeed : float = 10.0;
@@ -35,6 +37,8 @@ class CharacterMotorMovement {
 	// The gravity for the character
 	var gravity : float = 10.0;
 	var maxFallSpeed : float = 20.0;
+	
+	var sink : float = 30.0;
 	
 	// For the next variables, @System.NonSerialized tells Unity to not serialize the variable or show it in the inspector view.
 	// Very handy for organization!
@@ -183,7 +187,7 @@ function Awake () {
 private function UpdateFunction () {
 	// We copy the actual velocity into a temporary variable that we can manipulate.
 	var velocity : Vector3 = movement.velocity;
-	
+
 	// Update velocity based on input
 	velocity = ApplyInputVelocityChange(velocity);
 	
@@ -340,47 +344,54 @@ private function ApplyInputVelocityChange (velocity : Vector3) {
 	if (!canControl)
 		inputMoveDirection = Vector3.zero;
 	
-	// Find desired velocity
-	var desiredVelocity : Vector3;
-	if (grounded && TooSteep()) {
-		// The direction we're sliding in
-		desiredVelocity = Vector3(groundNormal.x, 0, groundNormal.z).normalized;
-		// Find the input movement direction projected onto the sliding direction
-		var projectedMoveDir = Vector3.Project(inputMoveDirection, desiredVelocity);
-		// Add the sliding direction, the spped control, and the sideways control vectors
-		desiredVelocity = desiredVelocity + projectedMoveDir * sliding.speedControl + (inputMoveDirection - projectedMoveDir) * sliding.sidewaysControl;
-		// Multiply with the sliding speed
-		desiredVelocity *= sliding.slidingSpeed;
+	if(!isSwimming)
+	{
+		// Find desired velocity
+		var desiredVelocity : Vector3;
+		if (grounded && TooSteep()) {
+			// The direction we're sliding in
+			desiredVelocity = Vector3(groundNormal.x, 0, groundNormal.z).normalized;
+			// Find the input movement direction projected onto the sliding direction
+			var projectedMoveDir = Vector3.Project(inputMoveDirection, desiredVelocity);
+			// Add the sliding direction, the spped control, and the sideways control vectors
+			desiredVelocity = desiredVelocity + projectedMoveDir * sliding.speedControl + (inputMoveDirection - projectedMoveDir) * sliding.sidewaysControl;
+			// Multiply with the sliding speed
+			desiredVelocity *= sliding.slidingSpeed;
+		}
+		else
+			desiredVelocity = GetDesiredHorizontalVelocity();
+		
+		if (movingPlatform.enabled && movingPlatform.movementTransfer == MovementTransferOnJump.PermaTransfer) {
+			desiredVelocity += movement.frameVelocity;
+			desiredVelocity.y = 0;
+		}
+		
+		if (grounded)
+			desiredVelocity = AdjustGroundVelocityToNormal(desiredVelocity, groundNormal);
+		else
+			velocity.y = 0;
+		
+		// Enforce max velocity change
+		var maxVelocityChange : float = GetMaxAcceleration(grounded) * Time.deltaTime;
+		var velocityChangeVector : Vector3 = (desiredVelocity - velocity);
+		if (velocityChangeVector.sqrMagnitude > maxVelocityChange * maxVelocityChange) {
+			velocityChangeVector = velocityChangeVector.normalized * maxVelocityChange;
+		}
+		// If we're in the air and don't have control, don't apply any velocity change at all.
+		// If we're on the ground and don't have control we do apply it - it will correspond to friction.
+		if (grounded || canControl)
+			velocity += velocityChangeVector;
+		
+		if (grounded) {
+			// When going uphill, the CharacterController will automatically move up by the needed amount.
+			// Not moving it upwards manually prevent risk of lifting off from the ground.
+			// When going downhill, DO move down manually, as gravity is not enough on steep hills.
+			velocity.y = Mathf.Min(velocity.y, 0);
+		}
 	}
 	else
-		desiredVelocity = GetDesiredHorizontalVelocity();
-	
-	if (movingPlatform.enabled && movingPlatform.movementTransfer == MovementTransferOnJump.PermaTransfer) {
-		desiredVelocity += movement.frameVelocity;
-		desiredVelocity.y = 0;
-	}
-	
-	if (grounded)
-		desiredVelocity = AdjustGroundVelocityToNormal(desiredVelocity, groundNormal);
-	else
-		velocity.y = 0;
-	
-	// Enforce max velocity change
-	var maxVelocityChange : float = GetMaxAcceleration(grounded) * Time.deltaTime;
-	var velocityChangeVector : Vector3 = (desiredVelocity - velocity);
-	if (velocityChangeVector.sqrMagnitude > maxVelocityChange * maxVelocityChange) {
-		velocityChangeVector = velocityChangeVector.normalized * maxVelocityChange;
-	}
-	// If we're in the air and don't have control, don't apply any velocity change at all.
-	// If we're on the ground and don't have control we do apply it - it will correspond to friction.
-	if (grounded || canControl)
-		velocity += velocityChangeVector;
-	
-	if (grounded) {
-		// When going uphill, the CharacterController will automatically move up by the needed amount.
-		// Not moving it upwards manually prevent risk of lifting off from the ground.
-		// When going downhill, DO move down manually, as gravity is not enough on steep hills.
-		velocity.y = Mathf.Min(velocity.y, 0);
+	{
+		velocity = GetDesiredHorizontalVelocity();
 	}
 	
 	return velocity;
@@ -396,9 +407,20 @@ private function ApplyGravityAndJumping (velocity : Vector3) {
 	if (inputJump && jumping.lastButtonDownTime < 0 && canControl)
 		jumping.lastButtonDownTime = Time.time;
 	
-	if (grounded)
-		velocity.y = Mathf.Min(0, velocity.y) - movement.gravity * Time.deltaTime;
+	if (grounded || isSwimming)
+	{
+		if(!isSwimming)
+		{
+			//Debug.Log("GRAV!");
+			velocity.y = Mathf.Min(0, velocity.y) - movement.gravity * Time.deltaTime;
+		}
+		else
+		{
+			velocity.y = Mathf.Min(0, velocity.y) - movement.sink*Time.deltaTime;
+		}
+	}
 	else {
+		//Debug.Log("GRAV!");
 		velocity.y = movement.velocity.y - movement.gravity * Time.deltaTime;
 		
 		// When jumping up we don't apply gravity for some time when the user is holding the jump button.
@@ -416,7 +438,7 @@ private function ApplyGravityAndJumping (velocity : Vector3) {
 		velocity.y = Mathf.Max (velocity.y, -movement.maxFallSpeed);
 	}
 		
-	if (grounded) {
+	if (grounded || isSwimming) {
 		// Jump only if the jump button was pressed down in the last 0.2 seconds.
 		// We use this check instead of checking if it's pressed down right now
 		// because players will often try to jump in the exact moment when hitting the ground after a jump
@@ -502,8 +524,15 @@ private function MoveWithPlatform () : boolean {
 private function GetDesiredHorizontalVelocity () {
 	// Find desired velocity
 	var desiredLocalDirection : Vector3 = tr.InverseTransformDirection(inputMoveDirection);
-	var maxSpeed : float = MaxSpeedInDirection(desiredLocalDirection);
-	if (grounded) {
+	var maxSpeed : float;
+	if(!isSwimming){
+		maxSpeed = MaxSpeedInDirection(desiredLocalDirection);
+	}
+	else
+	{
+		maxSpeed = 1;
+	}
+	if (grounded && !isSwimming) {
 		// Modify max speed on slopes based on slope speed multiplier curve
 		var movementSlopeAngle = Mathf.Asin(movement.velocity.normalized.y)  * Mathf.Rad2Deg;
 		maxSpeed *= movement.slopeSpeedMultiplier.Evaluate(movementSlopeAngle);
@@ -580,6 +609,11 @@ function SetVelocity (velocity : Vector3) {
 	movement.velocity = velocity;
 	movement.frameVelocity = Vector3.zero;
 	SendMessage("OnExternalVelocity");
+}
+
+function IsSwimming(swim : boolean) {
+	//Debug.Log("SWIM RECEIVED");
+	isSwimming = swim;
 }
 
 // Require a character controller to be attached to the same game object

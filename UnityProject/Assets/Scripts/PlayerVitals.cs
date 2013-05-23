@@ -56,6 +56,13 @@ public class PlayerVitals : MonoBehaviour
     public bool IsNearFire() {
         return isNearFire;
     }
+
+	
+	public void HealThirst(float amount)
+	{
+		CurrentThirst+= amount;
+	}
+
 }
 
 

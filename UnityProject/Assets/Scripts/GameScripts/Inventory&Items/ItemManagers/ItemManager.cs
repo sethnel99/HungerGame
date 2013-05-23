@@ -9,8 +9,8 @@ public class ItemManager : MonoBehaviour {
 
     public string displayName;
 
-	bool inZone;
-	float buttonDownTime;
+	protected bool inZone;
+	protected float buttonDownTime;
 	public float gatherTime = 1.0f;
 
 
@@ -19,7 +19,7 @@ public class ItemManager : MonoBehaviour {
     InteractionManager interactionManager;
 	
 	// Use this for initialization
-	public void Start () {
+	virtual public void Start () {
 		inZone = false;
 		buttonDownTime = 0.0f;
        
@@ -36,7 +36,7 @@ public class ItemManager : MonoBehaviour {
 
 
     // Update is called once per frame
-    void Update() {
+    virtual public void Update() {
        
 		if (inZone && Input.GetButton ("Interact")) {
 			buttonDownTime += Time.deltaTime;
