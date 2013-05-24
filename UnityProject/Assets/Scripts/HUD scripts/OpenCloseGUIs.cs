@@ -40,7 +40,14 @@ public class OpenCloseGUIs : MonoBehaviour {
                 inventoryGUI.enabled = true;
             }
             debounceTimer += Time.deltaTime;
-
+        } else if (Input.GetButton("esc")) {
+            if (inventoryGUI.enabled) {
+                enableControls(inventoryGUI);
+                inventoryGUI.enabled = false;
+            } else if (craftingGUI.enabled) {
+                enableControls(craftingGUI);
+                craftingGUI.enabled = false;
+            }
         }
 	}
 
