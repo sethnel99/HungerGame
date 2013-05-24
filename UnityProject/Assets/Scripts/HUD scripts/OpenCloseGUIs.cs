@@ -24,19 +24,19 @@ public class OpenCloseGUIs : MonoBehaviour {
             return;
         }else if (Input.GetButton("CraftingGUI")) {
             if (craftingGUI.enabled) {
-                enableControls("CraftingGUI");
+                enableControls(craftingGUI);
                 craftingGUI.enabled = false;
             } else {
-                disableControls("CraftingGUI");
+                disableControls(craftingGUI);
                 craftingGUI.enabled = true;
             }
             debounceTimer += Time.deltaTime;
         } else if (Input.GetButton("InventoryGUI")) {
             if (inventoryGUI.enabled) {
-                enableControls("InventoryGUI");
+                enableControls(inventoryGUI);
                 inventoryGUI.enabled = false;
             } else {
-                disableControls("InventoryGUI");
+                disableControls(inventoryGUI);
                 inventoryGUI.enabled = true;
             }
             debounceTimer += Time.deltaTime;
@@ -44,7 +44,7 @@ public class OpenCloseGUIs : MonoBehaviour {
         }
 	}
 
-    public void disableControls(string disabler) {
+    public void disableControls(MonoBehaviour disabler) {
         GameObject.FindGameObjectWithTag("Player").GetComponent<MouseLook>().enabled = false;
         GameObject.FindGameObjectWithTag("MainCamera").GetComponent<MouseLook>().enabled = false;
 
@@ -57,25 +57,36 @@ public class OpenCloseGUIs : MonoBehaviour {
         if (curItem != null && disabledItem == null) {
             curItem.active = false;
             disabledItem = curItem;
+
+
+
         }
 
 
-        if (disabler.Equals("CraftingGUI")){
+        if (disabler is CraftingGUI){
             inventoryGUI.enabled = false;
         }else{
             craftingGUI.enabled = false;
         }
     }
 
-    public void enableControls(string enabler) {
+    public void enableControls(MonoBehaviour enabler) {
         GameObject.FindGameObjectWithTag("Player").GetComponent<MouseLook>().enabled = true;
         GameObject.FindGameObjectWithTag("MainCamera").GetComponent<MouseLook>().enabled = true;
         GameObject.Find("EquippedItem").GetComponent<EquippedItem>().enabled = true;
 
         //Debug.Log("enable controls");
 
-        disabledItem.active = true;
-        disabledItem = null;
+        if (disabledItem != null) {
+            disabledItem.active = true;
+
+            //if you click on the button with an axe equipped, it tries to start its animation and gets stuck. Reset it.
+            if (disabledItem.tag.Equals("Axe")) {
+                disabledItem.SendMessage("resetIsInAction");
+            }
+
+            disabledItem = null;
+        }
 
     }
 

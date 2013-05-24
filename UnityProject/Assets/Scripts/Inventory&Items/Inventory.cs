@@ -258,7 +258,7 @@ public class Inventory : MonoBehaviour{
             case EquipmentItem.EquipmentType.equipable:
                 curEquipped = equippedEquipable;
                 equippedEquipable = i;
-                Debug.Log(curEquipped.name + " " + curEquipped.quantity.ToString());
+                //Debug.Log(curEquipped.name + " " + curEquipped.quantity.ToString());
                 addItem(curEquipped);
 
 

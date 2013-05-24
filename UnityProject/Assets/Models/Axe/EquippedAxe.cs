@@ -14,7 +14,10 @@ public class EquippedAxe : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
 		if(Input.GetButtonDown("Fire1") && !isInAction){
+
+            Debug.Log("fire!");
 			
 			float rand = Random.Range(0f, 100f);
 			if(rand >50)
@@ -47,4 +50,8 @@ public class EquippedAxe : MonoBehaviour {
 	    yield return new WaitForSeconds(0.8f); // extra delay before you can shoot again
 	    isInAction = false;
 	}
+
+    public void resetIsInAction() {
+        isInAction = false;
+    }
 }
