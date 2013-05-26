@@ -8,19 +8,24 @@ public class PlayerVitals : MonoBehaviour
 	
 	private float CurrentHealth = 100;
 	private float CurrentThirst = 100;
-
-    private bool isNearFire = false;
 	
+	private bool isNearFire = false;
+	private skydomeScript2 GameTime;
 	
 	// Use this for initialization
 	void Start ()
 	{
-	
+		GameTime = (skydomeScript2) GameObject.Find("Skybox Controller").GetComponent("skydomeScript2");
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
+		GameTime.TIME+= 0.001f;
+		
+		if (GameTime.TIME >= 23)
+			GameTime.TIME = 0;
+		
 		if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
 		{
 			CurrentHealth -= 0.02f;
@@ -48,21 +53,20 @@ public class PlayerVitals : MonoBehaviour
 	{
 		return CurrentThirst/MaxThirst;
 	}
-
-    public void setIsNearFire(bool nearFire) {
-        isNearFire = nearFire;
-    }
-
-    public bool IsNearFire() {
-        return isNearFire;
-    }
-
+	
+	public void setIsNearFire(bool nearFire)
+	{
+		isNearFire = nearFire;
+	}
+	
+	public bool IsNearFire()
+	{
+		return isNearFire;
+	}
 	
 	public void HealThirst(float amount)
 	{
-		CurrentThirst+= amount;
+		CurrentThirst += amount;
 	}
-
 }
-
 

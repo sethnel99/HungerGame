@@ -1,4 +1,6 @@
 private var motor : CharacterMotor;
+private var sphere : GameObject;
+private var characterLocation : GameObject;
 
 // Use this for initialization
 function Awake () {
@@ -8,7 +10,7 @@ function Awake () {
 // Update is called once per frame
 function Update () {
 	// Get the input vector from kayboard or analog stick
-	var directionVector = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+	var directionVector = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));	
 	if (directionVector != Vector3.zero) {
 		// Get the length of the directon vector and then normalize it
 		// Dividing by the length is cheaper than normalizing when we already have the length anyway
@@ -24,6 +26,13 @@ function Update () {
 		
 		// Multiply the normalized direction vector by the modified length
 		directionVector = directionVector * directionLength;
+		
+		sphere = GameObject.Find("sphereMesh");
+		characterLocation = GameObject.Find("First Person Controller");
+		
+		sphere.transform.position = characterLocation.transform.position;
+		
+		
 	}
 	
 	// Apply the direction to the CharacterMotor
