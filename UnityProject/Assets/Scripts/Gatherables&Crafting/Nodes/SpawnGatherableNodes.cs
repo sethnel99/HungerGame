@@ -56,9 +56,14 @@ public class SpawnGatherableNodes : MonoBehaviour {
             }
         }
 
+        Vector3 playerPosition = GameObject.FindGameObjectWithTag("Player").transform.position;
+
         //now tell the nodes at those locations in unSpawnedNodes to spawn
         for (int i = 0; i < randomList.Count(); i++) {
-            unSpawnedNodes[randomList[i]].GetComponent<GatherableNodeManager>().spawnNode();
+            //don't spawn a node if it is right next to the player
+            if (Vector3.Distance(playerPosition, unSpawnedNodes[randomList[i]].transform.position) > 10) {
+                unSpawnedNodes[randomList[i]].GetComponent<GatherableNodeManager>().spawnNode();
+            }
         }
 
 

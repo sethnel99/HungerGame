@@ -79,6 +79,9 @@ public class ItemManager : MonoBehaviour {
 	void OnTriggerExit (Collider col) {
 		if (col.gameObject.tag == "Player") {
 			inZone = false;
+            if (this.gameObject == interactionManager.interactTarget) {
+                interactionTimer.GetComponent<InteractionTimer>().setInteractionTimerLevel(0, gameObject);
+            }
             interactionManager.removePotentialInteractor(gameObject);
 		}
 		

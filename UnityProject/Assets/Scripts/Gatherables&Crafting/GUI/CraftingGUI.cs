@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Text;
 
 public class CraftingGUI : MonoBehaviour {
-	
 
 
     Inventory inventory;
@@ -16,6 +15,7 @@ public class CraftingGUI : MonoBehaviour {
 	
 	Item selectedItem;
     Item currentlyCrafting;
+    bool craftAll;
 
     Texture2D selectedLabelTexture;
     Texture2D arrowTexture;
@@ -23,6 +23,8 @@ public class CraftingGUI : MonoBehaviour {
 
      float craftProgress = 0.0f;
      public float craftTime = 1.0f;
+
+
 
      public static string meatMessage = "You must be near a fire to cook meat";
 	
@@ -52,8 +54,17 @@ public class CraftingGUI : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         if (craftProgress > craftTime) {
-            inventory.craftItem(selectedItem);
-            craftProgress = 0.0f;
+            inventory.craftItem(selectedItem,craftAll);
+
+            //if we're crafting all, reset the craft timer and go again
+            if (craftAll && inventory.canCraft(selectedItem)) {
+                craftProgress = Time.deltaTime;
+            } else {
+                //otherwise make it 0, crafting stops
+                craftAll = false;
+                craftProgress = 0.0f;
+                inventory.resetMultiCraftCount();
+            }
         } else if(craftProgress > 0.0f){
             craftProgress += Time.deltaTime;
         }
@@ -142,7 +153,8 @@ public class CraftingGUI : MonoBehaviour {
 
             int yHeight = entry.Key.name.Length > 16 ? 36 : 22;
 
-            if (GUI.Button(new Rect(10, listYLoc, craftingRect.width / 4 - 20, yHeight), entry.Key.name, chooseLeftLabelStyle(entry.Key))) {
+            //Draw the left-side "buttons" to choose what you want to craft. Don't let the player switch selected items which "craft all" is occuring, becuase that doesn't make sense.
+            if (GUI.Button(new Rect(10, listYLoc, craftingRect.width / 4 - 20, yHeight), entry.Key.name, chooseLeftLabelStyle(entry.Key)) && !craftAll) {
 				selectedItem = entry.Key;
 			}
 
@@ -184,19 +196,40 @@ public class CraftingGUI : MonoBehaviour {
         }
 
 
-        //draw the craft button
-        if (!inventory.canCraft(selectedItem)) {
+        bool canCraft = inventory.canCraft(selectedItem);
+       //if you cannot craft the target item, or you are in the middle of "crafting all", the craft button should be disabled
+        if (!canCraft || craftAll) {
             GUI.enabled = false;
         }
-
+        //draw the craft button
         if (GUI.Button(new Rect(craftDetailRectNormalized.width - 127, craftDetailRectNormalized.height - 37, 120, 30), "Craft!")) {
             craftProgress += Time.deltaTime;
             currentlyCrafting = selectedItem;
         }
+
+        //enable the craft all button unless you can't craft the object
+        if (canCraft) {
+            GUI.enabled = true;
+        }
+
+        if (GUI.Button(new Rect(craftDetailRectNormalized.width - 257, craftDetailRectNormalized.height - 37, 120, 30), craftAll? "Halt!":"Craft All!")) {
+            if (craftAll) {
+                //already crafting all means this is the cancel button. So stop crafting
+                craftAll = false;
+                craftProgress = 0.0f;
+            } else {
+                //craft all
+                craftProgress += Time.deltaTime;
+                currentlyCrafting = selectedItem;
+                craftAll = true;
+            }
+        }
+
+        //enable here down
         GUI.enabled = true;
 
         //draw the craft progress bar, if applicable
-        GUI.DrawTexture(new Rect(craftDetailRectNormalized.width/2 - 120, craftDetailRectNormalized.height - 60, 200 * craftProgress/craftTime, 30), craftProgressBarTexture);
+        GUI.DrawTexture(new Rect(craftDetailRectNormalized.width/2 - 120, craftDetailRectNormalized.height - 80, 200 * craftProgress/craftTime, 30), craftProgressBarTexture);
 		
         GUI.EndGroup();
         

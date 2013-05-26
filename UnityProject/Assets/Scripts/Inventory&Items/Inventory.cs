@@ -28,6 +28,8 @@ public class Inventory : MonoBehaviour{
 
     EquippedItem equipItemScript;
 
+    int multiCraftCount = 0;
+
 
     void Start() {
         initializeCraftingDictionary();
@@ -42,7 +44,7 @@ public class Inventory : MonoBehaviour{
         craftingDictionary.Add(new SidePlankItem(1), new Item[] { new WoodItem(1) });
         craftingDictionary.Add(new RoofPlankItem(1), new Item[] { new WoodItem(1) });
         craftingDictionary.Add(new FireItem(1), new Item[] { new SharpStoneItem(2), new WoodItem(3)});
-        craftingDictionary.Add(new SmallCookedMeatItem(1), new Item[] { new SharpStoneItem(1) });
+        craftingDictionary.Add(new SmallCookedMeatItem(1), new Item[] { new SmallUncookedMeatItem(1) });
         craftingDictionary.Add(new LargeCookedMeatItem(1), new Item[] { new LargeUncookedMeatItem(1) });
         craftingDictionary.Add(new LargeHideItem(1), new Item[] { new SmallHideItem(3) });
         craftingDictionary.Add(new StringItem(2), new Item[] { new SmallHideItem(1) });
@@ -58,7 +60,7 @@ public class Inventory : MonoBehaviour{
 	
 	
 	//add an item. Item types, quantity, etc. expected on the item
-	public bool addItem(Item i){
+	public bool addItem(Item i, bool displayMessage=true){
         if (i == null) {
             return false;
         }
@@ -72,7 +74,7 @@ public class Inventory : MonoBehaviour{
 
 		//if you already have this item in your inventory, utilize stacking
         if (inventory.ContainsKey(i.name)) {
-            Debug.Log(i.name + " in addItem q: " + i.quantity.ToString());
+            //Debug.Log(i.name + " in addItem q: " + i.quantity.ToString());
             Item oldItemInstance = inventory[i.name];
             oldItemInstance.quantity += i.quantity;
  
@@ -102,9 +104,10 @@ public class Inventory : MonoBehaviour{
                 }
             }
         }
-
-        InventoryTextGUI.gameObject.GetComponent<InventoryTextManager>().enqueueMessage("You collected " + i.quantity + " " + ((i.quantity > 1) ? i.pluralName : i.name));
-        AudioSource.PlayClipAtPoint(collectSound, transform.position);
+        if (displayMessage) {
+            InventoryTextGUI.gameObject.GetComponent<InventoryTextManager>().enqueueMessage("You collected " + i.quantity + " " + ((i.quantity > 1) ? i.pluralName : i.name));
+        }
+            AudioSource.PlayClipAtPoint(collectSound, transform.position);
 		return true;
 	}
 	
@@ -146,6 +149,14 @@ public class Inventory : MonoBehaviour{
 
         return item != null && inventory[itemName].quantity >= quantity;
 	}
+
+    public Item getItem(string itemName) {
+        if (contains(name)) {
+            return inventory[itemName];
+        } else {
+            return null;
+        }
+    }
 	
 	//returns the item at a specific location in the inventory
 	public Item getItemAtLocation(int location){
@@ -221,7 +232,7 @@ public class Inventory : MonoBehaviour{
         return true;
     }
 
-    public bool craftItem(Item targetCraft) {
+    public bool craftItem(Item targetCraft, bool multiCraft=false) {
         if (!canCraft(targetCraft)) {
             return false;
         }
@@ -234,15 +245,23 @@ public class Inventory : MonoBehaviour{
             if (!removeItem(ingredientsList[i])) {
                 //if for whatever reason that fails (it shouldn't), add the already removed items back and return false
                 for (int j = 0; j < i; j++) {
-                    addItem(ingredientsList[j]);
+                    addItem(ingredientsList[j],false);
                 }
                 return false;
             }
         }
 
         //if you've made it this far, removing the ingredient items was successful. Add the crafted item and return true
-        addItem(targetCraft);
+        addItem(targetCraft, !multiCraft);
+        if (multiCraft) {
+            multiCraftCount += targetCraft.quantity;
+            InventoryTextGUI.gameObject.GetComponent<InventoryTextManager>().updateMessage("You collected " + multiCraftCount + " " + ((multiCraftCount > 1) ? targetCraft.pluralName : targetCraft.name));
+        }
         return true;
+    }
+
+    public void resetMultiCraftCount() {
+        multiCraftCount = 0;
     }
 
     /*Equipment code*/

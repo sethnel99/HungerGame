@@ -20,8 +20,6 @@ public class EquippedAxe : MonoBehaviour {
 	void Update () {
 
 		if(Input.GetButtonDown("Fire1") && !isInAction){
-
-            Debug.Log("fire!");
 			
 			float rand = Random.Range(0f, 100f);
 			if(rand >0)
