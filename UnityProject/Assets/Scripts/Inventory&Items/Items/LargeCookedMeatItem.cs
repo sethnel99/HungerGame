@@ -6,7 +6,7 @@ public class LargeCookedMeatItem : Item {
     public LargeCookedMeatItem(int q)
         : base("Large Piece of Cooked Meat", "Large Pieces of Cooked Meat", 8, q) {
         addItemType(Item.food);
-        icon = (Texture2D)Resources.Load("large_cooked_meat_icon");
+        icon = (Texture2D)UnityEngine.Resources.Load("large_cooked_meat_icon");
         
 
     }

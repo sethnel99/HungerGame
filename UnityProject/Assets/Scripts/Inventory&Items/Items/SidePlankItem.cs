@@ -8,7 +8,7 @@ public class SidePlankItem : EquipmentItem {
         usable = true;
         equipmentType = EquipmentType.equipable;
         useText = "(Equip) Allows you to place a side panel for building structures.";
-        icon = (Texture2D)Resources.Load("side_plank_icon");
+        icon = (Texture2D)UnityEngine.Resources.Load("side_plank_icon");
 	}
 
     public SidePlankItem(SidePlankItem other)

@@ -6,7 +6,7 @@ public class LargeHideItem : Item {
     public LargeHideItem(int q)
         : base("Large Hide", "Large Hides", 7, q) {
         addItemType(Item.material);
-        icon = (Texture2D)Resources.Load("large_hide_icon");
+        icon = (Texture2D)UnityEngine.Resources.Load("large_hide_icon");
         
 
     }

@@ -23,8 +23,8 @@ public class InventoryGUI : MonoBehaviour
 		InventoryOverlay = GameObject.Find("InventoryGUI").guiTexture;
 		InventoryInfo = (Inventory) GameObject.Find("First Person Controller").GetComponent("Inventory");
 				
-		TxtArray = (Texture2D) Resources.Load("Icons/SlotUnusable");
-		InventoryFont = (Font) Resources.Load ("OptimusPrinceps");
+		TxtArray = (Texture2D) UnityEngine.Resources.Load("Icons/SlotUnusable");
+		InventoryFont = (Font) UnityEngine.Resources.Load ("OptimusPrinceps");
 		
 		PopulateInventory();
 	}
@@ -101,7 +101,7 @@ public class InventoryGUI : MonoBehaviour
 						
 					if (currentItem != null)
 					{
-						Texture2D icon = (Texture2D) Resources.Load("Icons/" + currentItem.name);
+						Texture2D icon = (Texture2D) UnityEngine.Resources.Load("Icons/" + currentItem.name);
 							
 						inventoryIcon.guiTexture.texture = icon;
 						
@@ -120,7 +120,7 @@ public class InventoryGUI : MonoBehaviour
 	//Updating an inventory slot with a new item
 	public void UpdateIcon(Item item, int location)
 	{
-		Texture2D icon = (Texture2D) Resources.Load ("Icons/" + item.name);
+		Texture2D icon = (Texture2D) UnityEngine.Resources.Load ("Icons/" + item.name);
 		
 		InventoryIcons[location].guiTexture.texture = icon;
 		InventoryCount[location].guiText.text = item.quantity.ToString ();

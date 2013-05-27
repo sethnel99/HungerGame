@@ -6,7 +6,7 @@ public class FireItem : Item {
     public FireItem(int q)
         : base("Fire", "Fire", 4, q) {
         addItemType(Item.tool);
-        icon = (Texture2D)Resources.Load("fire_icon");
+        icon = (Texture2D)UnityEngine.Resources.Load("fire_icon");
         usable = true;
         useText = "Create a fire in front of your location";
 	}
@@ -17,7 +17,7 @@ public class FireItem : Item {
 
     public override void useItem() {
         Debug.Log("making a fire");
-        GameObject fire = Resources.Load("Fire") as GameObject;
+        GameObject fire = UnityEngine.Resources.Load("Fire") as GameObject;
 
         //find player location
         Vector3 playerPosition = GameObject.FindGameObjectWithTag("Player").transform.position;

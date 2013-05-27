@@ -8,7 +8,7 @@ public class SpearItem : EquipmentItem {
         usable = true;
         equipmentType = EquipmentType.equipable;
         useText = "(Equip) Allows you to attack with a spear.";
-        icon = (Texture2D)Resources.Load("spear_icon");
+        icon = (Texture2D)UnityEngine.Resources.Load("spear_icon");
 	}
 
     public SpearItem(SpearItem other)

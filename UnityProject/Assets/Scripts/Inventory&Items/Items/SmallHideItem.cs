@@ -6,7 +6,7 @@ public class SmallHideItem : Item {
     public SmallHideItem(int q)
         : base("Small Hide", "Small Hides", 2, q) {
         addItemType(Item.material);
-        icon = (Texture2D)Resources.Load("small_hide_icon");
+        icon = (Texture2D)UnityEngine.Resources.Load("small_hide_icon");
         
 
     }
