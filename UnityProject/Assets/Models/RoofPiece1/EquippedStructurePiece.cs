@@ -13,12 +13,17 @@ public class EquippedStructurePiece : StructurePiece {
 	protected Renderer snapRenderer;
 	
 	protected bool isInAction = false;
+
+    //update the equipped piece's quantity
+    Inventory inventory;
 	
 	// Use this for initialization
 	protected virtual void Start () {
 		createdPieces = new Stack<GameObject>();
 		textHints = GameObject.Find("TextHintGUI");
 		parentScript = transform.parent.GetComponent<EquippedItem>() as EquippedItem;
+
+        inventory = GameObject.FindGameObjectWithTag("Player").GetComponent<Inventory>();
 	}
 	
 	// Update is called once per frame
@@ -30,6 +35,17 @@ public class EquippedStructurePiece : StructurePiece {
 		transform.rotation = rotation;
 		
 		if(Input.GetButtonDown("Fire1") && !isInAction){
+            Debug.Log("in action");
+
+            if (inventory.getEquippedEquipable().quantity == 0) {
+                textHints.SendMessage("ShowHint", "You are out of planks!");
+                return;
+            }
+
+            //the player now has one less piece to place
+            inventory.decrementEquipable();
+            
+
 			if(snapRenderer != null)
 			{
 				snapRenderer.enabled = false;
@@ -44,16 +60,24 @@ public class EquippedStructurePiece : StructurePiece {
 				textHints.SendMessage("ShowHint",
 						"You can undo misplaced pieces by using the Undo button (Backspace).");
 			}
-			else if(rand<=90 && rand>80)
+			/*else if(rand<=90 && rand>80)
 			{
 				textHints.SendMessage("ShowHint",
 						"Press the 1 and 2 keys to switch between planks and roofing respectively.");
-			}
+			}*/
 		}
 		if(Input.GetButtonDown("Undo") && !isInAction)
 		{
 			if(createdPieces.Count!=0){
-				GameObject.Destroy(createdPieces.Pop());
+                GameObject pieceToDestroy = createdPieces.Pop();
+                GameObject.Destroy(pieceToDestroy);
+                //add that item back to their inventory
+                if (this is EquippedPlank) {
+                    inventory.addItem(new SidePlankItem(1));
+                } else if (this is EquippedRoofPiece1) {
+                    inventory.addItem(new RoofPlankItem(1));
+                }
+                
 			}
 		}
 		

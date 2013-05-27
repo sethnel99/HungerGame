@@ -18,7 +18,10 @@ public class EquippedAxe : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
 		if(Input.GetButtonDown("Fire1") && !isInAction){
+
+            Debug.Log("fire!");
 			
 			float rand = Random.Range(0f, 100f);
 			if(rand >0)
@@ -65,4 +68,8 @@ public class EquippedAxe : MonoBehaviour {
 	{
 		return swinging;
 	}
+
+    public void resetIsInAction() {
+        isInAction = false;
+    }
 }
