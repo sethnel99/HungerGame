@@ -6,8 +6,8 @@ public class SharpStoneItem : Item {
     public SharpStoneItem(int q)
         : base("Sharp Stone", "Sharp Stones", 2, q) {
         addItemType(Item.material);
-        icon = (Texture2D)Resources.Load("stone_icon");
-        Debug.Log(icon);
+        icon = (Texture2D)UnityEngine.Resources.Load("stone_icon");
+        //Debug.Log(icon);
 
     }
 

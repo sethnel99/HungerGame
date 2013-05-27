@@ -78,7 +78,6 @@ public class EquippedItem : MonoBehaviour {
 	public void Reset(int equippable){
 		if(equippedItem != null)
 		{
-			
 			equippedItem.transform.parent = Camera.main.transform;
 			equippedItem.transform.Translate(equippableTransform[equippable]);
 			//equippedItem.transform.rotation = transform.rotation;

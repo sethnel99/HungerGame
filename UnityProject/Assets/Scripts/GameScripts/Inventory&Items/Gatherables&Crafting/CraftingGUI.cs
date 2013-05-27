@@ -31,9 +31,9 @@ public class CraftingGUI : MonoBehaviour {
 
         inventory = GameObject.FindGameObjectWithTag("Player").GetComponent<Inventory>();
 
-        selectedLabelTexture = (Texture2D)Resources.Load("SelectedLabel");
-        arrowTexture = (Texture2D)Resources.Load("Arrow_2");
-        craftProgressBarTexture = (Texture2D)Resources.Load("CraftProgressBar");
+		selectedLabelTexture = (Texture2D)UnityEngine.Resources.Load("SelectedLabel");
+        arrowTexture = (Texture2D)UnityEngine.Resources.Load("Arrow_2");
+        craftProgressBarTexture = (Texture2D)UnityEngine.Resources.Load("CraftProgressBar");
 
         IEnumerator enumerator = inventory.craftingDictionary.Keys.GetEnumerator();
         enumerator.MoveNext();

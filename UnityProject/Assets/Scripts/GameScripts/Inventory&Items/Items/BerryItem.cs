@@ -8,7 +8,7 @@ public class BerryItem : Item {
         addItemType(Item.food);
         usable = true;
         useText = "Eat to regain some health";
-        icon = (Texture2D)Resources.Load("berries_icon");
+        icon = (Texture2D)UnityEngine.Resources.Load("berries_icon");
 	}
 
     public BerryItem(BerryItem other)

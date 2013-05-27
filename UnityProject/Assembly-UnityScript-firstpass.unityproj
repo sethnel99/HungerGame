@@ -50,11 +50,39 @@
      <Compile Include="Assets\Standard Assets\Character Controllers\Sources\Scripts\ThirdPersonCamera.js" />
      <Compile Include="Assets\Standard Assets\Character Controllers\Sources\Scripts\ThirdPersonController.js" />
      <Compile Include="Assets\Standard Assets\Particles\Legacy Particles\TimedObjectDestructor.js" />
+     <Compile Include="Assets\Standard Assets\Scripts\Camera Scripts\MouseOrbit.js" />
+     <Compile Include="Assets\Standard Assets\Scripts\Camera Scripts\SmoothLookAt.js" />
+     <Compile Include="Assets\Standard Assets\Scripts\General Scripts\DragRigidbody.js" />
+     <None Include="Assets\Behave\Changelog.txt" />
+     <None Include="Assets\Path\License.txt" />
      <None Include="Assets\Standard Assets\Particles\Sources\Shaders\Particle Alpha Blend (Queue +100).shader" />
      <None Include="Assets\Standard Assets\Skyboxes\_skybox info.txt" />
      <None Include="Assets\README.txt" />
+     <None Include="Assets\Behave\Readme.txt" />
      <None Include="Assets\Standard Assets\Water (Basic)\Sources\Shaders\FX-Water Simple.shader" />
+     <None Include="Assets\Plugins\whydoidoit.com\license.txt" />
+     <None Include="Assets\Behave\License.txt" />
+     <None Include="Assets\Behaviors\BehaveLibrary0Info.txt" />
+     <None Include="Assets\UnitySerializer\readme.txt" />
      <None Include="Assets\TerrainToolkit\Read me.txt" />
+ <Reference Include="Behave.Unity.Assets">
+ <HintPath>Assets\Behave\Behave.Unity.Assets.dll</HintPath>
+ </Reference>
+ <Reference Include="Behave.Unity.Runtime">
+ <HintPath>Assets\Behave\Behave.Unity.Runtime.dll</HintPath>
+ </Reference>
+ <Reference Include="Behave">
+ <HintPath>Assets\Behave\Compatibility\Behave.dll</HintPath>
+ </Reference>
+ <Reference Include="SimpleBuild">
+ <HintPath>Assets\BehaveTest\SimpleBuild.dll</HintPath>
+ </Reference>
+ <Reference Include="BehaveLibrary0Build">
+ <HintPath>Assets\Behaviors\BehaveLibrary0Build.dll</HintPath>
+ </Reference>
+ <Reference Include="Path.Runtime">
+ <HintPath>Assets\Path\Path.Runtime.dll</HintPath>
+ </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

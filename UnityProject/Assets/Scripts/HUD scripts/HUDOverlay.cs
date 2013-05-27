@@ -54,7 +54,7 @@ public class HUDOverlay : MonoBehaviour
 	private void InitializeTemperature()
 	{
 		TemperatureText = new GUIText();
-		TemperatureText.font = (Font)Resources.Load("Fonts/Arial Black", typeof(Font));
+		TemperatureText.font = (Font)UnityEngine.Resources.Load("Fonts/Arial Black", typeof(Font));
 		TemperatureText.font.material.color = new Color(0f,255f,0f);
 		//CurrentTemp = NormalBodyTemp;
 	}

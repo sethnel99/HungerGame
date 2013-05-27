@@ -22,8 +22,8 @@ public class ItemManager : MonoBehaviour {
 	virtual public void Start () {
 		inZone = false;
 		buttonDownTime = 0.0f;
-        Debug.Log(GameObject.FindGameObjectWithTag("Player"));
-        Debug.Log(GameObject.FindGameObjectWithTag("Player").GetComponent<InteractionManager>());
+        //Debug.Log(GameObject.FindGameObjectWithTag("Player"));
+        //Debug.Log(GameObject.FindGameObjectWithTag("Player").GetComponent<InteractionManager>());
         interactionManager = GameObject.FindGameObjectWithTag("Player").GetComponent<InteractionManager>();
 
         displayName = "TestObject";

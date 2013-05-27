@@ -13,7 +13,6 @@ public class PlayerVitals : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-	
 	}
 	
 	// Update is called once per frame
@@ -50,6 +49,33 @@ public class PlayerVitals : MonoBehaviour
 	public void HealThirst(float amount)
 	{
 		CurrentThirst+= amount;
+	}
+	
+	
+	public void TakenHit(BodyHit bodyHitObject)
+	{
+		Debug.Log(bodyHitObject.BodyPart + " " + bodyHitObject.Col.gameObject.name + " "+ bodyHitObject.Col.gameObject.GetComponent<EnemyAttackBox>().Damage );
+	}
+	
+}
+
+public class BodyHit
+{
+	public enum BodyPartEnum
+	{
+		Head,
+		Torso,
+		LeftArm,
+		RightArm,
+		LeftLeg,
+		RightLeg
+	}
+	public BodyPartEnum BodyPart;
+	public Collider Col;
+	public BodyHit(BodyPartEnum bodyPart, Collider col)
+	{
+		BodyPart = bodyPart;
+		Col = col;
 	}
 }
 
