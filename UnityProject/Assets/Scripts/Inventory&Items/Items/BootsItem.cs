@@ -9,7 +9,7 @@ public class BootsItem : EquipmentItem {
         usable = true;
         equipmentType = EquipmentType.boots;
         useText = "(Equip) Increases your movement speed by " + p.ToString() + ".";
-        icon = (Texture2D)Resources.Load("boots_icon");
+        icon = (Texture2D)UnityEngine.Resources.Load("boots_icon");
         statPower = p;
 	}
 

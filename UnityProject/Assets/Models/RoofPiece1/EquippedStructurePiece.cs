@@ -12,6 +12,7 @@ public class EquippedStructurePiece : StructurePiece {
 	protected EquippedItem parentScript;
 	protected Renderer snapRenderer;
 	
+	bool disabledByGUI = false;
 	protected bool isInAction = false;
 
     //update the equipped piece's quantity
@@ -34,7 +35,7 @@ public class EquippedStructurePiece : StructurePiece {
 		rotation.z = 0;
 		transform.rotation = rotation;
 		
-		if(Input.GetButtonDown("Fire1") && !isInAction){
+		if(Input.GetButtonDown("Fire1") && !isInAction && !disabledByGUI){
             Debug.Log("in action");
 
             if (inventory.getEquippedEquipable().quantity == 0) {
@@ -168,5 +169,9 @@ public class EquippedStructurePiece : StructurePiece {
 			snapRenderer.enabled = false;
 		}
 	}
+	
+	public void DisableByGUI(bool a) {
+        disabledByGUI = a;
+    }
 
 }

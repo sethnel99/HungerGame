@@ -36,11 +36,7 @@ public class TemperatureText : MonoBehaviour
     {
 		Color newColor;
 
-        //jackets increase temperature
-        JacketItem j = inventory.getEquippedJacket() as JacketItem;
-        if (j != null){
-            CurrentTemp = CurrentBaseTemp + j.statPower;
-        }
+       
 		
 		//CurrentTemp-= 0.1f;
 		

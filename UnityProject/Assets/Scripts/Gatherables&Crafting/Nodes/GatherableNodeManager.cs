@@ -48,6 +48,7 @@ public class GatherableNodeManager : MonoBehaviour {
         if (!isSpawned) {
             isSpawned = true;
             gatherable = Instantiate(UnityEngine.Resources.Load(nodeTypes[(int)nodeToCreate])) as GameObject;
+			
             gatherable.transform.parent = transform;
             gatherable.transform.localPosition = Vector3.zero;
             float xz_scale = UnityEngine.Random.Range(.5f, .9f);

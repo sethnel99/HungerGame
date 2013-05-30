@@ -9,7 +9,7 @@ public class JacketItem : EquipmentItem {
         usable = true;
         equipmentType = EquipmentType.jacket;
         useText = "(Equip) Increases your temperature by " + p.ToString() + ".";
-        icon = (Texture2D)Resources.Load("jacket_icon");
+        icon = (Texture2D)UnityEngine.Resources.Load("jacket_icon");
         statPower = p;
 	}
 

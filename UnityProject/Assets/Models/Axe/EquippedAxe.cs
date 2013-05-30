@@ -3,6 +3,7 @@ using System.Collections;
 
 public class EquippedAxe : MonoBehaviour {
 	
+	bool disabledByGUI = false;
 	bool isInAction = false;
 	bool swinging = false;
 	GameObject textHints;
@@ -19,7 +20,7 @@ public class EquippedAxe : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		if(Input.GetButtonDown("Fire1") && !isInAction){
+		if(Input.GetButtonDown("Fire1") && !isInAction && !disabledByGUI){
 			
 			float rand = Random.Range(0f, 100f);
 			if(rand >0)
@@ -67,7 +68,7 @@ public class EquippedAxe : MonoBehaviour {
 		return swinging;
 	}
 
-    public void resetIsInAction() {
-        isInAction = false;
+    public void DisableByGUI(bool d) {
+        disabledByGUI = d;
     }
 }

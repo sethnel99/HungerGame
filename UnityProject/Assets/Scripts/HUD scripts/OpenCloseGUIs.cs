@@ -8,8 +8,6 @@ public class OpenCloseGUIs : MonoBehaviour {
     float debounceTime = .25f;
     float debounceTimer = 0f;
 
-    GameObject disabledItem;
-
 	// Use this for initialization
 	void Start () {
 	
@@ -54,27 +52,18 @@ public class OpenCloseGUIs : MonoBehaviour {
     public void disableControls(MonoBehaviour disabler) {
         GameObject.FindGameObjectWithTag("Player").GetComponent<MouseLook>().enabled = false;
         GameObject.FindGameObjectWithTag("MainCamera").GetComponent<MouseLook>().enabled = false;
-
+	
         //Debug.Log("disable controls");
-        GameObject curItem = GameObject.FindGameObjectWithTag("Axe");
-        if (curItem == null) {
-            curItem = GameObject.FindGameObjectWithTag("BuildingGhost");
-        }
-
-        if (curItem != null && disabledItem == null) {
-            curItem.active = false;
-            disabledItem = curItem;
-
-
-
-        }
-
-
+       GameObject.FindGameObjectWithTag("MainCamera").BroadcastMessage("DisableByGUI",true);
+		
         if (disabler is CraftingGUI){
             inventoryGUI.enabled = false;
-        }else{
+        }else if (disabler is InventoryGUI){
             craftingGUI.enabled = false;
-        }
+        }else{
+			inventoryGUI.enabled = false;
+			craftingGUI.enabled = false;
+		}
     }
 
     public void enableControls(MonoBehaviour enabler) {
@@ -84,31 +73,14 @@ public class OpenCloseGUIs : MonoBehaviour {
 
         //Debug.Log("enable controls");
 
-        if (disabledItem != null) {
-            disabledItem.active = true;
-
-            //if you click on the button with an axe equipped, it tries to start its animation and gets stuck. Reset it.
-            if (disabledItem.tag.Equals("Axe")) {
-                disabledItem.SendMessage("resetIsInAction");
-            }
-
-            disabledItem = null;
-        }
+       GameObject.FindGameObjectWithTag("MainCamera").BroadcastMessage("DisableByGUI",false);
+		
 
     }
 
     public void disableNewItem() {
-
-        
-        GameObject curItem = GameObject.FindGameObjectWithTag("Axe");
-        if (curItem == null) {
-            curItem = GameObject.FindGameObjectWithTag("BuildingGhost");
-        }
-
-        if (curItem != null) {
-            curItem.active = false;
-            disabledItem = curItem;
-        }
+       GameObject.FindGameObjectWithTag("MainCamera").BroadcastMessage("DisableByGUI",true);
+		
     }
 	
 }

@@ -3,7 +3,7 @@ using System.Collections;
 
 public class PlayerBodyPart : MonoBehaviour {
 	
-	public BodyHit.BodyPartEnum bodyPart;
+	public PlayerVitals.BodyPart bodyPart;
 	// Use this for initialization
 	void Start () {
 	
@@ -17,7 +17,7 @@ public class PlayerBodyPart : MonoBehaviour {
 	{
 		if(col.gameObject.tag == "EnemyAttack")
 		{
-			transform.parent.SendMessage("TakenHit", new BodyHit(bodyPart, col));
+			transform.parent.GetComponent<PlayerVitals>().TakenHit(bodyPart, col.gameObject.GetComponent<EnemyAttackBox>());
 		}
 	}
 }
