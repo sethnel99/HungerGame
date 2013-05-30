@@ -79,9 +79,7 @@ public class PlayerVitals : MonoBehaviour
 	{
 		Debug.Log(bodyHitObject.BodyPart + " " + bodyHitObject.Col.gameObject.name + " "+ bodyHitObject.Col.gameObject.GetComponent<EnemyAttackBox>().Damage );
 	}
-	   public void HealHunger(float amount) {
-        CurrentHealth += amount;
-    }
+	
 }
 
 public class BodyHit

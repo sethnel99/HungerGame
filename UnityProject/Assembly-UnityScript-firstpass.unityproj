@@ -75,9 +75,6 @@
  <Reference Include="Behave">
  <HintPath>Assets\Behave\Compatibility\Behave.dll</HintPath>
  </Reference>
- <Reference Include="SimpleBuild">
- <HintPath>Assets\BehaveTest\SimpleBuild.dll</HintPath>
- </Reference>
  <Reference Include="BehaveLibrary0Build">
  <HintPath>Assets\Behaviors\BehaveLibrary0Build.dll</HintPath>
  </Reference>

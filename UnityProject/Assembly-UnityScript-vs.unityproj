@@ -51,6 +51,7 @@
      <Compile Include="Assets\UnitySerializer\Scripts\Movement.js" />
      <Compile Include="Assets\UnitySerializer\Scripts\PauseMenu.js" />
      <Compile Include="Assets\UnitySerializer\Scripts\Spawner.js" />
+     <Compile Include="Assets\rain\script\rainscript.js" />
      <None Include="Assets\Behave\Changelog.txt" />
      <None Include="Assets\Path\License.txt" />
      <None Include="Assets\Standard Assets\Particles\Sources\Shaders\Particle Alpha Blend (Queue +100).shader" />
@@ -75,9 +76,6 @@
  </Reference>
  <Reference Include="Behave">
  <HintPath>Assets\Behave\Compatibility\Behave.dll</HintPath>
- </Reference>
- <Reference Include="SimpleBuild">
- <HintPath>Assets\BehaveTest\SimpleBuild.dll</HintPath>
  </Reference>
  <Reference Include="BehaveLibrary0Build">
  <HintPath>Assets\Behaviors\BehaveLibrary0Build.dll</HintPath>
