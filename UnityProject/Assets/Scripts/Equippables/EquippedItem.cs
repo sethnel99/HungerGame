@@ -8,6 +8,8 @@ public class EquippedItem : MonoBehaviour {
 		Axe,
 		Plank,
 		RoofPiece1,
+		Knife,
+		Bow,
 		MAX
 	};
 	
@@ -33,8 +35,14 @@ public class EquippedItem : MonoBehaviour {
 		equippableTransform[(int)Equippable.RoofPiece1] = new Vector3(0f,-.18f,2.8f);
 		equippableRotate[(int)Equippable.RoofPiece1] = new Vector3(0,0,0);
 		
+		equippableTransform[(int)Equippable.Knife] = new Vector3(.5f,-.5f,1.3f);
+		equippableRotate[(int)Equippable.Knife] = new Vector3(0,180,280);
+		
+		equippableTransform[(int)Equippable.Bow] = new Vector3(-.2f,-.05f,.55f);
+		equippableRotate[(int)Equippable.Bow] = new Vector3(355,265,5);
+		
 		//EquipItem((int)Equippable.Plank);
-		EquipItem((int)Equippable.Axe);
+		EquipItem((int)Equippable.Bow);
 	}
 
 	
