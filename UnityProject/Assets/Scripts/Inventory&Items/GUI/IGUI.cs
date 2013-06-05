@@ -11,12 +11,18 @@ public class IGUI : MonoBehaviour {
     Rect inventoryRectNormalized;
 
     public Texture2D inventoryOverlay;
+	
+	public Texture2D background;
 
     // Use this for initialization
     void Start() {
         inventory = GameObject.FindGameObjectWithTag("Player").GetComponent<Inventory>();
 
         inventoryRectNormalized = normalizeRect(inventoryRect);
+		
+		background = new Texture2D(1, 1, TextureFormat.RGB24, false);
+		background.SetPixel(0, 0, Color.gray);
+		background.Apply();
     }
 
     // Update is called once per frame
@@ -45,13 +51,43 @@ public class IGUI : MonoBehaviour {
                         inventory.useItem(item);
                     }
                 }
-
+				
                 GUI.Label(new Rect(25 + row * 80 + 51, 25 + column * 80 + 43, 20, 20), item.quantity.ToString());
 
 
             }
+			
         }
-
+		
+		for (int i = 0; i < inventory.maxSize; i++) {
+            Item item = inventory.getItemAtLocation(i);
+            if (item != null) {
+                int row = i % 6;
+                int column = i / 4;
+				
+				float mouseX = (Input.mousePosition.x - inventoryRectNormalized.x);
+				float mouseY = (inventoryRectNormalized.y + inventoryRectNormalized.height - Input.mousePosition.y);
+				
+				
+				if (mouseX >= (25 + row * 80) && mouseX <= (85 + row * 80) && mouseY >= (25 + column * 80) && mouseY <= (85 + column * 80))
+				{
+					Rect box = new Rect(mouseX + 10, mouseY + 10, 180, 150);
+					
+					GUI.BeginGroup(box);
+					{
+						GUI.DrawTexture(new Rect(0, 0, box.width, box.height), background, ScaleMode.StretchToFill);
+						GUI.Label (new Rect(5,5, 180, 20), "Name: " + item.name);
+						GUI.Label (new Rect(5,25, 180, 20), "Quantity: " + item.quantity.ToString ());
+						GUI.Label (new Rect(5,45, 180, 20), "Weight: " + (item.quantity * item.weight).ToString () + " (" + item.weight.ToString() + ")");
+						GUI.Label (new Rect(5,65, 180, 20), "Usable: " + item.usable.ToString());
+						GUI.Label (new Rect(5,85, 180, 60), "Description: " + item.useText);
+					}
+					GUI.EndGroup();
+				}
+            }
+			
+        }
+		
         GUI.EndGroup();
     }
 
