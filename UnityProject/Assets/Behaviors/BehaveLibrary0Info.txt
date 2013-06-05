@@ -15,11 +15,11 @@ Branch priority groups:
 	Unknown
 
 Actions (5: 1 - 6):
-	Check (1)
-	Attack (2)
-	CloseDistanceAndAlign (3)
-	LookAround (4)
-	Wander (5)
+	Attack (1)
+	CloseDistanceAndAlign (2)
+	LookAround (3)
+	Wander (4)
+	LeashBackToSpawn (5)
 	Unknown (6)
 
 Decorators (1: 7 - 8):

@@ -26,16 +26,19 @@ public class Inventory : MonoBehaviour{
     public GUIText InventoryTextGUI;
     public AudioClip collectSound;
 
-    EquippedItem equipItemScript;
+    EquippedItemManager equippedItemScript;
+    PlayerVitals vitals;
+    GameObject textHints;
 
     int multiCraftCount = 0;
 
 
     void Start() {
         initializeCraftingDictionary();
-        equipItemScript = GameObject.Find("EquippedItem").GetComponent<EquippedItem>();
-        equippedEquipable = new AxeItem(1);
-	
+        equippedItemScript = GameObject.Find("EquippedItem").GetComponent<EquippedItemManager>();
+        equippedEquipable = new KnifeItem(1);
+        vitals = gameObject.transform.root.GetComponent<PlayerVitals>();
+        textHints = GameObject.Find("TextHintGUI");
     }
 
     void initializeCraftingDictionary() {
@@ -43,13 +46,13 @@ public class Inventory : MonoBehaviour{
 
         craftingDictionary.Add(new SidePlankItem(1), new Item[] { new WoodItem(1) });
         craftingDictionary.Add(new RoofPlankItem(1), new Item[] { new WoodItem(1) });
-        craftingDictionary.Add(new FireItem(1), new Item[] { new SharpStoneItem(2), new WoodItem(3)});
+        craftingDictionary.Add(new FireItem(1), new Item[] { new WoodItem(3)});//, new SharpStoneItem(2)});
         craftingDictionary.Add(new SmallCookedMeatItem(1), new Item[] { new SmallUncookedMeatItem(1) });
         craftingDictionary.Add(new LargeCookedMeatItem(1), new Item[] { new LargeUncookedMeatItem(1) });
         craftingDictionary.Add(new SmallHideItem(3), new Item[] { new LargeHideItem(1) });
         craftingDictionary.Add(new StringItem(2), new Item[] { new SmallHideItem(1) });
-        craftingDictionary.Add(new AxeItem(1), new Item[] { new SharpStoneItem(2), new WoodItem(3) });
-        craftingDictionary.Add(new SpearItem(1), new Item[] { new SharpStoneItem(1), new WoodItem(5) });
+        craftingDictionary.Add(new AxeItem(1), new Item[] { new SharpStoneItem(5), new WoodItem(3) });
+        craftingDictionary.Add(new KnifeItem(1), new Item[] { new SharpStoneItem(2), new WoodItem(3) });
         craftingDictionary.Add(new BowItem(1), new Item[] { new WoodItem(4), new StringItem(4)});
         craftingDictionary.Add(new ArrowItem(1), new Item[] { new WoodItem(1) });
         craftingDictionary.Add(new BootsItem(1, 5), new Item[] { new SmallHideItem(2), new StringItem(6) });
@@ -60,6 +63,7 @@ public class Inventory : MonoBehaviour{
     }
 	
 	void Update () {
+       
 
 	}
 	
@@ -86,7 +90,7 @@ public class Inventory : MonoBehaviour{
         } else if(i is EquipmentItem && equippedEquipable != null &&  i.name.Equals(equippedEquipable.name)){
             equippedEquipable.quantity += i.quantity;
         } else if(i is EquipmentItem && equippedSecondaryEquipable != null && i.name.Equals(equippedSecondaryEquipable.name)){
-            equippedEquipable.quantity += i.quantity;
+            equippedSecondaryEquipable.quantity += i.quantity;
         }else {
 
             
@@ -273,6 +277,13 @@ public class Inventory : MonoBehaviour{
 
     public void EquipItem(EquipmentItem i) {
 
+        //first make sure that you aren't equipping slots with injured arms that you shouldn't be able to be
+        if ((i.equipmentType == EquipmentItem.EquipmentType.equipable && vitals.bodyPartHealth[(int)PlayerVitals.BodyPart.RightArm] <= 0) ||
+            (i.equipmentType == EquipmentItem.EquipmentType.secondary_equipable && vitals.bodyPartHealth[(int)PlayerVitals.BodyPart.LeftArm] <= 0)) {
+                textHints.SendMessage("ShowHint", (i.equipmentType == EquipmentItem.EquipmentType.equipable) ? "You cannot equip that with a broken right arm!" : "You cannot equip that with a broken left arm!");
+                return;
+        }
+
         //cut this item out of the inventory
         inventory.Remove(i.name);
         inventoryNamesArray[i.inventoryLocation] = null;
@@ -288,11 +299,15 @@ public class Inventory : MonoBehaviour{
 
 
                 if (i is AxeItem) {
-                    equipItemScript.EquipItem((int)EquippedItem.Equippable.Axe);
+                    equippedItemScript.EquipItem((int)EquippedItemManager.Equippable.Axe);
                 } else if (i is SidePlankItem) {
-                    equipItemScript.EquipItem((int)EquippedItem.Equippable.Plank);
+                    equippedItemScript.EquipItem((int)EquippedItemManager.Equippable.Plank);
                 } else if (i is RoofPlankItem) {
-                    equipItemScript.EquipItem((int)EquippedItem.Equippable.RoofPiece1);
+                    equippedItemScript.EquipItem((int)EquippedItemManager.Equippable.RoofPiece1);
+                } else if (i is BowItem) {
+                    equippedItemScript.EquipItem((int)EquippedItemManager.Equippable.Bow);
+                } else if (i is KnifeItem) {
+                    equippedItemScript.EquipItem((int)EquippedItemManager.Equippable.Knife);
                 }
 
                 GameObject.Find("GUIButtons").GetComponent<OpenCloseGUIs>().disableNewItem();
@@ -322,6 +337,41 @@ public class Inventory : MonoBehaviour{
 
         }
 
+
+    }
+
+    public void unequipSlot(EquipmentItem.EquipmentType type) {
+       
+        EquipmentItem curEquipped;
+        switch (type) {
+            case EquipmentItem.EquipmentType.equipable:
+                curEquipped = equippedEquipable;
+                equippedEquipable = null;
+                addItem(curEquipped);
+
+                break;
+            case EquipmentItem.EquipmentType.secondary_equipable:
+                curEquipped = equippedSecondaryEquipable;
+                equippedSecondaryEquipable = null;
+                addItem(curEquipped);
+
+                break;
+
+            case EquipmentItem.EquipmentType.jacket:
+              curEquipped = equippedJacket;
+              equippedJacket = null;
+                addItem(curEquipped);
+
+                break;
+
+            case EquipmentItem.EquipmentType.boots:
+                curEquipped = equippedBoots;
+                equippedEquipable = null;
+                addItem(equippedBoots);
+
+                break;
+
+        }
     }
 
     public void decrementEquipable() {

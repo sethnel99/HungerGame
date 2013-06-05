@@ -21,7 +21,7 @@ public class FireItem : Item {
 
         //find player location
         Vector3 playerPosition = GameObject.FindGameObjectWithTag("Player").transform.position;
-        fire.transform.position = new Vector3(playerPosition.x + 3, playerPosition.y, playerPosition.z);
+        fire.transform.position = playerPosition + 3 * GameObject.FindGameObjectWithTag("Player").transform.forward + new Vector3(0, -1, 0);
         GameObject.Instantiate(fire);
        
     }

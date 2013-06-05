@@ -32,7 +32,7 @@ using ExtensionMethods;
 public class PathMoveable : MonoBehaviour
 {
 	// Whether or not we ignore the y component (height) of incoming 'move' requests.
-	public bool shouldIgnoreHeightOfDestination = true;
+	public bool shouldIgnoreHeightOfDestination = false;
 
 	// If we're less than this many seconds from arriving at a destination, we say it's good enough.
 	public float remainingDistanceTolerance = 0.05f;
@@ -74,7 +74,7 @@ public class PathMoveable : MonoBehaviour
 			{
 				Debug.Log ("Tolerance stop moving");
 				
-				StopMoving ();
+				StopMoving ("Top of update");
 				gameObject.SendMessage("WanderingDone", 1);
 			}
 			//else if we arrived
@@ -97,7 +97,7 @@ public class PathMoveable : MonoBehaviour
 					{
 						Debug.Log ("Stop from inside moving, we are stuck");
 						
-						StopMoving ();
+						StopMoving ("stuck from inside moving");
 						gameObject.SendMessage("WanderingDone", -1);
 					}
 
@@ -147,7 +147,7 @@ public class PathMoveable : MonoBehaviour
 		if (currentWaypoint == null)
 		{
 			// This means there are no more waypoints, so we're there. Yay!
-			StopMoving ();
+			StopMoving ("arrived at destination");
 			gameObject.SendMessage("WanderingDone", 1);
 		}
 		else
@@ -173,6 +173,7 @@ public class PathMoveable : MonoBehaviour
 	// Move to a given position.
 	public void StartMovingTo (Vector3 position)
 	{
+        //Debug.Log("start moving to: " + position);
 		if (shouldIgnoreHeightOfDestination)
 			position.y = transform.position.y;
 
@@ -180,9 +181,9 @@ public class PathMoveable : MonoBehaviour
 	}
 
 	// Stop moving completely.
-	public void StopMoving ()
+	public void StopMoving (string sourceText="")
 	{
-		//Debug.Log ("STOP MOVING!!!!!!!!!!!!!!!");
+		//Debug.Log ("STOP MOVING! " + sourceText);
 		GetComponent<Navigator> ().targetPosition = transform.position;
 		currentPath = null;
 	}
@@ -192,7 +193,7 @@ public class PathMoveable : MonoBehaviour
 		if (path == null)
 		{
 			Debug.Log ("OnNewPath(null), stopping movement.");
-			StopMoving ();
+			StopMoving ("on new path");
 			gameObject.SendMessage("WanderingDone", -1);
 			return;
 		}
@@ -240,7 +241,7 @@ public class PathMoveable : MonoBehaviour
 		if (path == currentPath)
 		{
 			// Try to recalculate the path.
-			StopMoving ();
+			StopMoving ("on path invalidated");
 			GetComponent<Navigator> ().ReSeek ();
 		}
 	}

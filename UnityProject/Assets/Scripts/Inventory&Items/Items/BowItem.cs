@@ -17,6 +17,7 @@ public class BowItem : EquipmentItem {
 
 
     public override void useItem() {
-
+        Inventory inventory = GameObject.FindGameObjectWithTag("Player").GetComponent<Inventory>();
+        inventory.EquipItem(this);
     }
 }

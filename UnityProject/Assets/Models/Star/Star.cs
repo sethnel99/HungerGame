@@ -19,13 +19,11 @@ public class Star : MonoBehaviour {
 	public GUIText textHints;
 	void OnTriggerEnter(Collider col){
 		if(col.gameObject.tag == "Player"){
-			
-			EquippedItem equipScript = col.gameObject.GetComponentInChildren<EquippedItem>() as EquippedItem;
-			if(!equipScript.hasFirstStar)
-			{
-				equipScript.EquipItem((int)EquippedItem.Equippable.Plank);
-				equipScript.hasFirstStar = true;
-			}
+
+            EquippedItemManager equipScript = col.gameObject.GetComponentInChildren<EquippedItemManager>() as EquippedItemManager;
+
+            equipScript.EquipItem((int)EquippedItemManager.Equippable.Plank);
+
 //			if(equipScript.stars == 0)
 //			{
 				textHints.SendMessage("ShowHint",

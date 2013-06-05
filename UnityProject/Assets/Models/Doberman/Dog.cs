@@ -20,32 +20,43 @@ public class Dog : MonoBehaviour, IAgent
 	private bool doneWandering = false;
 	private float wanderTimer = 0f;
 	private float wanderMaxTime = 20f;
-	
+
+    private bool dead = false;
 	
 	// AI Vars
-	float sightRadius = 6f;
-	float sightDistance = 30f;
+	float sightCastRadius = 6f;
+	float sightDistance = 20;
 	float alignRadius = 5f;
-	float attackRange = 8f;
-	float senseRange = 40f;
+	float attackRange = 3f;
+    float senseRange = 20;
+    float leashDistance = 35;
+
+    public bool leashingBackToSpawn = false;
+
 	public bool senseSomething =false;
 	public bool seeTarget = false;
 	public bool closeEnough = false;
 	public bool aligned = false;
 	// /AI Vars
 	
-	//Points to randomly go to
+	/*/Points to randomly go to
 	private Vector3[] PatrolPoints = new Vector3[3]{
 		 new Vector3(299.5799f, 71.53264f, -957.917f),
 		 new Vector3(333.1228f, 69.27077f, -963.5134f),
 		 new Vector3(336.9609f, 70.33675f, -991.8299f)
-	};
+	};*/
 	//private int PatrolDestination;
-	
+	private Vector3[] PatrolPoints = new Vector3[3];
+    private Vector3 spawnPoint;
+
 	private float takingHitTimer = 0f;
 	private float takingHitTimerMax = 1f;
 	
 	IEnumerator Start () {
+        spawnPoint = this.gameObject.transform.position;
+        PatrolPoints[0] = spawnPoint + new Vector3(5, 5, 0);
+        PatrolPoints[1] = spawnPoint + new Vector3(-5, 5, 0);
+        PatrolPoints[2] = spawnPoint + new Vector3(5, -5, 0);
 		
 		m_tree = BLBehaveLibrary0.InstantiateTree(BLBehaveLibrary0.TreeType.EnemyBehaviors_PatrolerTree,this);
 		while(Application.isPlaying && m_tree != null)
@@ -58,8 +69,9 @@ public class Dog : MonoBehaviour, IAgent
 	void AIUpdate()
 	{
 		RunChecks();
-		
-		m_tree.Tick();
+        if (m_tree != null) {
+            m_tree.Tick();
+        }
 		TickTime = 0; //set our AI tick timer to 0 b/c we just ticked
 	}
 	
@@ -107,36 +119,48 @@ public class Dog : MonoBehaviour, IAgent
 	
 	void RunChecks()
 	{
+        float distanceFromSpawn = Vector3.Distance(new Vector3(transform.position.x,transform.position.y,0), new Vector3(spawnPoint.x,spawnPoint.y,0));
+
+        Debug.Log("distance from spawn: " + distanceFromSpawn);
+        //leash to spawn
+        if (distanceFromSpawn > leashDistance || leashingBackToSpawn && distanceFromSpawn > 3.0f) {
+            senseSomething = false;
+            seeTarget = false;
+            closeEnough = false;
+            aligned = false;
+            leashingBackToSpawn = true;
+            Debug.Log("leashing back to spawn");
+            return;
+        } else if (leashingBackToSpawn && distanceFromSpawn < 3.0f) {
+            gameObject.animation.CrossFade("Stand_Idle");
+            inAnimation = false;
+            leashingBackToSpawn = false;
+        }
+
 		float distance = Vector3.Distance(transform.position, player.transform.position);
+
 		senseSomething = distance <= senseRange;
 		if(senseSomething)
 		{
-			RaycastHit[] hits= Physics.SphereCastAll(transform.position-10*transform.forward, sightRadius, transform.forward, sightDistance);
-			seeTarget = false;
-			foreach(RaycastHit hit in hits)
-			{
-				if(hit.collider!= null && hit.collider.gameObject.tag=="Player")
-					seeTarget = true;
-			}
+
+            if (!seeTarget) {
+                RaycastHit[] hits= Physics.SphereCastAll(transform.position-10*transform.forward, sightCastRadius, transform.forward, sightDistance);
+                foreach (RaycastHit hit in hits) {
+                    if (hit.collider != null && hit.collider.gameObject.tag == "Player") {
+                        seeTarget = true;
+                    }
+                }
+            }
+
 			if(seeTarget)
-			{
-				
+			{	
 				closeEnough = distance <= attackRange;
-				if(closeEnough)
-				{
-					
-					RaycastHit[] hits2= Physics.SphereCastAll(transform.position-10*transform.forward, alignRadius, transform.forward, attackRange);
-					aligned = false;
-					foreach(RaycastHit hit in hits2)
-					{
-						if(hit.collider!= null && hit.collider.gameObject.tag=="Player")
-							aligned = true;
-					}
-				}
-				else
-				{
-					aligned = false;
-				}
+                Vector3 dirToPlayer = Vector3.Normalize(player.transform.position - transform.position);
+                dirToPlayer.y = 0;
+                Vector3 dogForward = this.gameObject.transform.forward;
+                dogForward.y = 0;
+                aligned = Vector3.Angle(dirToPlayer, dogForward) < 20;
+                //Debug.Log("Dog to player: " + dirToPlayer + " Dog forward: " + dogForward + " Angle: " + Vector3.Angle(dirToPlayer, dogForward));
 			}
 			else
 			{
@@ -146,10 +170,12 @@ public class Dog : MonoBehaviour, IAgent
 		}
 		else
 		{
-			seeTarget = false;
 			closeEnough = false;
 			aligned = false;
 		}
+
+        Debug.Log("Sense: " + senseSomething + " See Target: " + seeTarget + " close Enough: " + closeEnough + " aligned: " + aligned);
+
 	}
 	
 	
@@ -173,15 +199,22 @@ public class Dog : MonoBehaviour, IAgent
 		inAnimation = false;
 		return BehaveResult.Running;
 	}
+
+    public BehaveResult InitLeashBackToSpawnAction(Tree sender) {
+        inAnimation = false;
+        return BehaveResult.Running;
+    }
+
 	
 	public BehaveResult TickLookAroundAction(Tree sender)
 	{
-		gameObject.SendMessage("StopMoving");
+		gameObject.SendMessage("StopMoving","Look Around");
 		if(!doneLooking) //Haven't found a target and aren't done durdling
 		{
 			lookTimer += TickTime;
+            transform.LookAt(new Vector3(player.transform.position.x, transform.position.y, player.transform.position.z));
 			if(!inAnimation) //If we aren't already animating for this behavior, start
-			{
+			{/*
 				System.Random rnd = new System.Random();
 				int randomTwitch = rnd.Next(0, 3);
 				if(randomTwitch==1)
@@ -191,7 +224,7 @@ public class Dog : MonoBehaviour, IAgent
 				else if(randomTwitch ==2)
 				{
 					StartCoroutine(COBark());
-				}
+				}*/
 			}
 			if(lookTimer > lookMaxTime)
 			{
@@ -220,13 +253,27 @@ public class Dog : MonoBehaviour, IAgent
 			{
 				System.Random rnd = new System.Random();
 				int randomPatrolPoint = rnd.Next(0, PatrolPoints.Length);
+
+                //going to the same place? twitch instead
+                if (Vector3.Distance(PatrolPoints[randomPatrolPoint], gameObject.transform.position) < 3) {
+				    int randomTwitch = rnd.Next(0, 3);
+				    if(randomTwitch==1)
+				    {
+				    	StartCoroutine(COTwitch());
+				    }
+				    else if(randomTwitch ==2)
+				    {
+				    	StartCoroutine(COBark());
+				    }
+                }
+
 				gameObject.SendMessage("StartMovingTo", PatrolPoints[randomPatrolPoint]);
 				StartCoroutine(COWander());
 			}
 			
 			if(wanderTimer > wanderMaxTime)
 			{
-				gameObject.SendMessage("StopMoving");
+				gameObject.SendMessage("StopMoving","TickWanderActionTimeOut");
 				doneWandering = true;
 				gameObject.animation.CrossFade("Walk_End_1");
 			}
@@ -234,7 +281,7 @@ public class Dog : MonoBehaviour, IAgent
 		}
 		else
 		{
-			gameObject.SendMessage("StopMoving");
+			gameObject.SendMessage("StopMoving","TickWanderActionBottom");
 			wanderTimer = 0;
 			doneWandering = false;
 			inAnimation = false;
@@ -254,18 +301,28 @@ public class Dog : MonoBehaviour, IAgent
 	
 	public BehaveResult TickCloseDistanceAndAlignAction(Tree sender)
 	{
+        //Debug.Log("CDAA");
+        transform.LookAt(new Vector3(player.transform.position.x, transform.position.y, player.transform.position.z));
+        gameObject.SendMessage("StartMovingTo", player.transform.position - 1 * player.transform.forward);
 		if(!inAnimation) //If we aren't already animating for this behavior, start
 		{
-			gameObject.SendMessage("StartMovingTo", player.transform.position);
 			StartCoroutine(COChase());
-		}
-		if(doneWandering)
-		{
-			return BehaveResult.Success;
 		}
 		
 		return BehaveResult.Running;
 	}
+
+    public BehaveResult TickLeashBackToSpawnAction(Tree sender) {
+  
+        //Debug.Log("current pos: " + this.gameObject.transform.position + " spawn point: " + spawnPoint);
+        gameObject.SendMessage("StartMovingTo", spawnPoint);
+        if (!inAnimation) //If we aren't already animating for this behavior, start
+		{
+            StartCoroutine(COChase());
+        }
+
+        return BehaveResult.Running;
+    }
 	
 	
 	IEnumerator COBark() {
@@ -318,18 +375,45 @@ public class Dog : MonoBehaviour, IAgent
 	    yield return new WaitForSeconds(.4f);
 		inAnimation = false;
 	}
+
+    IEnumerator CODie() {
+        inAnimation = true;
+        Debug.Log("beginning death animation");
+        yield return new WaitForSeconds(.2f);
+        gameObject.animation.CrossFade("Death_1");
+        //Debug.Log("yielding");
+        yield return new WaitForSeconds(gameObject.animation.GetClip("Death_1").length);
+    }
+    
+    
+    void StartDeathAnim() {
+        Debug.Log("beginning die function");
+        dead = true;
+        m_tree = null;  //stop behavior tree from running
+        StartCoroutine(CODie()); //run death animation
+
+        this.gameObject.AddComponent<DeadDogManager>(); //add item manager to dog carcass
+
+        //disable colliders which are no longer needed
+        this.gameObject.GetComponentInChildren<SphereCollider>().enabled = false;
+        this.gameObject.GetComponent<CharacterController>().enabled = false;
+        //resize box collider to be used for gathering interaction
+        this.gameObject.GetComponent<BoxCollider>().center = new Vector3(.5f, .6f, .06f);
+        this.gameObject.GetComponent<BoxCollider>().size = new Vector3(2.0f, 1.0f, 2.8f);
+
+    }
 	
-	void OnTriggerStay(Collider col) {
-		//CHANGE THIS TO A PARENT "Weapon" CLASS
-		EquippedAxe checkAxe = col.gameObject.GetComponent<EquippedAxe>();
-		if(takingHitTimer<=0 && checkAxe!= null && checkAxe.IsSwinging()){
-			StartCoroutine(COHitRecoil());
-			col.gameObject.SendMessage("Hit");
-			takingHitTimer = takingHitTimerMax;
-		}
-		
-	}
-	
+
+    void OnTriggerEnter(Collider col) {
+        if (!dead && col.gameObject.tag == "PlayerWeaponBone") {
+            //Debug.Log("I've been hit!");
+            StartCoroutine(COHitRecoil());
+            takingHitTimer = takingHitTimerMax;
+            col.gameObject.transform.parent.parent.SendMessage("Hit");
+            this.gameObject.SendMessage("TakeDamage", (col.gameObject.transform.parent.parent.GetComponent("DamageDealer") as DamageDealer).damage);
+        }
+    }
+
 	//Poorly named, actually used for chasing also
 	void WanderingDone(int retValue)
 	{
@@ -338,6 +422,7 @@ public class Dog : MonoBehaviour, IAgent
 		case -1:
 			//we got stuck or something weird happened
 			doneWandering = true;
+            Debug.Log("shit im stuck");
 			break;
 		case 1:
 			//we got to or close enough to our wander target

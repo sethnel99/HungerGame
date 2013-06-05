@@ -60,7 +60,13 @@ public class ItemManager : MonoBehaviour {
 
                 interactionManager.removePotentialInteractor(gameObject);
                 interactionTimer.setInteractionTimerLevel(0, gameObject);
-                gameObject.transform.parent.SendMessage("removeNode");
+
+                //shitty hacky check until i create a node for enemies
+                if (this is DeadDogManager) {
+                    GameObject.Destroy(this.gameObject);
+                } else {
+                    gameObject.transform.parent.SendMessage("removeNode");
+                }
 			}	
 		}
 		else {

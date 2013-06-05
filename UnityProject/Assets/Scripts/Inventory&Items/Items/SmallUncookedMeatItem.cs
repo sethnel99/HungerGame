@@ -11,7 +11,7 @@ public class SmallUncookedMeatItem : Item {
 
     }
 
-    public SmallUncookedMeatItem(LargeHideItem other)
+    public SmallUncookedMeatItem(SmallUncookedMeatItem other)
         : base(other) {
     }
 

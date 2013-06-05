@@ -9,7 +9,7 @@ public class EquippedStructurePiece : StructurePiece {
 	
 	protected GameObject textHints;
 	protected bool showingSnapRenderer = false;
-	protected EquippedItem parentScript;
+    protected EquippedItemManager parentScript;
 	protected Renderer snapRenderer;
 	
 	bool disabledByGUI = false;
@@ -22,7 +22,7 @@ public class EquippedStructurePiece : StructurePiece {
 	protected virtual void Start () {
 		createdPieces = new Stack<GameObject>();
 		textHints = GameObject.Find("TextHintGUI");
-		parentScript = transform.parent.GetComponent<EquippedItem>() as EquippedItem;
+        parentScript = transform.parent.GetComponent<EquippedItemManager>() as EquippedItemManager;
 
         inventory = GameObject.FindGameObjectWithTag("Player").GetComponent<Inventory>();
 	}

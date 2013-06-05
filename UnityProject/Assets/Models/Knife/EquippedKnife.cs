@@ -1,23 +1,15 @@
 using UnityEngine;
 using System.Collections;
 
-public class EquippedKnife : MonoBehaviour {
+public class EquippedKnife : EquippedItem {
 
-		
-	bool disabledByGUI = false;
-	bool isInAction = false;
-	bool swinging = false;
-	GameObject textHints;
-	EquippedItem parentScript;
-	ParticleEmitter bloodSplatter;
-	
-	void Start () {
-		parentScript = transform.parent.GetComponent<EquippedItem>() as EquippedItem;
-		bloodSplatter = gameObject.GetComponentInChildren<ParticleEmitter>();
-		textHints = GameObject.Find("TextHintGUI");
+
+	new void Start () {
+        base.Start();
+        damage = 10f;
 	}
 	
-	void Update () {
+	protected override void Update () {
 
 		if(Input.GetButtonDown("Fire1") && !isInAction && !disabledByGUI){
 					
@@ -39,12 +31,13 @@ public class EquippedKnife : MonoBehaviour {
 	    isInAction = true;
 	    //yield return new WaitForSeconds(0.1f);
 		gameObject.animation.Play("Knife_Swing_1");
+        this.gameObject.GetComponentInChildren<SphereCollider>().enabled = true; // activate damage collider
 	    yield return new WaitForSeconds(0.35f); // wait 0.05seconds
 	    audio.PlayOneShot(swing1Sound);
 		yield return new WaitForSeconds(0.35f);
-		swinging = true; // activate damaging tag
+        this.gameObject.GetComponentInChildren<SphereCollider>().enabled = false; // de-activate damage collider
 		yield return new WaitForSeconds(0.25f);
-		swinging = false;
+
 	    yield return new WaitForSeconds(0.2f); // extra delay before you can shoot again
 	    isInAction = false;
 	}
@@ -52,27 +45,16 @@ public class EquippedKnife : MonoBehaviour {
 	    isInAction = true;
 	    //yield return new WaitForSeconds(0.1f);
 		gameObject.animation.Play("Knife_Stab_1");
+        this.gameObject.GetComponentInChildren<SphereCollider>().enabled = true; // activate damage collider
 	    yield return new WaitForSeconds(0.35f); // wait 0.05seconds
 	    audio.PlayOneShot(stab1Sound);
 		yield return new WaitForSeconds(0.35f);
-		swinging = true; // activate damaging tag
+        this.gameObject.GetComponentInChildren<SphereCollider>().enabled = false; // de-activate damage collider
 		yield return new WaitForSeconds(0.25f);
-		swinging = false;
+
 	    yield return new WaitForSeconds(0.2f); // extra delay before you can shoot again
 	    isInAction = false;
 	}
 	
-	void Hit()
-	{
-		bloodSplatter.Emit();
-	}
-	
-	public bool IsSwinging()
-	{
-		return swinging;
-	}
 
-    public void DisableByGUI(bool d) {
-        disabledByGUI = d;
-    }
 }

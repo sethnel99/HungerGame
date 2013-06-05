@@ -69,7 +69,7 @@ public class OpenCloseGUIs : MonoBehaviour {
     public void enableControls(MonoBehaviour enabler) {
         GameObject.FindGameObjectWithTag("Player").GetComponent<MouseLook>().enabled = true;
         GameObject.FindGameObjectWithTag("MainCamera").GetComponent<MouseLook>().enabled = true;
-        GameObject.Find("EquippedItem").GetComponent<EquippedItem>().enabled = true;
+        GameObject.Find("EquippedItem").GetComponent<EquippedItemManager>().enabled = true;
 
         //Debug.Log("enable controls");
 

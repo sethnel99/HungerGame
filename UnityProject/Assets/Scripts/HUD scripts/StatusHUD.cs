@@ -14,6 +14,7 @@ public class StatusHUD : MonoBehaviour {
 	public Texture2D right_arm;
 	public Texture2D left_leg;
 	public Texture2D right_leg;
+    Texture2D barTexture;
 	
 	PlayerVitals vitals;
 	
@@ -37,6 +38,7 @@ public class StatusHUD : MonoBehaviour {
 	void Start () {
 		statusHUDRectNormalized = new Rect(statusHUDRect.x * Screen.width, statusHUDRect.y * Screen.height, statusHUDRect.width, statusHUDRect.height);
 		vitals = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerVitals>();
+        barTexture = new Texture2D(150, 20);
 	}
 	
 	// Update is called once per frame
@@ -84,16 +86,17 @@ public class StatusHUD : MonoBehaviour {
 		GUI.color = colorForBodyPart(PlayerVitals.BodyPart.RightLeg);
 		GUI.DrawTexture(new Rect(51, 102, 12, 51), right_leg);
 		
+        //dray the health bar
 		GUI.color = Color.gray;
-		GUI.DrawTexture (new Rect(127,50,150,20),new Texture2D(150,20));
-		GUI.color = Color.Lerp(thirstMinColor, thirstMaxColor, vitals.GetHealthRatio());
-		GUI.DrawTexture(new Rect(127, 50, 150*vitals.GetHealthRatio (), 20), new Texture2D(150,20));
+        GUI.DrawTexture(new Rect(127, 50, 150, 20), barTexture);
+		GUI.color = Color.Lerp(hungerMinColor, hungerMaxColor, vitals.GetHealthRatio());
+        GUI.DrawTexture(new Rect(127, 50, 150 * vitals.GetHealthRatio(), 20), barTexture);
 		
-		
+		//draw the thirst bar
 		GUI.color = Color.gray;
-		GUI.DrawTexture (new Rect(127,80,150,20),new Texture2D(150,20));
-		GUI.color = Color.Lerp(hungerMinColor, hungerMaxColor, vitals.GetThirstRatio());
-		GUI.DrawTexture(new Rect(127, 80, 150*vitals.GetThirstRatio (), 20), new Texture2D(150,20));
+        GUI.DrawTexture(new Rect(127, 80, 150, 20), barTexture);
+        GUI.color = Color.Lerp(thirstMinColor, thirstMaxColor, vitals.GetThirstRatio());
+        GUI.DrawTexture(new Rect(127, 80, 150 * vitals.GetThirstRatio(), 20), barTexture);
 		
 		
 		
@@ -108,8 +111,9 @@ public class StatusHUD : MonoBehaviour {
 	
 	Color colorForBodyPart(PlayerVitals.BodyPart bp){
 		float bpHealth = vitals.bodyPartHealth[(int)bp];
-		
-		return new Color((100-bpHealth)/100.0f,bpHealth/100.0f,0.0f,1.0f);
+        float bpMaxHealth = vitals.bodyPartMaxHealth[(int)bp];
+
+        return new Color((bpMaxHealth - bpHealth) / bpMaxHealth, bpHealth / bpMaxHealth, 0.0f, 1.0f);
 	}
 	
 		//Returns a new color based on temperature
