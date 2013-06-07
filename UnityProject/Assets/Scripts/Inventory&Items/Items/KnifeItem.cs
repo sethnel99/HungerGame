@@ -8,7 +8,9 @@ public class KnifeItem : EquipmentItem {
         usable = true;
         equipmentType = EquipmentType.equipable;
         useText = "(Equip) Allows you to attack with a Knife.";
+        descriptText = "Your bread and butter weapon.";
         icon = (Texture2D)UnityEngine.Resources.Load("Knife_icon");
+        statPower = 10f;
 	}
 
     public KnifeItem(KnifeItem other)

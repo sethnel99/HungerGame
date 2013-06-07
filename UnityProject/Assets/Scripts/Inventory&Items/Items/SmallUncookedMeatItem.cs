@@ -7,7 +7,7 @@ public class SmallUncookedMeatItem : Item {
         : base("Small Piece of Uncooked Meat", "Small Pieces of Uncooked Meat", 4, q) {
         addItemType(Item.material);
         icon = (Texture2D)UnityEngine.Resources.Load("small_meat_icon");
-        
+        descriptText = "A small, bloody hunk of meat.";
 
     }
 

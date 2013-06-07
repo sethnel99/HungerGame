@@ -7,7 +7,7 @@ public class SmallHideItem : Item {
         : base("Small Hide", "Small Hides", 2, q) {
         addItemType(Item.material);
         icon = (Texture2D)UnityEngine.Resources.Load("small_hide_icon");
-        
+        descriptText = "The hide of a small animal.";
 
     }
 

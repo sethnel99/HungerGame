@@ -5,6 +5,10 @@ public class SmallCookedMeatItem : Item {
 
     public SmallCookedMeatItem(int q)
         : base("Small Piece of Cooked Meat", "Small Pieces of Cooked Meat", 4, q) {
+        
+        usable = true;
+        useText = "Eat to regain an some hunger points";
+        descriptText = "A small slab of meat.";
         addItemType(Item.food);
         icon = (Texture2D)UnityEngine.Resources.Load("small_cooked_meat_icon");
         

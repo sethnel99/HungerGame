@@ -6,7 +6,6 @@ public class EquippedAxe : EquippedItem {
 	
 	// Use this for initialization
 	new void Start () {
-        damage = 15f;
         base.Start();
 	}
 	
@@ -37,7 +36,7 @@ public class EquippedAxe : EquippedItem {
         this.gameObject.GetComponentInChildren<BoxCollider>().enabled = true; // activate damage collider
 		yield return new WaitForSeconds(0.25f);
         this.gameObject.GetComponentInChildren<BoxCollider>().enabled = false;
-	    yield return new WaitForSeconds(0.2f); // extra delay before you can shoot again
+	    yield return new WaitForSeconds(0.05f); // extra delay before you can shoot again
 	    isInAction = false;
 	}
 	

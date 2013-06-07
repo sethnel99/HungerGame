@@ -13,7 +13,9 @@ public class CraftingGUI : MonoBehaviour {
 	public Rect craftingRect;
 	Rect craftingRectNormalized;
 	Rect craftDetailRectNormalized;
-	
+    Rect craftingRectNormalizedWithTooltipPadding;
+    Rect craftDetailRectNormalizedWithTooltipPadding;
+
 	Item selectedItem;
     bool craftAll;
     bool isCrafting;
@@ -21,6 +23,8 @@ public class CraftingGUI : MonoBehaviour {
     Texture2D selectedLabelTexture;
     Texture2D arrowTexture;
     Texture2D craftProgressBarTexture;
+
+    public Texture2D tooltipBackground;
 
      float craftProgress = 0.0f;
      public float craftTime = 1.0f;
@@ -48,7 +52,15 @@ public class CraftingGUI : MonoBehaviour {
         //Debug.Log(selectedItem);
 
 		craftingRectNormalized = normalizeRect (craftingRect);
-		craftDetailRectNormalized = new Rect(craftingRect.width/4,0,craftingRect.width*3/4,craftingRect.height);
+        craftingRectNormalizedWithTooltipPadding = new Rect(craftingRectNormalized.x, craftingRectNormalized.y, craftingRectNormalized.width + 300, craftingRectNormalized.height + 100);
+
+        craftDetailRectNormalized = new Rect(craftingRect.width/4,0,craftingRect.width*3/4,craftingRect.height);
+        craftDetailRectNormalizedWithTooltipPadding = new Rect(craftDetailRectNormalized.x, craftDetailRectNormalized.y, craftDetailRectNormalized.width + 300, craftDetailRectNormalized.height + 100);
+
+
+        tooltipBackground = new Texture2D(1, 1, TextureFormat.RGB24, false);
+        tooltipBackground.SetPixel(0, 0, Color.gray);
+        tooltipBackground.Apply();
 	}
 
     
@@ -152,7 +164,7 @@ public class CraftingGUI : MonoBehaviour {
 		
 		
 		//Crafting GUI
-		GUI.BeginGroup(craftingRectNormalized);
+        GUI.BeginGroup(craftingRectNormalizedWithTooltipPadding);
 		
 		//Left scroll
         scrollPosition = GUI.BeginScrollView(new Rect(0, 10, craftingRect.width / 4, craftingRect.height-20), scrollPosition, new Rect(0, 0, craftingRect.width / 4 - 40, findScrollHeight()));
@@ -175,7 +187,7 @@ public class CraftingGUI : MonoBehaviour {
         GUI.EndScrollView ();
         
         //right display
-        GUI.BeginGroup (craftDetailRectNormalized);
+        GUI.BeginGroup(craftDetailRectNormalizedWithTooltipPadding);
         GUI.Box(new Rect(0,0,craftDetailRectNormalized.width,craftDetailRectNormalized.height),selectedItem.name);
 
 
@@ -185,19 +197,24 @@ public class CraftingGUI : MonoBehaviour {
         float pixelsPerIcon = .9f * craftDetailRectNormalized.width / numIcons;
         float paddingWithinIconSection = (pixelsPerIcon - 80) / 2;
 
+
+        Vector2 mousePos = new Vector2(Input.mousePosition.x - (craftingRectNormalized.x + craftDetailRectNormalized.x), (Screen.height - Input.mousePosition.y) - craftingRectNormalized.y + craftDetailRectNormalized.y);
+      
         //draw the ingredients
         int i = 0;
         for (; i < ingredientsList.Length; i++) {
                GUI.DrawTexture(new Rect(paddingPixels + paddingWithinIconSection + i*pixelsPerIcon, craftDetailRectNormalized.height/3, 80, 80), ingredientsList[i].icon);
-               GUI.Label(new Rect(paddingPixels + paddingWithinIconSection + i * pixelsPerIcon + 78 - 8 * (int)Math.Floor(Math.Log10(ingredientsList[i].quantity) + 1), craftDetailRectNormalized.height / 3 + 58, 30, 30), ingredientsList[i].quantity.ToString(), chooseQuantityLabelStyle(ingredientsList[i]));
+               GUI.Label(new Rect(paddingPixels + paddingWithinIconSection + i * pixelsPerIcon + 78 - 8 * (int)Math.Floor(Math.Log10(ingredientsList[i].quantity) + 1), craftDetailRectNormalized.height / 3 + 58, 30, 30), ingredientsList[i].quantity.ToString(), chooseQuantityLabelStyle(ingredientsList[i]));     
         }
 
         //draw the arrow
         GUI.DrawTexture(new Rect(paddingPixels + paddingWithinIconSection + i * pixelsPerIcon, craftDetailRectNormalized.height / 3, 80, 80), arrowTexture);
         i++;
         //draw the crafted result
-        GUI.DrawTexture(new Rect(paddingPixels + paddingWithinIconSection + i * pixelsPerIcon, craftDetailRectNormalized.height / 3, 80, 80), selectedItem.icon);
+        Rect resultTextureRect = new Rect(paddingPixels + paddingWithinIconSection + i * pixelsPerIcon, craftDetailRectNormalized.height / 3, 80, 80);
+        GUI.DrawTexture(resultTextureRect, selectedItem.icon);
         GUI.Label(new Rect(paddingPixels + paddingWithinIconSection + i * pixelsPerIcon + 78 - 8 * (int)Math.Floor(Math.Log10(selectedItem.quantity) + 1), craftDetailRectNormalized.height / 3 + 58, 30, 30), selectedItem.quantity.ToString(), chooseQuantityLabelStyle(null));
+
 
         //special case: the selected craft item is a cooked meat, add a label telling the player they need to be near fire
         if (selectedItem is SmallCookedMeatItem || selectedItem is LargeCookedMeatItem) {
@@ -242,6 +259,18 @@ public class CraftingGUI : MonoBehaviour {
         //draw the craft progress bar, if applicable
         GUI.DrawTexture(new Rect(craftDetailRectNormalized.width/2 - 120, craftDetailRectNormalized.height - 80, 200 * craftProgress/craftTime, 30), craftProgressBarTexture);
 		
+
+
+        //draw the tooltips, if applicable
+        for (i = 0; i < ingredientsList.Length; i++) {
+            if (new Rect(paddingPixels + paddingWithinIconSection + i * pixelsPerIcon, craftDetailRectNormalized.height / 3, 80, 80).Contains(mousePos)) {
+                IGUI.drawTooltip(ingredientsList[i], mousePos.x, mousePos.y, tooltipBackground);
+            }
+        }
+        if (resultTextureRect.Contains(mousePos)) {
+            IGUI.drawTooltip(selectedItem, mousePos.x, mousePos.y, tooltipBackground);
+        }
+
         GUI.EndGroup();
         
 

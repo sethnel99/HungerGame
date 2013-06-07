@@ -9,20 +9,22 @@ public class IGUI : MonoBehaviour {
     public Rect inventoryRect;
 
     Rect inventoryRectNormalized;
+    Rect inventoryRectNormalizedWithTooltipPadding;
 
     public Texture2D inventoryOverlay;
 	
-	public Texture2D background;
+	public Texture2D tooltipBackground;
 
     // Use this for initialization
     void Start() {
         inventory = GameObject.FindGameObjectWithTag("Player").GetComponent<Inventory>();
 
         inventoryRectNormalized = normalizeRect(inventoryRect);
-		
-		background = new Texture2D(1, 1, TextureFormat.RGB24, false);
-		background.SetPixel(0, 0, Color.gray);
-		background.Apply();
+        inventoryRectNormalizedWithTooltipPadding = new Rect(inventoryRectNormalized.x, inventoryRectNormalized.y, inventoryRectNormalized.width + 300, inventoryRectNormalized.height + 100);
+
+        tooltipBackground = new Texture2D(1, 1, TextureFormat.RGB24, false);
+        tooltipBackground.SetPixel(0, 0, Color.gray);
+        tooltipBackground.Apply();
     }
 
     // Update is called once per frame
@@ -34,7 +36,7 @@ public class IGUI : MonoBehaviour {
     void OnGUI() {
         GUI.skin = inventorySkin;
 
-        GUI.BeginGroup(inventoryRectNormalized);
+        GUI.BeginGroup(inventoryRectNormalizedWithTooltipPadding);
 
 
         //draw background
@@ -71,18 +73,7 @@ public class IGUI : MonoBehaviour {
 				
 				if (mouseX >= (25 + row * 80) && mouseX <= (85 + row * 80) && mouseY >= (25 + column * 80) && mouseY <= (85 + column * 80))
 				{
-					Rect box = new Rect(mouseX + 10, mouseY + 10, 180, 150);
-					
-					GUI.BeginGroup(box);
-					{
-						GUI.DrawTexture(new Rect(0, 0, box.width, box.height), background, ScaleMode.StretchToFill);
-						GUI.Label (new Rect(5,5, 180, 20), "Name: " + item.name);
-						GUI.Label (new Rect(5,25, 180, 20), "Quantity: " + item.quantity.ToString ());
-						GUI.Label (new Rect(5,45, 180, 20), "Weight: " + (item.quantity * item.weight).ToString () + " (" + item.weight.ToString() + ")");
-						GUI.Label (new Rect(5,65, 180, 20), "Usable: " + item.usable.ToString());
-						GUI.Label (new Rect(5,85, 180, 60), "Description: " + item.useText);
-					}
-					GUI.EndGroup();
+                    IGUI.drawTooltip(item, mouseX, mouseY, tooltipBackground);
 				}
             }
 			
@@ -93,6 +84,32 @@ public class IGUI : MonoBehaviour {
 
     Rect normalizeRect(Rect screenRect) {
         return new Rect(screenRect.x * Screen.width - (screenRect.width * 0.5f), screenRect.y * Screen.height - (screenRect.height * 0.5f), screenRect.width, screenRect.height);
+    }
+
+    public static void drawTooltip(Item item, float mouseX, float mouseY, Texture2D background) {
+
+        int useTextLines = (item.useText != null) ? (item.useText.Length + 5) / 26 + 1 : 0;
+        int descriptTextLines = (item.descriptText != null) ? (item.descriptText.Length + 13) / 26 + 1 : 0;
+        Rect box = new Rect(mouseX + 10, mouseY + 10, 210, 75 + 20 * (useTextLines + descriptTextLines));
+
+
+        GUI.BeginGroup(box);
+        {
+            int curY = 0;
+            GUI.DrawTexture(new Rect(0, curY, box.width, box.height), background, ScaleMode.StretchToFill); curY += 5;
+            GUI.Label(new Rect(5, curY, 200, 20), "Name: " + item.name); curY += 20;
+            GUI.Label(new Rect(5, curY, 200, 20), "Quantity: " + item.quantity.ToString()); curY += 20;
+            GUI.Label(new Rect(5, curY, 200, 20), "Weight: " + (item.quantity * item.weight).ToString() + " (" + item.weight.ToString() + ")"); curY += 20;
+            if (useTextLines > 0) {
+                GUI.Label(new Rect(5, curY, 200, 20 * useTextLines), "Use: " + item.useText); curY += 20 * useTextLines;
+            }
+            if (descriptTextLines > 0) {
+                GUI.Label(new Rect(5, curY, 200, 20 * descriptTextLines), "Description: " + item.descriptText); curY += 20 * descriptTextLines;
+            }
+        }
+        GUI.EndGroup();
+
+
     }
 
   

@@ -7,6 +7,7 @@ public class ArrowItem : EquipmentItem {
         usable = true;
         equipmentType = EquipmentType.secondary_equipable;
         useText = "(Equip) Allows you to fire an equipped bow.";
+        descriptText = "A crudely made arrow.";
         icon = (Texture2D)UnityEngine.Resources.Load("arrow_icon");
 	}
 

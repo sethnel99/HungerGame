@@ -14,6 +14,7 @@ public abstract class Item  {
 	private uint itemType; //a bit-string representing the types assocaited with the item
 	public int quantity = 0; //the quantity of the item possessed
     public string useText; //If the item is usable, the text that describes what it does on use
+    public string descriptText; //a descripton of the item
 	
 	public int inventoryLocation; //this item's location in the inventory
 
@@ -38,6 +39,7 @@ public abstract class Item  {
         useText = other.useText;
         inventoryLocation = other.inventoryLocation;
         icon = other.icon;
+        descriptText = other.descriptText;
 
     }
 	

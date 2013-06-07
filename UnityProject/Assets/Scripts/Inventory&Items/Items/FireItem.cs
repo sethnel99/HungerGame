@@ -9,6 +9,7 @@ public class FireItem : Item {
         icon = (Texture2D)UnityEngine.Resources.Load("fire_icon");
         usable = true;
         useText = "Create a fire in front of your location";
+        descriptText = "A fire, waiting to be deployed.";
 	}
 
     public FireItem(FireItem other)

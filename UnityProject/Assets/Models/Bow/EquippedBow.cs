@@ -9,7 +9,7 @@ public class EquippedBow : EquippedItem {
 	
 	new void Start () {
         base.Start();
-        damage = 8f;
+        inventory = GameObject.FindGameObjectWithTag("Player").GetComponent<Inventory>(); 
 	}
 
     protected override void Update() {

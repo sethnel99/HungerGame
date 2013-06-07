@@ -39,8 +39,6 @@ public class EquippedItemManager : MonoBehaviour {
 		equippableTransform[(int)Equippable.Bow] = new Vector3(-.2f,-.05f,.55f);
 		equippableRotate[(int)Equippable.Bow] = new Vector3(355,265,5);
 		
-		//EquipItem((int)Equippable.Plank);
-		EquipItem((int)Equippable.Knife);
 	}
 
 	
@@ -50,7 +48,7 @@ public class EquippedItemManager : MonoBehaviour {
 
 	}
 	
-	public void EquipItem (int equippable){
+	public void EquipItem (int equippable, float damage = 0){
 		if(equippedItem != null)
 		{
 			GameObject.Destroy(equippedItem);
@@ -58,6 +56,10 @@ public class EquippedItemManager : MonoBehaviour {
    
 
 		equippedItem = Instantiate(equippableItems[equippable], Camera.main.transform.position, Camera.main.transform.rotation) as GameObject;
+        if (equippedItem.GetComponent("DamageDealer") != null) {
+            (equippedItem.GetComponent("DamageDealer") as DamageDealer).damage = damage;
+        }
+
 
 		Reset(equippable);
 		

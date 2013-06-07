@@ -7,6 +7,7 @@ public class LargeUncookedMeatItem : Item {
         : base("Large Piece of Uncooked Meat", "Large Pieces of Uncooked Meat", 8, q) {
         addItemType(Item.material);
         icon = (Texture2D)UnityEngine.Resources.Load("large_meat_icon");
+        descriptText = "A large, bloody hunk of meat.";
         
 
     }

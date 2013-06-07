@@ -92,7 +92,7 @@ public class StatusHUD : MonoBehaviour {
 		GUI.color = Color.Lerp(hungerMinColor, hungerMaxColor, vitals.GetHealthRatio());
         GUI.DrawTexture(new Rect(127, 50, 150 * vitals.GetHealthRatio(), 20), barTexture);
 		
-		//draw the thirst bar
+		/*/draw the thirst bar
 		GUI.color = Color.gray;
         GUI.DrawTexture(new Rect(127, 80, 150, 20), barTexture);
         GUI.color = Color.Lerp(thirstMinColor, thirstMaxColor, vitals.GetThirstRatio());
@@ -104,7 +104,7 @@ public class StatusHUD : MonoBehaviour {
 		GUI.color = new Color(GUI.color.r,GUI.color.g,GUI.color.b,AlphaValue);
 		//Debug.Log (vitals.CurrentTemp);
 		//Debug.Log (vitals.CurrentTemp.ToString (".0"));
-		GUI.Label (new Rect(120,120,60,20),vitals.CurrentTemp.ToString (".0") + " F");
+		GUI.Label (new Rect(120,120,60,20),vitals.CurrentTemp.ToString (".0") + " F");*/
 			
 		GUI.EndGroup();
 	}

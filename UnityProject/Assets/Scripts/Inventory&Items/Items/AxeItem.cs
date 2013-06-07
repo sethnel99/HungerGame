@@ -8,7 +8,9 @@ public class AxeItem : EquipmentItem {
         usable = true;
         equipmentType = EquipmentType.equipable;
         useText = "(Equip) Allows you to attack with an axe.";
+        descriptText = "An axe made of stone and wood.";
         icon = (Texture2D)UnityEngine.Resources.Load("axe_icon");
+        statPower = 15f;
 	}
 
     public AxeItem(AxeItem other)

@@ -6,7 +6,6 @@ public class EquippedKnife : EquippedItem {
 
 	new void Start () {
         base.Start();
-        damage = 10f;
 	}
 	
 	protected override void Update () {
@@ -36,9 +35,8 @@ public class EquippedKnife : EquippedItem {
 	    audio.PlayOneShot(swing1Sound);
 		yield return new WaitForSeconds(0.35f);
         this.gameObject.GetComponentInChildren<SphereCollider>().enabled = false; // de-activate damage collider
-		yield return new WaitForSeconds(0.25f);
+        yield return new WaitForSeconds(0.05f);// extra delay before you can shoot again
 
-	    yield return new WaitForSeconds(0.2f); // extra delay before you can shoot again
 	    isInAction = false;
 	}
 	IEnumerator COAction2() {
@@ -50,9 +48,8 @@ public class EquippedKnife : EquippedItem {
 	    audio.PlayOneShot(stab1Sound);
 		yield return new WaitForSeconds(0.35f);
         this.gameObject.GetComponentInChildren<SphereCollider>().enabled = false; // de-activate damage collider
-		yield return new WaitForSeconds(0.25f);
+        yield return new WaitForSeconds(0.05f);// extra delay before you can shoot again
 
-	    yield return new WaitForSeconds(0.2f); // extra delay before you can shoot again
 	    isInAction = false;
 	}
 	

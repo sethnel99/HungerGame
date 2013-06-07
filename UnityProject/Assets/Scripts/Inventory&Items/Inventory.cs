@@ -36,9 +36,16 @@ public class Inventory : MonoBehaviour{
     void Start() {
         initializeCraftingDictionary();
         equippedItemScript = GameObject.Find("EquippedItem").GetComponent<EquippedItemManager>();
-        equippedEquipable = new KnifeItem(1);
+
         vitals = gameObject.transform.root.GetComponent<PlayerVitals>();
         textHints = GameObject.Find("TextHintGUI");
+
+        EquipItem(new KnifeItem(1));
+
+        /*/testing
+        addItem(new LargeCookedMeatItem(30));
+        addItem(new WoodItem(10));
+        addItem(new BowItem(2));*/
     }
 
     void initializeCraftingDictionary() {
@@ -49,7 +56,7 @@ public class Inventory : MonoBehaviour{
         craftingDictionary.Add(new FireItem(1), new Item[] { new WoodItem(3)});//, new SharpStoneItem(2)});
         craftingDictionary.Add(new SmallCookedMeatItem(1), new Item[] { new SmallUncookedMeatItem(1) });
         craftingDictionary.Add(new LargeCookedMeatItem(1), new Item[] { new LargeUncookedMeatItem(1) });
-        craftingDictionary.Add(new SmallHideItem(3), new Item[] { new LargeHideItem(1) });
+        craftingDictionary.Add(new LargeHideItem(1), new Item[] { new SmallHideItem(3) });
         craftingDictionary.Add(new StringItem(2), new Item[] { new SmallHideItem(1) });
         craftingDictionary.Add(new AxeItem(1), new Item[] { new SharpStoneItem(5), new WoodItem(3) });
         craftingDictionary.Add(new KnifeItem(1), new Item[] { new SharpStoneItem(2), new WoodItem(3) });
@@ -289,7 +296,6 @@ public class Inventory : MonoBehaviour{
         inventoryNamesArray[i.inventoryLocation] = null;
 
         EquipmentItem curEquipped;
-        Debug.Log(i.equipmentType);
         switch (i.equipmentType) {
             case EquipmentItem.EquipmentType.equipable:
                 curEquipped = equippedEquipable;
@@ -299,18 +305,20 @@ public class Inventory : MonoBehaviour{
 
 
                 if (i is AxeItem) {
-                    equippedItemScript.EquipItem((int)EquippedItemManager.Equippable.Axe);
+                    equippedItemScript.EquipItem((int)EquippedItemManager.Equippable.Axe, i.statPower);
                 } else if (i is SidePlankItem) {
                     equippedItemScript.EquipItem((int)EquippedItemManager.Equippable.Plank);
                 } else if (i is RoofPlankItem) {
                     equippedItemScript.EquipItem((int)EquippedItemManager.Equippable.RoofPiece1);
                 } else if (i is BowItem) {
-                    equippedItemScript.EquipItem((int)EquippedItemManager.Equippable.Bow);
+                    equippedItemScript.EquipItem((int)EquippedItemManager.Equippable.Bow, i.statPower);
                 } else if (i is KnifeItem) {
-                    equippedItemScript.EquipItem((int)EquippedItemManager.Equippable.Knife);
+                    equippedItemScript.EquipItem((int)EquippedItemManager.Equippable.Knife, i.statPower);
                 }
 
-                GameObject.Find("GUIButtons").GetComponent<OpenCloseGUIs>().disableNewItem();
+                if (GameObject.Find("GUIButtons").GetComponent<OpenCloseGUIs>().controlsAreDisabled) {
+                    GameObject.Find("GUIButtons").GetComponent<OpenCloseGUIs>().disableNewItem();
+                }
 
                 break;
             case EquipmentItem.EquipmentType.secondary_equipable:

@@ -7,7 +7,9 @@ public class BerryItem : Item {
         addItemType(Item.material);
         addItemType(Item.food);
         usable = true;
-        useText = "Eat to regain some health";
+        useText = "Eat to regain a small amount of hunger points.";
+        descriptText = "A berry you plucked from a bush.";
+        
         icon = (Texture2D)UnityEngine.Resources.Load("berries_icon");
 	}
 

@@ -9,6 +9,7 @@ public class RoofPlankItem : EquipmentItem {
         usable = true;
         equipmentType = EquipmentType.equipable;
         useText = "(Equip) Allows you to place a roof panel for building structures.";
+        descriptText = "A horizontal plank used to construct a roof.";
         icon = (Texture2D)UnityEngine.Resources.Load("roof_plank_icon");
 	}
 

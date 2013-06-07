@@ -8,6 +8,8 @@ public class OpenCloseGUIs : MonoBehaviour {
     float debounceTime = .25f;
     float debounceTimer = 0f;
 
+    public bool controlsAreDisabled = false;
+
 	// Use this for initialization
 	void Start () {
 	
@@ -50,6 +52,8 @@ public class OpenCloseGUIs : MonoBehaviour {
 	}
 
     public void disableControls(MonoBehaviour disabler) {
+        controlsAreDisabled = true;
+
         GameObject.FindGameObjectWithTag("Player").GetComponent<MouseLook>().enabled = false;
         GameObject.FindGameObjectWithTag("MainCamera").GetComponent<MouseLook>().enabled = false;
 	
@@ -67,6 +71,8 @@ public class OpenCloseGUIs : MonoBehaviour {
     }
 
     public void enableControls(MonoBehaviour enabler) {
+        controlsAreDisabled = false;
+
         GameObject.FindGameObjectWithTag("Player").GetComponent<MouseLook>().enabled = true;
         GameObject.FindGameObjectWithTag("MainCamera").GetComponent<MouseLook>().enabled = true;
         GameObject.Find("EquippedItem").GetComponent<EquippedItemManager>().enabled = true;

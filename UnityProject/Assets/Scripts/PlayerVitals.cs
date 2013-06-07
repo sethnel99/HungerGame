@@ -20,7 +20,7 @@ public class PlayerVitals : MonoBehaviour
 	private const float MaxHealth = 100;
 	private const float MaxThirst = 100;
 	
-	public float CurrentHealth = 100;
+	public float CurrentHealth = 50;
 	public float CurrentThirst = 100;
 	
 	public float CurrentTemp;     //current temperature (takes into account clothing)
@@ -67,8 +67,8 @@ public class PlayerVitals : MonoBehaviour
            // CurrentThirst -= 0.2f * Time.deltaTime;
 		}
 
-        if (CurrentHealth < 0) Die();
-        if (CurrentThirst < 0) Die();
+        if (CurrentHealth < 0) Die("You died of hunger.");
+        if (CurrentThirst < 0) Die("You died of thirst.");
 		
 		
 		
@@ -134,7 +134,7 @@ public class PlayerVitals : MonoBehaviour
 	void bodyPartDeath(BodyPart b){
 
 		if(b == BodyPart.Head || b == BodyPart.Torso){
-			Die ();
+			Die ("You died from " + ((b==BodyPart.Head) ? "head wounds." : "torso wounds."));
         } else if (b == BodyPart.RightArm) {
             //cannot hold main equippable
             inventory.unequipSlot(EquipmentItem.EquipmentType.equipable);
@@ -145,12 +145,12 @@ public class PlayerVitals : MonoBehaviour
         }
 	}
 	
-	void Die(){
+	void Die(string deathString){
 		GameObject.Find ("GUIButtons").GetComponent<OpenCloseGUIs>().disableControls(this);
         GameObject.Find("GUIButtons").SetActive(false);
         GameObject.Find("StatusHUD").SetActive(false);
         StartCoroutine(FadeToBlack());
-        textHints.SendMessage("ShowHint", "You are dead.");
+        textHints.SendMessage("ShowHint", deathString);
 	}
 
     IEnumerator FadeToBlack() {

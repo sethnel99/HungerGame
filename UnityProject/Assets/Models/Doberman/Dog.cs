@@ -25,11 +25,11 @@ public class Dog : MonoBehaviour, IAgent
 	
 	// AI Vars
 	float sightCastRadius = 6f;
-	float sightDistance = 20;
+	float sightDistance = 30;
 	float alignRadius = 5f;
 	float attackRange = 3f;
     float senseRange = 20;
-    float leashDistance = 35;
+    float leashDistance = 45;
 
     public bool leashingBackToSpawn = false;
 
@@ -54,9 +54,11 @@ public class Dog : MonoBehaviour, IAgent
 	
 	IEnumerator Start () {
         spawnPoint = this.gameObject.transform.position;
-        PatrolPoints[0] = spawnPoint + new Vector3(5, 5, 0);
-        PatrolPoints[1] = spawnPoint + new Vector3(-5, 5, 0);
-        PatrolPoints[2] = spawnPoint + new Vector3(5, -5, 0);
+        PatrolPoints[0] = spawnPoint + new Vector3(Random.Range(5,8), Random.Range(5,8), 0);
+        PatrolPoints[1] = spawnPoint + new Vector3(Random.Range(-8,-5), Random.Range(5,8), 0);
+        PatrolPoints[2] = spawnPoint + new Vector3(Random.Range(5,8), Random.Range(-8,-5), 0);
+
+        player = GameObject.FindGameObjectWithTag("Player");
 		
 		m_tree = BLBehaveLibrary0.InstantiateTree(BLBehaveLibrary0.TreeType.EnemyBehaviors_PatrolerTree,this);
 		while(Application.isPlaying && m_tree != null)
@@ -120,10 +122,10 @@ public class Dog : MonoBehaviour, IAgent
 	void RunChecks()
 	{
         float distanceFromSpawn = Vector3.Distance(new Vector3(transform.position.x,transform.position.y,0), new Vector3(spawnPoint.x,spawnPoint.y,0));
-
-        Debug.Log("distance from spawn: " + distanceFromSpawn);
+        float distanceFromPlayer = Vector3.Distance(transform.position, player.transform.position);
+        //Debug.Log("distance from spawn: " + distanceFromSpawn);
         //leash to spawn
-        if (distanceFromSpawn > leashDistance || leashingBackToSpawn && distanceFromSpawn > 3.0f) {
+        if (distanceFromSpawn > leashDistance || (seeTarget && distanceFromPlayer > leashDistance) || (leashingBackToSpawn && distanceFromSpawn > 3.0f)) {
             senseSomething = false;
             seeTarget = false;
             closeEnough = false;
@@ -137,9 +139,9 @@ public class Dog : MonoBehaviour, IAgent
             leashingBackToSpawn = false;
         }
 
-		float distance = Vector3.Distance(transform.position, player.transform.position);
 
-		senseSomething = distance <= senseRange;
+
+		senseSomething = distanceFromPlayer <= senseRange;
 		if(senseSomething)
 		{
 
@@ -154,7 +156,7 @@ public class Dog : MonoBehaviour, IAgent
 
 			if(seeTarget)
 			{	
-				closeEnough = distance <= attackRange;
+				closeEnough = distanceFromPlayer <= attackRange;
                 Vector3 dirToPlayer = Vector3.Normalize(player.transform.position - transform.position);
                 dirToPlayer.y = 0;
                 Vector3 dogForward = this.gameObject.transform.forward;
@@ -174,7 +176,7 @@ public class Dog : MonoBehaviour, IAgent
 			aligned = false;
 		}
 
-        Debug.Log("Sense: " + senseSomething + " See Target: " + seeTarget + " close Enough: " + closeEnough + " aligned: " + aligned);
+        //Debug.Log("Sense: " + senseSomething + " See Target: " + seeTarget + " close Enough: " + closeEnough + " aligned: " + aligned);
 
 	}
 	
@@ -379,7 +381,7 @@ public class Dog : MonoBehaviour, IAgent
     IEnumerator CODie() {
         inAnimation = true;
         Debug.Log("beginning death animation");
-        yield return new WaitForSeconds(.2f);
+        yield return new WaitForSeconds(.4f);
         gameObject.animation.CrossFade("Death_1");
         //Debug.Log("yielding");
         yield return new WaitForSeconds(gameObject.animation.GetClip("Death_1").length);
@@ -387,7 +389,10 @@ public class Dog : MonoBehaviour, IAgent
     
     
     void StartDeathAnim() {
-        Debug.Log("beginning die function");
+        //Debug.Log("beginning die function");
+        if (this.transform.parent != null) {
+            this.transform.parent.GetComponent<EnemyNodeManager>().startRespawnTimer();
+        }
         dead = true;
         m_tree = null;  //stop behavior tree from running
         StartCoroutine(CODie()); //run death animation
