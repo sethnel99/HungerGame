@@ -74,6 +74,7 @@ ModelImporter:
     7400026: Bite_1
     7400028: Hit_Recoil_1
     7400030: Death_1
+    7400032: Look_Around_1
     9500000: //RootNode
     11100000: //RootNode
     13700000: body_Doberman_whole
@@ -410,6 +411,27 @@ ModelImporter:
       firstFrame: 452
       lastFrame: 496
       wrapMode: 8
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      transformMask: []
+    - name: Look_Around_1
+      takeName: Default Take
+      firstFrame: 497
+      lastFrame: 540
+      wrapMode: 1
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
