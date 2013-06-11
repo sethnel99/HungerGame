@@ -18,7 +18,8 @@ public class BerryItem : Item {
     }
 
 
-    public override void useItem() {
+    public override bool useItem() {
         GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerVitals>().HealHunger(5.0f);
+        return true;
     }
 }

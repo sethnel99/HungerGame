@@ -35,8 +35,6 @@ public class CraftingGUI : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-        GameObject.FindGameObjectWithTag("Player").GetComponent<MouseLook>().enabled = false;
-        GameObject.FindGameObjectWithTag("MainCamera").GetComponent<MouseLook>().enabled = false;
         
 
         inventory = GameObject.FindGameObjectWithTag("Player").GetComponent<Inventory>();
@@ -204,8 +202,10 @@ public class CraftingGUI : MonoBehaviour {
         int i = 0;
         for (; i < ingredientsList.Length; i++) {
                GUI.DrawTexture(new Rect(paddingPixels + paddingWithinIconSection + i*pixelsPerIcon, craftDetailRectNormalized.height/3, 80, 80), ingredientsList[i].icon);
-               GUI.Label(new Rect(paddingPixels + paddingWithinIconSection + i * pixelsPerIcon + 78 - 8 * (int)Math.Floor(Math.Log10(ingredientsList[i].quantity) + 1), craftDetailRectNormalized.height / 3 + 58, 30, 30), ingredientsList[i].quantity.ToString(), chooseQuantityLabelStyle(ingredientsList[i]));     
-        }
+               GUI.Label(new Rect(paddingPixels + paddingWithinIconSection + i * pixelsPerIcon + 78 - 8 * (int)Math.Floor(Math.Log10(ingredientsList[i].quantity) + 1), craftDetailRectNormalized.height / 3 + 58, 30, 30), ingredientsList[i].quantity.ToString(), chooseQuantityLabelStyle(ingredientsList[i]));
+               Item itemInInventory = inventory.getItem(ingredientsList[i].name);
+               GUI.Label(new Rect(paddingPixels + paddingWithinIconSection + i*(pixelsPerIcon-1), craftDetailRectNormalized.height / 3 + 80, 100, 20), "(You have " + ((itemInInventory != null) ? itemInInventory.quantity : 0) + ")");
+       }
 
         //draw the arrow
         GUI.DrawTexture(new Rect(paddingPixels + paddingWithinIconSection + i * pixelsPerIcon, craftDetailRectNormalized.height / 3, 80, 80), arrowTexture);
@@ -239,8 +239,10 @@ public class CraftingGUI : MonoBehaviour {
             GUI.enabled = true;
         }
 
+        //draw craft all button
         if (GUI.Button(new Rect(craftDetailRectNormalized.width - 257, craftDetailRectNormalized.height - 37, 120, 30), craftAll? "Halt!":"Craft All!")) {
             if (craftAll) {
+                inventory.resetMultiCraftCount();
                 //already crafting all means this is the cancel button. So stop crafting
                 craftAll = false;
                 craftProgress = 0.0f;

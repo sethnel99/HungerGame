@@ -51,6 +51,9 @@ public class IGUI : MonoBehaviour {
                 if (GUI.Button(new Rect(25 + row * 80, 25 + column * 80, 60, 60), item.icon)) {
                     if (item.usable) {
                         inventory.useItem(item);
+                    } else {
+                         GameObject.Find("GUIButtons").GetComponent<OpenCloseGUIs>().disableControls(null);
+                         GameObject.Find("GUIButtons").GetComponent<OpenCloseGUIs>().setCraftingEnabled(true);
                     }
                 }
 				

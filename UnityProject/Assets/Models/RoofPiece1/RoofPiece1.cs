@@ -48,7 +48,7 @@ public class RoofPiece1 : StructurePiece {
 					}
 				}
 			}
-			transform.rotation = snapRotate;
+			
 			if(bestHit.Priority == 0)
 			{
 				transform.Translate(new Vector3(0f,-.08f,0f),  Space.World);

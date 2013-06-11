@@ -34,10 +34,10 @@ public class EquippedBow : EquippedItem {
 	    yield return new WaitForSeconds(0.35f); // wait 0.05seconds
 	    audio.PlayOneShot(shoot1Sound);
 		GameObject arrow = (GameObject)Instantiate(Arrow, transform.position,transform.rotation);
-        arrow.SendMessage("SetDamage",damage);
+        (arrow.GetComponent("DamageDealer") as DamageDealer).damage = damage;
 		arrow.transform.Rotate(0f, 90f, 0f);
-		arrow.rigidbody.AddForce(.00011f*transform.parent.transform.forward);
-		yield return new WaitForSeconds(0.8f); // extra delay before you can shoot again
+		arrow.rigidbody.AddForce(.00021f*transform.parent.transform.forward);
+		yield return new WaitForSeconds(0.10f); // extra delay before you can shoot again
 	    isInAction = false;
 
        

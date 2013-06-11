@@ -20,7 +20,7 @@ public class PlayerVitals : MonoBehaviour
 	private const float MaxHealth = 100;
 	private const float MaxThirst = 100;
 	
-	public float CurrentHealth = 50;
+	public float CurrentHunger = 50;
 	public float CurrentThirst = 100;
 	
 	public float CurrentTemp;     //current temperature (takes into account clothing)
@@ -58,16 +58,16 @@ public class PlayerVitals : MonoBehaviour
 		
 		if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
 		{
-			CurrentHealth -= 0.2f * Time.deltaTime;
+			CurrentHunger -= 0.2f * Time.deltaTime;
             //CurrentThirst -= 0.4f * Time.deltaTime;
 		}
 		else
 		{
-            CurrentHealth -= 0.1f * Time.deltaTime;
+            CurrentHunger -= 0.1f * Time.deltaTime;
            // CurrentThirst -= 0.2f * Time.deltaTime;
 		}
 
-        if (CurrentHealth < 0) Die("You died of hunger.");
+        if (CurrentHunger < 0) Die("You died of hunger.");
         if (CurrentThirst < 0) Die("You died of thirst.");
 		
 		
@@ -77,13 +77,20 @@ public class PlayerVitals : MonoBehaviour
         if (j != null){
             CurrentTemp = CurrentBaseTemp + j.statPower;
         }
+
+        //regenerate body part health slowly
+        for (int i = 0; i < bodyPartHealth.Length; i++) {
+            if (bodyPartHealth[i] > 0 && bodyPartHealth[i] < bodyPartMaxHealth[i]) {
+                bodyPartHealth[i] += Time.deltaTime * bodyPartMaxHealth[i]/100;
+            }
+        }
 		
 		
 	}
-	
-	public float GetHealthRatio()
+
+    public float GetHealthRatio()
 	{
-		return CurrentHealth/MaxHealth;
+		return CurrentHunger/MaxHealth;
 	}
 	
 	public float GetThirstRatio()
@@ -108,11 +115,35 @@ public class PlayerVitals : MonoBehaviour
 	}
 
     public void HealHunger(float amount) {
-        CurrentHealth += amount;
-        if (CurrentHealth > MaxHealth) CurrentHealth = MaxHealth;
+        CurrentHunger += amount;
+        if (CurrentHunger > MaxHealth) CurrentHunger = MaxHealth;
     }
-	
-	public void TakenHit(BodyPart b, EnemyAttackBox eab)
+
+    public bool bandage() {
+        //priority of bandaging -> right arm -> legs -> left arm
+        if (bodyPartHealth[(int)BodyPart.RightArm] <= 0) {
+            bodyPartHealth[(int)BodyPart.RightArm] = bodyPartMaxHealth[(int)BodyPart.RightArm] / 2;
+            textHints.SendMessage("Show Hint", "Right Arm Repaired!");
+            return true;
+        } else if (bodyPartHealth[(int)BodyPart.LeftLeg] <= 0) {
+            bodyPartHealth[(int)BodyPart.LeftLeg] = bodyPartMaxHealth[(int)BodyPart.LeftLeg] / 2;
+            textHints.SendMessage("Show Hint", "Left Leg Repaired!");
+            return true;
+        } else if (bodyPartHealth[(int)BodyPart.RightLeg] <= 0) {
+            bodyPartHealth[(int)BodyPart.RightLeg] = bodyPartMaxHealth[(int)BodyPart.RightLeg] / 2;
+            textHints.SendMessage("Show Hint", "Right Leg Repaired!");
+            return true;
+        } else if (bodyPartHealth[(int)BodyPart.LeftArm] <= 0) {
+            bodyPartHealth[(int)BodyPart.LeftArm] = bodyPartMaxHealth[(int)BodyPart.LeftArm] / 2;
+            textHints.SendMessage("Show Hint", "Left Arm Repaired!");
+            return true;
+        } else{
+            return false;
+        }
+
+    }
+
+    public void TakenHit(BodyPart b, EnemyAttackBox eab)
 	{
 		
 		//if this body part is dead, it is dead
@@ -121,7 +152,7 @@ public class PlayerVitals : MonoBehaviour
 		}
 		
 		//subtract health
-		bodyPartHealth[(int)b] -= eab.Damage;
+		bodyPartHealth[(int)b] -= eab.Damage * eab.damageMultiplier;
 		
 		//if this body part crosses into 0, do what you will
 		if(bodyPartHealth[(int)b] <= 0){

@@ -17,8 +17,8 @@ public class SidePlankItem : EquipmentItem {
     }
 
 
-    public override void useItem() {
+    public override bool useItem() {
         Inventory inventory = GameObject.FindGameObjectWithTag("Player").GetComponent<Inventory>();
-        inventory.EquipItem(this);
+        return inventory.EquipItem(this);
     }
 }

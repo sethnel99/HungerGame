@@ -13,7 +13,7 @@ public class WoodItem : Item {
         : base(other) {
     }
 
-    public override void useItem() {
-
+    public override bool useItem() {
+        return false;
     }
 }

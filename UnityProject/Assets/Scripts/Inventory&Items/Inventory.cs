@@ -40,7 +40,8 @@ public class Inventory : MonoBehaviour{
         vitals = gameObject.transform.root.GetComponent<PlayerVitals>();
         textHints = GameObject.Find("TextHintGUI");
 
-        EquipItem(new KnifeItem(1));
+        EquipItem(new BowItem(1));
+        EquipItem(new ArrowItem(50));
 
         /*/testing
         addItem(new LargeCookedMeatItem(30));
@@ -51,17 +52,18 @@ public class Inventory : MonoBehaviour{
     void initializeCraftingDictionary() {
         craftingDictionary = new Dictionary<Item, Item[]>();
 
-        craftingDictionary.Add(new SidePlankItem(1), new Item[] { new WoodItem(1) });
-        craftingDictionary.Add(new RoofPlankItem(1), new Item[] { new WoodItem(1) });
-        craftingDictionary.Add(new FireItem(1), new Item[] { new WoodItem(3)});//, new SharpStoneItem(2)});
+        craftingDictionary.Add(new SidePlankItem(2), new Item[] { new WoodItem(1) });
+        craftingDictionary.Add(new RoofPlankItem(2), new Item[] { new WoodItem(1) });
+        craftingDictionary.Add(new FireItem(1), new Item[] { new WoodItem(3), new SharpStoneItem(2)});
         craftingDictionary.Add(new SmallCookedMeatItem(1), new Item[] { new SmallUncookedMeatItem(1) });
         craftingDictionary.Add(new LargeCookedMeatItem(1), new Item[] { new LargeUncookedMeatItem(1) });
         craftingDictionary.Add(new LargeHideItem(1), new Item[] { new SmallHideItem(3) });
         craftingDictionary.Add(new StringItem(2), new Item[] { new SmallHideItem(1) });
+        craftingDictionary.Add(new BandageItem(1), new Item[] { new StringItem(1) });
         craftingDictionary.Add(new AxeItem(1), new Item[] { new SharpStoneItem(5), new WoodItem(3) });
         craftingDictionary.Add(new KnifeItem(1), new Item[] { new SharpStoneItem(2), new WoodItem(3) });
         craftingDictionary.Add(new BowItem(1), new Item[] { new WoodItem(4), new StringItem(4)});
-        craftingDictionary.Add(new ArrowItem(1), new Item[] { new WoodItem(1) });
+        craftingDictionary.Add(new ArrowItem(10), new Item[] { new WoodItem(1), new SharpStoneItem(1) });
         craftingDictionary.Add(new BootsItem(1, 5), new Item[] { new SmallHideItem(2), new StringItem(6) });
         craftingDictionary.Add(new BootsItem(1, 10), new Item[] { new SmallHideItem(16), new StringItem(30) });
         craftingDictionary.Add(new JacketItem(1, 10), new Item[] { new LargeHideItem(3), new SmallHideItem(6), new StringItem(6) });
@@ -84,6 +86,12 @@ public class Inventory : MonoBehaviour{
 
         if (i.quantity == 0) {
             return false;
+        }
+
+        //if this is a fire, just use it right away
+        if (i is FireItem) {
+            i.useItem();
+            return true;
         }
 
        
@@ -162,12 +170,11 @@ public class Inventory : MonoBehaviour{
         if (!inventory.TryGetValue(itemName, out item)) {
             item = null;
         }
-
         return item != null && inventory[itemName].quantity >= quantity;
 	}
 
     public Item getItem(string itemName) {
-        if (contains(name)) {
+        if (contains(itemName)) {
             return inventory[itemName];
         } else {
             return null;
@@ -215,10 +222,10 @@ public class Inventory : MonoBehaviour{
 	}
 
     public bool useItem(Item i) {
-        i.useItem();
+        bool used = i.useItem();
 
         //equipped items don't get decremented when they are "used" (equipped)
-        if (!(i is EquipmentItem)){
+        if (!(i is EquipmentItem) && used){
             return removeItem(i.name, 1);
         }
 
@@ -282,13 +289,13 @@ public class Inventory : MonoBehaviour{
 
     /*Equipment code*/
 
-    public void EquipItem(EquipmentItem i) {
+    public bool EquipItem(EquipmentItem i) {
 
         //first make sure that you aren't equipping slots with injured arms that you shouldn't be able to be
         if ((i.equipmentType == EquipmentItem.EquipmentType.equipable && vitals.bodyPartHealth[(int)PlayerVitals.BodyPart.RightArm] <= 0) ||
             (i.equipmentType == EquipmentItem.EquipmentType.secondary_equipable && vitals.bodyPartHealth[(int)PlayerVitals.BodyPart.LeftArm] <= 0)) {
                 textHints.SendMessage("ShowHint", (i.equipmentType == EquipmentItem.EquipmentType.equipable) ? "You cannot equip that with a broken right arm!" : "You cannot equip that with a broken left arm!");
-                return;
+                return false;
         }
 
         //cut this item out of the inventory
@@ -345,6 +352,7 @@ public class Inventory : MonoBehaviour{
 
         }
 
+        return true;
 
     }
 

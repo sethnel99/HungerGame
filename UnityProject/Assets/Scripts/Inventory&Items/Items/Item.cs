@@ -58,7 +58,7 @@ public abstract class Item  {
 		return (itemType & type) != 0;
 	}
 
-    public abstract void useItem(); 
+    public abstract bool useItem(); 
 
 
 	

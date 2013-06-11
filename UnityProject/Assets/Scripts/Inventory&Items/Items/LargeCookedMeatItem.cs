@@ -19,7 +19,8 @@ public class LargeCookedMeatItem : Item {
         : base(other) {
     }
 
-    public override void useItem() {
+    public override bool useItem() {
         GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerVitals>().HealHunger(40.0f);
+        return true;
     }
 }

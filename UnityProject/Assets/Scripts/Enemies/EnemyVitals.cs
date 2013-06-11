@@ -21,7 +21,7 @@ public class EnemyVitals : MonoBehaviour {
 	}
     
     public void TakeDamage(float damage) {
-        Debug.Log("taking damage: " + damage);
+       // Debug.Log("taking damage: " + damage);
         if (damageHitCDTimer > 0) {
             return;
         } else {

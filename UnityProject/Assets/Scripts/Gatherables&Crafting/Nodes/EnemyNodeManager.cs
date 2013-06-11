@@ -16,13 +16,15 @@ public class EnemyNodeManager : MonoBehaviour {
 
     public float respawnTime;
     public float respawnTimer = 0.0f;
-   
+
+    InteractionManager interactionManager;
 
 
 	// Use this for initialization
 	void Start () {
         spawnNode();
         respawnTime = UnityEngine.Random.Range(45, 60);
+        interactionManager = GameObject.FindGameObjectWithTag("Player").GetComponent<InteractionManager>();
 	}
 	
 	// Update is called once per frame
@@ -47,6 +49,7 @@ public class EnemyNodeManager : MonoBehaviour {
     public bool removeNode() {
         if (isSpawned) {
             isSpawned = false;
+            interactionManager.removePotentialInteractor(gameObject);
             GameObject.Destroy(enemy);
             return true;
         }

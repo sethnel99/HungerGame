@@ -29,7 +29,7 @@ public class Dog : MonoBehaviour, IAgent
 	float alignRadius = 5f;
 	float attackRange = 3f;
     float senseRange = 20;
-    float leashDistance = 45;
+    float leashDistance = 40;
 
     public bool leashingBackToSpawn = false;
 
@@ -37,6 +37,8 @@ public class Dog : MonoBehaviour, IAgent
 	public bool seeTarget = false;
 	public bool closeEnough = false;
 	public bool aligned = false;
+
+    public float recentlyAttackedTimer = 0.0f;
 	// /AI Vars
 	
 	/*/Points to randomly go to
@@ -79,10 +81,17 @@ public class Dog : MonoBehaviour, IAgent
 	
 	void Update () {
 		TickTime += Time.deltaTime;
+
+        if(recentlyAttackedTimer > 0){
+         recentlyAttackedTimer -= Time.deltaTime;
+        }
+
 		if(takingHitTimer>0)
 		{
 			takingHitTimer -= Time.deltaTime;
 		}
+
+        
 	}
 	
 	// IAgent
@@ -124,14 +133,15 @@ public class Dog : MonoBehaviour, IAgent
         float distanceFromSpawn = Vector3.Distance(new Vector3(transform.position.x,transform.position.y,0), new Vector3(spawnPoint.x,spawnPoint.y,0));
         float distanceFromPlayer = Vector3.Distance(transform.position, player.transform.position);
         //Debug.Log("distance from spawn: " + distanceFromSpawn);
-        //leash to spawn
-        if (distanceFromSpawn > leashDistance || (seeTarget && distanceFromPlayer > leashDistance) || (leashingBackToSpawn && distanceFromSpawn > 3.0f)) {
+        
+        //leash to spawn if the dog is too far away from spawn or too far away from the player. But don't leash if he's been attacked recently.
+        if (recentlyAttackedTimer <= 0  && (distanceFromSpawn > leashDistance || (seeTarget && distanceFromPlayer > leashDistance) || (leashingBackToSpawn && distanceFromSpawn > 3.0f))) {
             senseSomething = false;
             seeTarget = false;
             closeEnough = false;
             aligned = false;
             leashingBackToSpawn = true;
-            Debug.Log("leashing back to spawn");
+            //Debug.Log("leashing back to spawn");
             return;
         } else if (leashingBackToSpawn && distanceFromSpawn < 3.0f) {
             gameObject.animation.CrossFade("Stand_Idle");
@@ -140,13 +150,13 @@ public class Dog : MonoBehaviour, IAgent
         }
 
 
+        if(!seeTarget){
 
-		senseSomething = distanceFromPlayer <= senseRange;
-		if(senseSomething)
-		{
+            senseSomething = distanceFromPlayer <= senseRange;
 
-            if (!seeTarget) {
-                RaycastHit[] hits= Physics.SphereCastAll(transform.position-10*transform.forward, sightCastRadius, transform.forward, sightDistance);
+            if (senseSomething) {
+
+                RaycastHit[] hits = Physics.SphereCastAll(transform.position - 10 * transform.forward, sightCastRadius, transform.forward, sightDistance);
                 foreach (RaycastHit hit in hits) {
                     if (hit.collider != null && hit.collider.gameObject.tag == "Player") {
                         seeTarget = true;
@@ -154,29 +164,21 @@ public class Dog : MonoBehaviour, IAgent
                 }
             }
 
-			if(seeTarget)
-			{	
-				closeEnough = distanceFromPlayer <= attackRange;
+            aligned = false;
+            closeEnough = false;
+
+        }else{
+	    		closeEnough = distanceFromPlayer <= attackRange;
                 Vector3 dirToPlayer = Vector3.Normalize(player.transform.position - transform.position);
                 dirToPlayer.y = 0;
                 Vector3 dogForward = this.gameObject.transform.forward;
                 dogForward.y = 0;
                 aligned = Vector3.Angle(dirToPlayer, dogForward) < 20;
                 //Debug.Log("Dog to player: " + dirToPlayer + " Dog forward: " + dogForward + " Angle: " + Vector3.Angle(dirToPlayer, dogForward));
-			}
-			else
-			{
-				closeEnough = false;
-				aligned = false;
-			}
-		}
-		else
-		{
-			closeEnough = false;
-			aligned = false;
-		}
+	  }
 
-        //Debug.Log("Sense: " + senseSomething + " See Target: " + seeTarget + " close Enough: " + closeEnough + " aligned: " + aligned);
+
+        Debug.Log("Sense: " + senseSomething + " See Target: " + seeTarget + " close Enough: " + closeEnough + " aligned: " + aligned + " leash: " + leashingBackToSpawn + "recentlyAttacked: " + recentlyAttackedTimer);
 
 	}
 	
@@ -261,16 +263,16 @@ public class Dog : MonoBehaviour, IAgent
 				    int randomTwitch = rnd.Next(0, 3);
 				    if(randomTwitch==1)
 				    {
-				    	StartCoroutine(COTwitch());
+				    	StartCoroutine("COTwitch");
 				    }
 				    else if(randomTwitch ==2)
 				    {
-				    	StartCoroutine(COBark());
+				    	StartCoroutine("COBark");
 				    }
                 }
 
 				gameObject.SendMessage("StartMovingTo", PatrolPoints[randomPatrolPoint]);
-				StartCoroutine(COWander());
+				StartCoroutine("COWander");
 			}
 			
 			if(wanderTimer > wanderMaxTime)
@@ -296,7 +298,7 @@ public class Dog : MonoBehaviour, IAgent
 		transform.LookAt(new Vector3(player.transform.position.x, transform.position.y, player.transform.position.z));
 		if(!inAnimation) //If we aren't already animating for this behavior, start
 		{
-			StartCoroutine(COAttack());
+			StartCoroutine("COAttack");
 		}
 		return BehaveResult.Running;
 	}
@@ -308,7 +310,7 @@ public class Dog : MonoBehaviour, IAgent
         gameObject.SendMessage("StartMovingTo", player.transform.position - 1 * player.transform.forward);
 		if(!inAnimation) //If we aren't already animating for this behavior, start
 		{
-			StartCoroutine(COChase());
+			StartCoroutine("COChase");
 		}
 		
 		return BehaveResult.Running;
@@ -320,7 +322,7 @@ public class Dog : MonoBehaviour, IAgent
         gameObject.SendMessage("StartMovingTo", spawnPoint);
         if (!inAnimation) //If we aren't already animating for this behavior, start
 		{
-            StartCoroutine(COChase());
+            StartCoroutine("COChase");
         }
 
         return BehaveResult.Running;
@@ -381,7 +383,6 @@ public class Dog : MonoBehaviour, IAgent
     IEnumerator CODie() {
         inAnimation = true;
         Debug.Log("beginning death animation");
-        yield return new WaitForSeconds(.4f);
         gameObject.animation.CrossFade("Death_1");
         //Debug.Log("yielding");
         yield return new WaitForSeconds(gameObject.animation.GetClip("Death_1").length);
@@ -395,6 +396,8 @@ public class Dog : MonoBehaviour, IAgent
         }
         dead = true;
         m_tree = null;  //stop behavior tree from running
+        StopCoroutine("COAttack");
+        StopCoroutine("COChase");
         StartCoroutine(CODie()); //run death animation
 
         this.gameObject.AddComponent<DeadDogManager>(); //add item manager to dog carcass
@@ -412,10 +415,14 @@ public class Dog : MonoBehaviour, IAgent
     void OnTriggerEnter(Collider col) {
         if (!dead && col.gameObject.tag == "PlayerWeaponBone") {
             //Debug.Log("I've been hit!");
-            StartCoroutine(COHitRecoil());
+            StartCoroutine("COHitRecoil");
             takingHitTimer = takingHitTimerMax;
             col.gameObject.transform.parent.parent.SendMessage("Hit");
             this.gameObject.SendMessage("TakeDamage", (col.gameObject.transform.parent.parent.GetComponent("DamageDealer") as DamageDealer).damage);
+            recentlyAttackedTimer = 20.0f;
+
+            senseSomething = true;
+            seeTarget = true;
         }
     }
 
@@ -472,4 +479,24 @@ public class Dog : MonoBehaviour, IAgent
 	        }
 	    }
 	}
+
+    public void setDaytime() {
+        for (int i = 0; i < PatrolPoints.Length; i++) {
+            PatrolPoints[i] /= 2;
+        }
+
+        this.gameObject.SendMessage("setDamageMultiplier", 1.0f);
+        this.sightDistance = 30f;
+        this.leashDistance = 40f;
+    }
+
+    public void setNightime() {
+        for (int i = 0; i < PatrolPoints.Length; i++) {
+            PatrolPoints[i] *= 2;
+        }
+
+        this.gameObject.SendMessage("setDamageMultiplier", 2.0f);
+        this.sightDistance = 45f;
+        this.leashDistance = 50f;
+    }
 }

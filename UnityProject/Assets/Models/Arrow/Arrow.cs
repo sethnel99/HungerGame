@@ -3,6 +3,8 @@ using System.Collections;
 
 public class Arrow : MonoBehaviour, DamageDealer {
 
+    public float arrowTimeout = 45.0f;
+
     ParticleEmitter bloodSplatter;
     public float damage {
         get;
@@ -16,11 +18,15 @@ public class Arrow : MonoBehaviour, DamageDealer {
 	
 	// Update is called once per frame
 	void Update () {
-	
+        arrowTimeout -= Time.deltaTime;
+        if (arrowTimeout < 0.0f) {
+            Destroy(gameObject);
+        }
 	}
 
     public void Hit() {
         bloodSplatter.Emit();
+        Debug.Log("hit");
     }
 
    
