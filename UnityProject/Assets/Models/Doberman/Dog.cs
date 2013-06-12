@@ -154,12 +154,17 @@ public class Dog : MonoBehaviour, IAgent
 
             senseSomething = distanceFromPlayer <= senseRange;
 
+            //no sensing if the instructions screen is displayed
+            if (GameObject.Find("Terrain").GetComponent("Instructions") != null) {
+                senseSomething = false;
+            }
+
             if (senseSomething) {
 
                 RaycastHit[] hits = Physics.SphereCastAll(transform.position - 10 * transform.forward, sightCastRadius, transform.forward, sightDistance);
                 foreach (RaycastHit hit in hits) {
                     if (hit.collider != null && hit.collider.gameObject.tag == "Player") {
-                        seeTarget = true;
+                             seeTarget = true;
                     }
                 }
             }
@@ -178,7 +183,7 @@ public class Dog : MonoBehaviour, IAgent
 	  }
 
 
-//        Debug.Log("Sense: " + senseSomething + " See Target: " + seeTarget + " close Enough: " + closeEnough + " aligned: " + aligned + " leash: " + leashingBackToSpawn + "recentlyAttacked: " + recentlyAttackedTimer);
+       // Debug.Log("Sense: " + senseSomething + " See Target: " + seeTarget + " close Enough: " + closeEnough + " aligned: " + aligned + " leash: " + leashingBackToSpawn + "recentlyAttacked: " + recentlyAttackedTimer);
 
 	}
 	
@@ -212,6 +217,7 @@ public class Dog : MonoBehaviour, IAgent
 	
 	public BehaveResult TickLookAroundAction(Tree sender)
 	{
+       // Debug.Log("look around tick");
 		gameObject.SendMessage("StopMoving","Look Around");
 		if(!doneLooking) //Haven't found a target and aren't done durdling
 		{
@@ -249,6 +255,7 @@ public class Dog : MonoBehaviour, IAgent
 	
 	public BehaveResult TickWanderAction(Tree sender)
 	{
+        //Debug.Log("wander tick");
 		if(!doneWandering)
 		{
 			wanderTimer += TickTime;
@@ -295,6 +302,7 @@ public class Dog : MonoBehaviour, IAgent
 	
 	public BehaveResult TickAttackAction(Tree sender)
 	{
+        //Debug.Log("attack tick");
 		transform.LookAt(new Vector3(player.transform.position.x, transform.position.y, player.transform.position.z));
 		if(!inAnimation) //If we aren't already animating for this behavior, start
 		{
@@ -317,8 +325,8 @@ public class Dog : MonoBehaviour, IAgent
 	}
 
     public BehaveResult TickLeashBackToSpawnAction(Tree sender) {
-  
-        //Debug.Log("current pos: " + this.gameObject.transform.position + " spawn point: " + spawnPoint);
+
+        //Debug.Log("leashing tick");
         gameObject.SendMessage("StartMovingTo", spawnPoint);
         if (!inAnimation) //If we aren't already animating for this behavior, start
 		{

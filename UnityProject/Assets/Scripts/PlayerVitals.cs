@@ -49,6 +49,10 @@ public class PlayerVitals : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
+       //no sensing if the instructions screen is displayed
+        if (GameObject.Find("Terrain").GetComponent("Instructions") != null) {
+            return;
+        }
 		
 		//Debug.Log (CurrentHealth);
 		GameTime.TIME+= 0.001f;

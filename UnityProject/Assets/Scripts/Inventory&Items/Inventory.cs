@@ -40,13 +40,10 @@ public class Inventory : MonoBehaviour{
         vitals = gameObject.transform.root.GetComponent<PlayerVitals>();
         textHints = GameObject.Find("TextHintGUI");
 
-        EquipItem(new BowItem(1));
-        EquipItem(new ArrowItem(50));
+        //EquipItem(new BowItem(1));
+        //EquipItem(new ArrowItem(50));
+        EquipItem(new KnifeItem(1));
 
-        /*/testing
-        addItem(new LargeCookedMeatItem(30));
-        addItem(new WoodItem(10));
-        addItem(new BowItem(2));*/
     }
 
     void initializeCraftingDictionary() {
