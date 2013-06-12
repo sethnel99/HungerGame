@@ -17,7 +17,9 @@ public class InteractionManager : MonoBehaviour {
     }
 
     public void removePotentialInteractor(GameObject g) {
-        potentialInteractors.Remove(g);
+        if (potentialInteractors.Contains(g)) {
+            potentialInteractors.Remove(g);
+        }
     }
 	
 	// Update is called once per frame

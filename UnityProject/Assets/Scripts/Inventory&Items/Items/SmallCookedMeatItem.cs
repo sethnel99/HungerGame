@@ -20,7 +20,7 @@ public class SmallCookedMeatItem : Item {
     }
 
     public override bool useItem() {
-        GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerVitals>().HealHunger(25.0f);
+        GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerVitals>().HealHunger(10.0f);
         return true;
     }
 }

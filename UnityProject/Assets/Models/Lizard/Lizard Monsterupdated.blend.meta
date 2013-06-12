@@ -529,7 +529,7 @@ ModelImporter:
       takeName: monster_ground_run
       firstFrame: 0
       lastFrame: 17
-      wrapMode: 0
+      wrapMode: 2
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
@@ -781,7 +781,7 @@ ModelImporter:
       takeName: monster_trotle
       firstFrame: 0
       lastFrame: 23
-      wrapMode: 0
+      wrapMode: 2
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
@@ -844,7 +844,7 @@ ModelImporter:
       takeName: Default Take
       firstFrame: -1
       lastFrame: 65
-      wrapMode: 0
+      wrapMode: 2
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
@@ -1021,8 +1021,8 @@ ModelImporter:
     armStretch: .0500000007
     legStretch: .0500000007
     feetSpacing: 0
-    rootMotionBoneName: 
+    rootMotionBoneName: root
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   additionalBone: 1
-  animationType: 2
+  animationType: 1
   userData: 

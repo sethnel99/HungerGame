@@ -3,7 +3,7 @@ using System.Collections;
 using Behave.Runtime;
 using Tree = Behave.Runtime.Tree;
 
-public class Dog : MonoBehaviour, IAgent 
+public class Lizard : MonoBehaviour, IAgent 
 {
 	Tree m_tree;
 	public GameObject player;
@@ -26,10 +26,9 @@ public class Dog : MonoBehaviour, IAgent
 	// AI Vars
 	float sightCastRadius = 6f;
 	float sightDistance = 30;
-	float alignRadius = 5f;
-	float attackRange = 3f;
+	float attackRange = 4.8f;
     float senseRange = 20;
-    float leashDistance = 80;
+    float leashDistance = 80; //change back to 40
 
     public bool leashingBackToSpawn = false;
 
@@ -41,18 +40,13 @@ public class Dog : MonoBehaviour, IAgent
     public float recentlyAttackedTimer = 0.0f;
 	// /AI Vars
 	
-	/*/Points to randomly go to
-	private Vector3[] PatrolPoints = new Vector3[3]{
-		 new Vector3(299.5799f, 71.53264f, -957.917f),
-		 new Vector3(333.1228f, 69.27077f, -963.5134f),
-		 new Vector3(336.9609f, 70.33675f, -991.8299f)
-	};*/
-	//private int PatrolDestination;
 	private Vector3[] PatrolPoints = new Vector3[3];
     private Vector3 spawnPoint;
 
 	private float takingHitTimer = 0f;
 	private float takingHitTimerMax = 1f;
+
+    float animationMultiplier = 1.0f;
 	
 	IEnumerator Start () {
         spawnPoint = this.gameObject.transform.position;
@@ -63,12 +57,25 @@ public class Dog : MonoBehaviour, IAgent
         player = GameObject.FindGameObjectWithTag("Player");
 		
 		m_tree = BLBehaveLibrary0.InstantiateTree(BLBehaveLibrary0.TreeType.EnemyBehaviors_PatrolerTree,this);
+
+        slowDownAnimations(.5f);
+
+
+        //Debug.Log(this.gameObject.animation.
+
 		while(Application.isPlaying && m_tree != null)
 		{	
 			yield return new WaitForSeconds(1.0f / m_tree.Frequency/2);
 			AIUpdate();
 		}
 	}
+
+    void slowDownAnimations(float m) {
+        animationMultiplier = m;
+        foreach(AnimationState state in this.gameObject.animation){
+            animation[state.name].speed = m;
+        }
+    }
 	
 	void AIUpdate()
 	{
@@ -132,10 +139,10 @@ public class Dog : MonoBehaviour, IAgent
 	{
         float distanceFromSpawn = Vector3.Distance(new Vector3(transform.position.x,transform.position.y,0), new Vector3(spawnPoint.x,spawnPoint.y,0));
         float distanceFromPlayer = Vector3.Distance(transform.position, player.transform.position);
-        //Debug.Log("distance from spawn: " + distanceFromSpawn);
+        Debug.Log("distance from spawn: " + distanceFromSpawn + "and leashing: " + leashingBackToSpawn);
         
-        //leash to spawn if the dog is too far away from spawn or too far away from the player. But don't leash if he's been attacked recently.
-        if (recentlyAttackedTimer <= 0  && (distanceFromSpawn > leashDistance || (seeTarget && distanceFromPlayer > leashDistance) || (leashingBackToSpawn && distanceFromSpawn > 3.0f))) {
+        //leash to spawn if the lizard is too far away from spawn or too far away from the player. But don't leash if he's been attacked recently.
+        if (recentlyAttackedTimer <= 0  && (distanceFromSpawn > leashDistance || (seeTarget && distanceFromPlayer > leashDistance) || (leashingBackToSpawn && distanceFromSpawn > 8.0f))) {
             senseSomething = false;
             seeTarget = false;
             closeEnough = false;
@@ -143,8 +150,9 @@ public class Dog : MonoBehaviour, IAgent
             leashingBackToSpawn = true;
             //Debug.Log("leashing back to spawn");
             return;
-        } else if (leashingBackToSpawn && distanceFromSpawn < 3.0f) {
-            gameObject.animation.CrossFade("Stand_Idle");
+        } else if (leashingBackToSpawn && distanceFromSpawn < 8.0f) {
+            Debug.Log("FBGM");
+            gameObject.animation.Play("Roar");
             inAnimation = false;
             leashingBackToSpawn = false;
         } 
@@ -171,14 +179,14 @@ public class Dog : MonoBehaviour, IAgent
 	    		closeEnough = distanceFromPlayer <= attackRange;
                 Vector3 dirToPlayer = Vector3.Normalize(player.transform.position - transform.position);
                 dirToPlayer.y = 0;
-                Vector3 dogForward = this.gameObject.transform.forward;
-                dogForward.y = 0;
-                aligned = Vector3.Angle(dirToPlayer, dogForward) < 20;
-                //Debug.Log("Dog to player: " + dirToPlayer + " Dog forward: " + dogForward + " Angle: " + Vector3.Angle(dirToPlayer, dogForward));
+                Vector3 lizardForward = this.gameObject.transform.forward;
+                lizardForward.y = 0;
+                aligned = Vector3.Angle(dirToPlayer, lizardForward) < 20;
+                //Debug.Log("lizard to player: " + dirToPlayer + " lizard forward: " + lizardForward + " Angle: " + Vector3.Angle(dirToPlayer, lizardForward));
 	  }
 
 
-//        Debug.Log("Sense: " + senseSomething + " See Target: " + seeTarget + " close Enough: " + closeEnough + " aligned: " + aligned + " leash: " + leashingBackToSpawn + "recentlyAttacked: " + recentlyAttackedTimer);
+        //Debug.Log("Sense: " + senseSomething + " See Target: " + seeTarget + " close Enough: " + closeEnough + " aligned: " + aligned + " leash: " + leashingBackToSpawn + "recentlyAttacked: " + recentlyAttackedTimer);
 
 	}
 	
@@ -279,7 +287,6 @@ public class Dog : MonoBehaviour, IAgent
 			{
 				gameObject.SendMessage("StopMoving","TickWanderActionTimeOut");
 				doneWandering = true;
-				gameObject.animation.CrossFade("Walk_End_1");
 			}
 			return BehaveResult.Running;
 		}
@@ -298,7 +305,7 @@ public class Dog : MonoBehaviour, IAgent
 		transform.LookAt(new Vector3(player.transform.position.x, transform.position.y, player.transform.position.z));
 		if(!inAnimation) //If we aren't already animating for this behavior, start
 		{
-			StartCoroutine("COAttack");
+            StartCoroutine("COAttack1");
 		}
 		return BehaveResult.Running;
 	}
@@ -307,7 +314,7 @@ public class Dog : MonoBehaviour, IAgent
 	{
         //Debug.Log("CDAA");
         transform.LookAt(new Vector3(player.transform.position.x, transform.position.y, player.transform.position.z));
-        gameObject.SendMessage("StartMovingTo", player.transform.position - 1 * player.transform.forward);
+        gameObject.SendMessage("StartMovingTo", player.transform.position +  3 * player.transform.forward);
 		if(!inAnimation) //If we aren't already animating for this behavior, start
 		{
 			StartCoroutine("COChase");
@@ -329,62 +336,69 @@ public class Dog : MonoBehaviour, IAgent
     }
 	
 	
-	IEnumerator COBark() {
+	IEnumerator CORoar() {
+        Debug.Log("CORoar");
 		inAnimation = true;
-		gameObject.animation.CrossFade("Stand_Idle");
+		gameObject.animation.CrossFade("Idle");
 	    yield return new WaitForSeconds(.5f);
-	    gameObject.animation.CrossFade("Bark_1");
+	    gameObject.animation.CrossFade("Roar");
 		yield return new WaitForSeconds(1f);
-		gameObject.animation.CrossFade("Stand_Idle");
+		gameObject.animation.CrossFade("Idle");
 		inAnimation = false;
 	}
 	IEnumerator COTwitch() {
+        Debug.Log("COTwitch");
 		inAnimation = true;
-		gameObject.animation.CrossFade("Stand_Idle");
+		gameObject.animation.CrossFade("Idle");
 	    yield return new WaitForSeconds(.5f);
-	    gameObject.animation.CrossFade("Idle_Twitch_1");
+	    gameObject.animation.CrossFade("Look_Around");
 	    yield return new WaitForSeconds(2f);
-		gameObject.animation.CrossFade("Stand_Idle");
+		gameObject.animation.CrossFade("Idle");
 		inAnimation = false;
 	}
 	
 	IEnumerator COWander() {
+        Debug.Log("COWander");
 		inAnimation = true;
 		gameObject.SendMessage("SetSpeed", 1f);
-	    gameObject.animation.CrossFade("Walk_Begin_1");
-	    yield return new WaitForSeconds(.2f);
-	    gameObject.animation.CrossFade("Walk_Loop_1");
+	    gameObject.animation.CrossFade("Walk_Loop");
+        yield return new WaitForSeconds(gameObject.animation.GetClip("Walk_Loop").length / animationMultiplier);
 	}
 	IEnumerator COChase() {
+        Debug.Log("COChase");
 		inAnimation = true;
-		gameObject.SendMessage("SetSpeed", 5f);
-	    gameObject.animation.CrossFade("Run_Begin_1");
-	    yield return new WaitForSeconds(.2f);
-	    gameObject.animation.CrossFade("Run_Loop_1");
+		gameObject.SendMessage("SetSpeed", 7f);
+	    gameObject.animation.CrossFade("monster_ground_run");
+        yield return new WaitForSeconds(gameObject.animation.GetClip("monster_ground_run").length / animationMultiplier);
 	}
-	IEnumerator COAttack() {
+	IEnumerator COAttack1() {
+        Debug.Log("COAttack1");
 		inAnimation = true;
-		gameObject.animation.CrossFade("Poise_Loop_1");
-		yield return new WaitForSeconds(.4f);
 		bite.collider.enabled = true;
-	    gameObject.animation.CrossFade("Bite_1");
-		yield return new WaitForSeconds(.6f);
+	    gameObject.animation.CrossFade("Attack_1");
+        yield return new WaitForSeconds(gameObject.animation.GetClip("Attack_1").length / animationMultiplier);
 		bite.collider.enabled = false;
-		gameObject.animation.CrossFade("Poise_Loop_1");
 		inAnimation = false;
 	}
+
+
 	IEnumerator COHitRecoil() {
+        Debug.Log("COHitRecoil");
 		inAnimation = true;
-		gameObject.animation.CrossFade("Hit_Recoil_1");
-	    yield return new WaitForSeconds(.4f);
+		//gameObject.animation.CrossFade("Hit_Recoil");
+        gameObject.animation.Play("Hit_Recoil");
+        yield return new WaitForSeconds(gameObject.animation.GetClip("Hit_Recoil").length / animationMultiplier);
 		inAnimation = false;
 	}
 
     IEnumerator CODie() {
+        Debug.Log("CODie");
         inAnimation = true;
         Debug.Log("beginning death animation");
-        gameObject.animation.CrossFade("Death_1");
-        yield return new WaitForSeconds(gameObject.animation.GetClip("Death_1").length);
+        gameObject.animation.Play("Death_1");
+        //Debug.Log("yielding");
+        Debug.Log(gameObject.animation.GetClip("Death_1").length);
+        yield return new WaitForSeconds(gameObject.animation.GetClip("Death_1").length / animationMultiplier);
     }
     
     
@@ -395,11 +409,11 @@ public class Dog : MonoBehaviour, IAgent
         }
         dead = true;
         m_tree = null;  //stop behavior tree from running
-        StopCoroutine("COAttack");
+        StopCoroutine("COAttack1");
         StopCoroutine("COChase");
         StartCoroutine(CODie()); //run death animation
 
-        this.gameObject.AddComponent<DeadDogManager>(); //add item manager to dog carcass
+        this.gameObject.AddComponent<DeadLizardManager>(); //add item manager to lizard carcass
 
         //disable colliders which are no longer needed
         this.gameObject.GetComponentInChildren<SphereCollider>().enabled = false;
@@ -418,7 +432,7 @@ public class Dog : MonoBehaviour, IAgent
             takingHitTimer = takingHitTimerMax;
             col.gameObject.transform.parent.parent.SendMessage("Hit");
             this.gameObject.SendMessage("TakeDamage", (col.gameObject.transform.parent.parent.GetComponent("DamageDealer") as DamageDealer).damage);
-            recentlyAttackedTimer = 7f;
+            recentlyAttackedTimer = 7.0f;
 
             senseSomething = true;
             seeTarget = true;
@@ -433,7 +447,7 @@ public class Dog : MonoBehaviour, IAgent
 		case -1:
 			//we got stuck or something weird happened
 			doneWandering = true;
-            Debug.Log("shit im stuck");
+            //Debug.Log("shit im stuck");
 			break;
 		case 1:
 			//we got to or close enough to our wander target
