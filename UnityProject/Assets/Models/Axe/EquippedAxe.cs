@@ -39,5 +39,14 @@ public class EquippedAxe : EquippedItem {
 	    yield return new WaitForSeconds(0.05f); // extra delay before you can shoot again
 	    isInAction = false;
 	}
+	public AudioClip woodSound;
+	void OnTriggerEnter(Collider col)
+	{
+		if(col.tag == "Axeable" && this.gameObject.GetComponentInChildren<BoxCollider>().enabled)
+		{
+			GameObject.Destroy(col.gameObject);
+			audio.PlayOneShot(woodSound);
+		}
+	}
 	
 }

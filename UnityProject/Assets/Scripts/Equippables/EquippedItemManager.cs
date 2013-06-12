@@ -10,6 +10,7 @@ public class EquippedItemManager : MonoBehaviour {
 		RoofPiece1,
 		Knife,
 		Bow,
+		Door,
 		MAX
 	};
 	
@@ -38,6 +39,9 @@ public class EquippedItemManager : MonoBehaviour {
 		
 		equippableTransform[(int)Equippable.Bow] = new Vector3(-.2f,-.05f,.55f);
 		equippableRotate[(int)Equippable.Bow] = new Vector3(355,265,5);
+
+		equippableTransform[(int)Equippable.Door] = new Vector3(-.85f,-1.8f,3.2f);
+		equippableRotate[(int)Equippable.Door] = new Vector3(0,180,0);
 		
 	}
 
@@ -45,7 +49,6 @@ public class EquippedItemManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
 	}
 	
 	public void EquipItem (int equippable, float damage = 0){
