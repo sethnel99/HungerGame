@@ -44,12 +44,12 @@ public class SpeedManager : MonoBehaviour {
         if (boots != null) {
             motor.movement.maxForwardSpeed = 8 * (1 + boots.statPower/50);
             motor.movement.maxSidewaysSpeed = 8 * (1 + boots.statPower/50);
-            motor.movement.maxBackwardsSpeed = 8 * (1 + boots.statPower/50);
+            motor.movement.maxBackwardsSpeed = 6 * (1 + boots.statPower/50);
             //controller.slopeLimit = 45 * 1 + boots.statPower / 50;
         } else {
             motor.movement.maxForwardSpeed = 8;
             motor.movement.maxSidewaysSpeed = 8;
-            motor.movement.maxBackwardsSpeed = 8;
+            motor.movement.maxBackwardsSpeed = 6;
             //controller.slopeLimit = 45.0f;
         } 
 

@@ -4,12 +4,12 @@ using System;
 
 public class EnemyNodeManager : MonoBehaviour {
     public enum NodeType{
-        Dog, Random
+        Dog, Lizard, Random
     }
 
     public NodeType nodeType = NodeType.Dog;
 
-    static string[] nodeTypes = {"Dog"};
+    static string[] nodeTypes = {"Dog", "Lizard"};
     
     public bool isSpawned = true;
     private GameObject enemy;

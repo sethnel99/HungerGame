@@ -95,7 +95,7 @@ public class PathMoveable : MonoBehaviour
 				{
 					if (movedDistance < speed * elapsedTime / 10f)
 					{
-						Debug.Log ("Stop from inside moving, we are stuck");
+						//Debug.Log ("Stop from inside moving, we are stuck");
 						
 						StopMoving ("stuck from inside moving");
 						gameObject.SendMessage("WanderingDone", -1);
