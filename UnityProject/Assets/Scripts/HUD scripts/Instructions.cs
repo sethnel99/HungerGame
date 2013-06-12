@@ -23,7 +23,7 @@ public class Instructions : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         if (Input.GetKeyDown("space")) {
-            Debug.Log("MOVE THE FUCKING INSTRUCTIONS");
+            //Debug.Log("MOVE THE FUCKING INSTRUCTIONS");
             player.GetComponent<CharacterController>().enabled = true;
             surviveText = true;
             AudioSource.PlayClipAtPoint(surviveSound, player.transform.position);

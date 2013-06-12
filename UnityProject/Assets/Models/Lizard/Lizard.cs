@@ -7,7 +7,8 @@ public class Lizard : MonoBehaviour, IAgent
 {
 	Tree m_tree;
 	public GameObject player;
-	public GameObject bite;
+	public GameObject swipe;
+    public GameObject bite;
 	
 	private bool inAnimation; // are we already animating for a behavior?
 	
@@ -26,7 +27,7 @@ public class Lizard : MonoBehaviour, IAgent
 	// AI Vars
 	float sightCastRadius = 6f;
 	float sightDistance = 30;
-	float attackRange = 4.8f;
+	float attackRange = 7f;
     float senseRange = 20;
     float leashDistance = 80; //change back to 40
 
@@ -144,7 +145,7 @@ public class Lizard : MonoBehaviour, IAgent
 
         float distanceFromSpawn = Vector3.Distance(new Vector3(transform.position.x,transform.position.y,0), new Vector3(spawnPoint.x,spawnPoint.y,0));
         float distanceFromPlayer = Vector3.Distance(transform.position, player.transform.position);
-        Debug.Log("distance from spawn: " + distanceFromSpawn + "and leashing: " + leashingBackToSpawn);
+       // Debug.Log("distance from spawn: " + distanceFromSpawn + "and leashing: " + leashingBackToSpawn);
         
         //leash to spawn if the lizard is too far away from spawn or too far away from the player. But don't leash if he's been attacked recently.
         if (recentlyAttackedTimer <= 0  && (distanceFromSpawn > leashDistance || (seeTarget && distanceFromPlayer > leashDistance) || (leashingBackToSpawn && distanceFromSpawn > 8.0f))) {
@@ -310,7 +311,8 @@ public class Lizard : MonoBehaviour, IAgent
 		transform.LookAt(new Vector3(player.transform.position.x, transform.position.y, player.transform.position.z));
 		if(!inAnimation) //If we aren't already animating for this behavior, start
 		{
-            StartCoroutine("COAttack1");
+            StartCoroutine((Random.Range(0,2) < 1.0) ? "COAttack1" : "COAttack2");
+            //StartCoroutine("COAttack1");
 		}
 		return BehaveResult.Running;
 	}
@@ -376,15 +378,27 @@ public class Lizard : MonoBehaviour, IAgent
 	    gameObject.animation.CrossFade("monster_ground_run");
         yield return new WaitForSeconds(gameObject.animation.GetClip("monster_ground_run").length / animationMultiplier);
 	}
+
 	IEnumerator COAttack1() {
         Debug.Log("COAttack1");
 		inAnimation = true;
-		bite.collider.enabled = true;
+		swipe.collider.enabled = true;
 	    gameObject.animation.CrossFade("Attack_1");
         yield return new WaitForSeconds(gameObject.animation.GetClip("Attack_1").length / animationMultiplier);
-		bite.collider.enabled = false;
+        swipe.collider.enabled = false;
 		inAnimation = false;
 	}
+
+    IEnumerator COAttack2() {
+        Debug.Log("COAttack2");
+        inAnimation = true;
+        bite.collider.enabled = true;
+        gameObject.animation.Play("Attack_2");
+        yield return new WaitForSeconds(gameObject.animation.GetClip("Attack_2").length / animationMultiplier);
+        bite.collider.enabled = false;
+        inAnimation = false;
+    }
+
 
 
 	IEnumerator COHitRecoil() {

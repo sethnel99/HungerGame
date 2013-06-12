@@ -53,13 +53,7 @@ public class PlayerVitals : MonoBehaviour
         if (GameObject.Find("Terrain").GetComponent("Instructions") != null && !GameObject.Find("Terrain").GetComponent<Instructions>().surviveText) {
             return;
         }
-		
-		//Debug.Log (CurrentHealth);
-		GameTime.TIME+= 0.001f;
-		
-		if (GameTime.TIME >= 23)
-			GameTime.TIME = 0;
-		
+
 		if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
 		{
 			CurrentHunger -= 0.2f * Time.deltaTime;
