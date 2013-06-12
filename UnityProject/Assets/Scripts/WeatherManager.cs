@@ -15,10 +15,13 @@ public class WeatherManager : MonoBehaviour {
 	int start;
 	float end;
 	int checkToStart;
+	bool fog;
+	bool rain;
+	float i;
+	float rate;
 	
 	public enum WeatherEffectsEnum{
-		Rain,
-		Snow
+		Rain
 	}
 	
 	// Use this for initialization
@@ -26,7 +29,11 @@ public class WeatherManager : MonoBehaviour {
 	void Start () {
 		gameObject.transform.parent = GameObject.FindWithTag("Player").transform;
 		start = (int)(Random.value*7000 +1);
+		RenderSettings.fogDensity = 0.0f;
+		RenderSettings.fog = true;
 		end = Random.value*200+200;
+		i = 0.0f;
+		rate = 1.0f/ 10.0f;
 	}
 	
 	// Update is called once per frame
@@ -39,14 +46,37 @@ public class WeatherManager : MonoBehaviour {
 			Quaternion rotation = transform.rotation;
 			rotation.x = 0;
 			rotation.z = 0;
+			fog = true;
+			rain = true;
+		
 			transform.rotation = rotation;
 		}
+		
+		if (fog){ 
+   			if (i < 1.0) {
+        		i +=   Time.deltaTime* rate;
+        		RenderSettings.fogDensity = Mathf.Lerp (0.0f, 0.01f, i ); 
+			}
+		}
+		
+		if (!fog && rain){
+			if (i < 1.0) {
+        		i +=   Time.deltaTime* rate;
+        		RenderSettings.fogDensity = Mathf.Lerp (0.01f, 0.0f, i ); 
+			}
+		}
+		
+		
 		if (weatherEffects[(int)WeatherEffectsEnum.Rain].particleEmitter.emit){
 			end = end - Time.deltaTime;
 		}
+		
 		if(end <= 0.0f){
 			weatherEffects[(int)WeatherEffectsEnum.Rain].particleEmitter.emit = false;
+			fog = false;
+			i = 0.0f;
 			end = Random.value*200+200;
 		}
 	}
+	
 }
