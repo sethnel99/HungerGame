@@ -1,4 +1,6 @@
 private var motor : CharacterMotor;
+private var sphere : GameObject;
+private var characterLocation : GameObject;
 
 // Use this for initialization
 function Awake () {
@@ -24,6 +26,11 @@ function Update () {
 		
 		// Multiply the normalized direction vector by the modified length
 		directionVector = directionVector * directionLength;
+		
+		sphere = GameObject.Find("sphereMesh");
+		characterLocation = GameObject.Find("First Person Controller");
+		
+		sphere.transform.position = characterLocation.transform.position;
 	}
 	
 	// Apply the direction to the CharacterMotor
