@@ -50,7 +50,7 @@ public class PlayerVitals : MonoBehaviour
 	void Update ()
 	{
        //no sensing if the instructions screen is displayed
-        if (GameObject.Find("Terrain").GetComponent("Instructions") != null) {
+        if (GameObject.Find("Terrain").GetComponent("Instructions") != null && !GameObject.Find("Terrain").GetComponent<Instructions>().surviveText) {
             return;
         }
 		

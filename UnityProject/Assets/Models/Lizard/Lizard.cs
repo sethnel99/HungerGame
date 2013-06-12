@@ -137,6 +137,11 @@ public class Lizard : MonoBehaviour, IAgent
 	
 	void RunChecks()
 	{
+        //no sensing if the instructions screen is displayed
+        if (GameObject.Find("Terrain").GetComponent("Instructions") != null && !GameObject.Find("Terrain").GetComponent<Instructions>().surviveText) {
+            return;
+        }
+
         float distanceFromSpawn = Vector3.Distance(new Vector3(transform.position.x,transform.position.y,0), new Vector3(spawnPoint.x,spawnPoint.y,0));
         float distanceFromPlayer = Vector3.Distance(transform.position, player.transform.position);
         Debug.Log("distance from spawn: " + distanceFromSpawn + "and leashing: " + leashingBackToSpawn);
