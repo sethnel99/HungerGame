@@ -46,6 +46,11 @@ public class EquippedAxe : EquippedItem {
 		{
 			GameObject.Destroy(col.gameObject);
 			audio.PlayOneShot(woodSound);
+
+            float r = Random.Range(0, 3);
+            if (r < 1) {
+                GameObject.FindGameObjectWithTag("Player").GetComponent<Inventory>().addItem(new WoodItem(1));
+            }
 		}
 	}
 	
