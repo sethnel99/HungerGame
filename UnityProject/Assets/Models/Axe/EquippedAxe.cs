@@ -36,7 +36,7 @@ public class EquippedAxe : EquippedItem {
         this.gameObject.GetComponentInChildren<BoxCollider>().enabled = true; // activate damage collider
 		yield return new WaitForSeconds(0.25f);
         this.gameObject.GetComponentInChildren<BoxCollider>().enabled = false;
-	    yield return new WaitForSeconds(0.05f); // extra delay before you can shoot again
+	    yield return new WaitForSeconds(0.15f); // extra delay before you can shoot again
 	    isInAction = false;
 	}
 	public AudioClip woodSound;

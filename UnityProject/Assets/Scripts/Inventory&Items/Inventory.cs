@@ -54,10 +54,10 @@ public class Inventory : MonoBehaviour{
     void initializeCraftingDictionary() {
         craftingDictionary = new Dictionary<Item, Item[]>();
 
-        craftingDictionary.Add(new SidePlankItem(2), new Item[] { new WoodItem(1) });
+        craftingDictionary.Add(new SidePlankItem(6), new Item[] { new WoodItem(1) });
         craftingDictionary.Add(new RoofPlankItem(2), new Item[] { new WoodItem(1) });
-        craftingDictionary.Add(new DoorItem(1), new Item[] { new WoodItem(5), new SharpStoneItem(2) });
-        craftingDictionary.Add(new FireItem(1), new Item[] { new WoodItem(3), new SharpStoneItem(2)});
+        craftingDictionary.Add(new DoorItem(1), new Item[] { new WoodItem(3), new SharpStoneItem(2) });
+        craftingDictionary.Add(new FireItem(1), new Item[] { new WoodItem(2), new SharpStoneItem(1)});
         craftingDictionary.Add(new SmallCookedMeatItem(1), new Item[] { new SmallUncookedMeatItem(1) });
         craftingDictionary.Add(new LargeCookedMeatItem(1), new Item[] { new LargeUncookedMeatItem(1) });
         craftingDictionary.Add(new LargeHideItem(1), new Item[] { new SmallHideItem(3) });
@@ -66,7 +66,7 @@ public class Inventory : MonoBehaviour{
         craftingDictionary.Add(new AxeItem(1), new Item[] { new SharpStoneItem(5), new WoodItem(3) });
         craftingDictionary.Add(new KnifeItem(1), new Item[] { new SharpStoneItem(2), new WoodItem(3) });
         craftingDictionary.Add(new BowItem(1), new Item[] { new WoodItem(4), new StringItem(4)});
-        craftingDictionary.Add(new ArrowItem(10), new Item[] { new WoodItem(1), new SharpStoneItem(1) });
+        craftingDictionary.Add(new ArrowItem(10), new Item[] { new WoodItem(1) });
         craftingDictionary.Add(new BootsItem(1, 5), new Item[] { new SmallHideItem(2), new StringItem(6) });
         craftingDictionary.Add(new BootsItem(1, 10), new Item[] { new SmallHideItem(16), new StringItem(30) });
         craftingDictionary.Add(new JacketItem(1, 10), new Item[] { new LargeHideItem(3), new SmallHideItem(6), new StringItem(6) });
