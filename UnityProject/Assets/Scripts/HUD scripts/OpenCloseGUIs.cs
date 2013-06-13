@@ -57,14 +57,13 @@ public class OpenCloseGUIs : MonoBehaviour {
             }
             debounceTimer += Time.deltaTime;
         } else if (Input.GetKeyDown (KeyCode.T)) {
-			if (inventoryGUI.enabled) {
-				enableControls (inventoryGUI);
-				setInventoryEnabled(false);
-			} else if (craftingGUI.enabled) {
-				enableControls (craftingGUI);
-				setCraftingEnabled(false);
-			} 	
-			equipmentGUI.enabled = !equipmentGUI.enabled;
+            if (equipmentGUI.enabled) {
+                enableControls(equipmentGUI);
+                setEquipmentEnabled(false);
+            } else {
+                disableControls(equipmentGUI);
+                setEquipmentEnabled(true);
+            }
 		}
 
 	}
