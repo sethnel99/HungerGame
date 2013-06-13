@@ -29,6 +29,7 @@ public abstract class EquippedItem : MonoBehaviour, DamageDealer {
 
     public void DisableByGUI(bool d) {
         disabledByGUI = d;
+        Debug.Log("DISABLED by gui");
     }
 
 }

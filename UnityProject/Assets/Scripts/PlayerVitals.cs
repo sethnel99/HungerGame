@@ -79,7 +79,7 @@ public class PlayerVitals : MonoBehaviour
         //regenerate body part health slowly
         for (int i = 0; i < bodyPartHealth.Length; i++) {
             if (bodyPartHealth[i] > 0 && bodyPartHealth[i] < bodyPartMaxHealth[i]) {
-                bodyPartHealth[i] += Time.deltaTime * bodyPartMaxHealth[i]/100;
+                bodyPartHealth[i] += Time.deltaTime/4f * bodyPartMaxHealth[i]/100;
             }
         }
 		

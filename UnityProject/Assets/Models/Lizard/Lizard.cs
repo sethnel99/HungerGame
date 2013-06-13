@@ -9,6 +9,10 @@ public class Lizard : MonoBehaviour, IAgent
 	public GameObject player;
 	public GameObject swipe;
     public GameObject bite;
+
+    public AudioClip lizardSwipe;
+    public AudioClip lizardBite;
+    public AudioClip lizardDeath;
 	
 	private bool inAnimation; // are we already animating for a behavior?
 	
@@ -383,8 +387,10 @@ public class Lizard : MonoBehaviour, IAgent
         Debug.Log("COAttack1");
 		inAnimation = true;
 		swipe.collider.enabled = true;
-	    gameObject.animation.CrossFade("Attack_1");
+	    gameObject.animation.Play("Attack_1");
+        gameObject.audio.PlayOneShot(lizardSwipe);
         yield return new WaitForSeconds(gameObject.animation.GetClip("Attack_1").length / animationMultiplier);
+        gameObject.animation.Play("Idle");
         swipe.collider.enabled = false;
 		inAnimation = false;
 	}
@@ -394,6 +400,7 @@ public class Lizard : MonoBehaviour, IAgent
         inAnimation = true;
         bite.collider.enabled = true;
         gameObject.animation.Play("Attack_2");
+        gameObject.audio.PlayOneShot(lizardBite);
         yield return new WaitForSeconds(gameObject.animation.GetClip("Attack_2").length / animationMultiplier);
         bite.collider.enabled = false;
         inAnimation = false;
@@ -413,8 +420,7 @@ public class Lizard : MonoBehaviour, IAgent
         inAnimation = true;
         Debug.Log("beginning death animation");
         gameObject.animation.Play("Death_1");
-        //Debug.Log("yielding");
-        Debug.Log(gameObject.animation.GetClip("Death_1").length);
+        gameObject.audio.PlayOneShot(lizardDeath);
         yield return new WaitForSeconds(gameObject.animation.GetClip("Death_1").length / animationMultiplier);
     }
     

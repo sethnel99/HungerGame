@@ -38,6 +38,10 @@ public class InteractionManager : MonoBehaviour {
         float minDistance = float.MaxValue;
         GameObject minObject = null;
 
+        if (potentialInteractors.Count == 0) {
+            return null;
+        }
+
         foreach (GameObject g in potentialInteractors) {
             float distanceFromPlayer = Vector3.Distance(currentPlayerLoc, g.transform.position);
             if (distanceFromPlayer < minDistance) {
