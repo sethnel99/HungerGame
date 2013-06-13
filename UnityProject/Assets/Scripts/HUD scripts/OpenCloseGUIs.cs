@@ -4,6 +4,7 @@ using System.Collections;
 public class OpenCloseGUIs : MonoBehaviour {
     public CraftingGUI craftingGUI;
     public IGUI inventoryGUI;
+	public EquippableGUI equipmentGUI;
 
     float debounceTime = .25f;
     float debounceTimer = 0f;
@@ -55,7 +56,17 @@ public class OpenCloseGUIs : MonoBehaviour {
                 lockCursor();
             }
             debounceTimer += Time.deltaTime;
-        }
+        } else if (Input.GetKeyDown (KeyCode.T)) {
+			if (inventoryGUI.enabled) {
+				enableControls (inventoryGUI);
+				setInventoryEnabled(false);
+			} else if (craftingGUI.enabled) {
+				enableControls (craftingGUI);
+				setCraftingEnabled(false);
+			} 	
+			equipmentGUI.enabled = !equipmentGUI.enabled;
+		}
+
 	}
 
     public void disableControls(MonoBehaviour disabler) {
@@ -66,11 +77,18 @@ public class OpenCloseGUIs : MonoBehaviour {
 		
         if (disabler is CraftingGUI){
             setInventoryEnabled(false);
+			setEquipmentEnabled(false);
         }else if (disabler is InventoryGUI){
             setCraftingEnabled(false);
-        }else{
+			setEquipmentEnabled(false);
+        }else if (disabler is EquippableGUI){
+			setCraftingEnabled(false);
+			setInventoryEnabled(false);
+		}
+		else{
             setInventoryEnabled(false);
             setCraftingEnabled(false);
+			setEquipmentEnabled(false);
 		}
     }
 
@@ -112,4 +130,7 @@ public class OpenCloseGUIs : MonoBehaviour {
         craftingGUI.enabled = e;
     }
 	
+	public void setEquipmentEnabled(bool e) {
+        equipmentGUI.enabled = e;
+    }
 }

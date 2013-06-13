@@ -25,11 +25,11 @@ public class EnemyNodeManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         respawnTime = UnityEngine.Random.Range(45, 60);
-        interactionManager = GameObject.FindGameObjectWithTag("Player").GetComponent<InteractionManager>();
-        Debug.Log("timeScript ");
+        interactionManager = GameObject.FindGameObjectWithTag("Player").GetComponent<InteractionManager>();      
         timeScript = GameObject.Find("Skybox Controller").GetComponent<skydomeScript2>();
-        Debug.Log("timeScript " + timeScript);
+
         isSpawned = true;
+        nodeToCreate = nodeType;
 	}
 	
 	// Update is called once per frame
@@ -67,7 +67,7 @@ public class EnemyNodeManager : MonoBehaviour {
 
          if (nodeType == NodeType.Random) {
              int roll = UnityEngine.Random.Range(1, 100);
-             nodeToCreate = (NodeType)Enum.GetValues(typeof(NodeType)).GetValue((roll < 5 || roll < 15 && isNightTime) ? 1 : 0);
+             nodeToCreate = (NodeType)Enum.GetValues(typeof(NodeType)).GetValue((roll < 10 || roll < 20 && isNightTime) ? 1 : 0);
          } else {
              nodeToCreate = nodeType;
          }
@@ -80,14 +80,13 @@ public class EnemyNodeManager : MonoBehaviour {
             }
 			
             enemy.transform.parent = transform;
-            enemy.transform.localPosition = Vector3.zero;
+            enemy.transform.localPosition = new Vector3(0,1,0);
             enemy.transform.localRotation = Quaternion.Euler(enemy.transform.localRotation.eulerAngles.x, UnityEngine.Random.Range(0, 360), enemy.transform.localRotation.eulerAngles.z);
             return true;
     }
 
     void OnTriggerEnter(Collider col) {
         if (col.gameObject.tag == "PlayerEnabler") {
-            Debug.Log("TRIGGER ENTER ENEMY NODE");
             if (isSpawned) {
                 spawnNode();
             }
@@ -96,7 +95,6 @@ public class EnemyNodeManager : MonoBehaviour {
 
     void OnTriggerExit(Collider col) {
         if (col.gameObject.tag == "PlayerEnabler") {
-            Debug.Log("TRIGGER EXIT ENEMY NODE");
             if (enemy != null) {
                 Destroy(enemy);
             }
