@@ -40,31 +40,28 @@ public class SpawnGatherableNodes : MonoBehaviour {
         }
 
         //find all unspawned nodes
-        GameObject[] unSpawnedNodes = gatherableNodes.Where(c => c.GetComponent<GatherableNodeManager>().isSpawned == false).ToArray<GameObject>();
+        List<GameObject> unSpawnedNodes = gatherableNodes.Where(c => c.GetComponent<GatherableNodeManager>().isSpawned == false).ToList<GameObject>();
 
         //cap number to spawn at the number of unspawned nodes (impossible to spawn more than number of nodes)
-        if (numToSpawn > unSpawnedNodes.Length) {
-            numToSpawn = unSpawnedNodes.Length;
-        }
-
-        //compose a list of numToSpawn random integers
-        List<int> randomList = new List<int>();
-        while (randomList.Count() < numToSpawn){
-            int r = Random.Range(0, unSpawnedNodes.Length);
-            if (!randomList.Contains(r)) {
-                randomList.Add(r);
-            }
+        if (numToSpawn > unSpawnedNodes.Count) {
+            numToSpawn = unSpawnedNodes.Count;
         }
 
         Vector3 playerPosition = GameObject.FindGameObjectWithTag("Player").transform.position;
 
-        //now tell the nodes at those locations in unSpawnedNodes to spawn
-        for (int i = 0; i < randomList.Count(); i++) {
-            //don't spawn a node if it is right next to the player
-            if (Vector3.Distance(playerPosition, unSpawnedNodes[randomList[i]].transform.position) > 10) {
-                unSpawnedNodes[randomList[i]].GetComponent<GatherableNodeManager>().spawnNode();
+        while (numToSpawn > 0){
+            int r = Random.Range(0, unSpawnedNodes.Count);
+            if (Vector3.Distance(playerPosition, unSpawnedNodes[r].transform.position) > 20) {
+                unSpawnedNodes[r].GetComponent<GatherableNodeManager>().spawnNode();
+                numToSpawn--;
+                unSpawnedNodes.RemoveAt(r);
             }
+            
         }
+
+       
+
+
 
 
     }

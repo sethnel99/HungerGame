@@ -51,6 +51,7 @@ public class Inventory : MonoBehaviour{
 
         craftingDictionary.Add(new SidePlankItem(2), new Item[] { new WoodItem(1) });
         craftingDictionary.Add(new RoofPlankItem(2), new Item[] { new WoodItem(1) });
+        craftingDictionary.Add(new DoorItem(1), new Item[] { new WoodItem(1) });
         craftingDictionary.Add(new FireItem(1), new Item[] { new WoodItem(3), new SharpStoneItem(2)});
         craftingDictionary.Add(new SmallCookedMeatItem(1), new Item[] { new SmallUncookedMeatItem(1) });
         craftingDictionary.Add(new LargeCookedMeatItem(1), new Item[] { new LargeUncookedMeatItem(1) });
@@ -318,6 +319,8 @@ public class Inventory : MonoBehaviour{
                     equippedItemScript.EquipItem((int)EquippedItemManager.Equippable.Bow, i.statPower);
                 } else if (i is KnifeItem) {
                     equippedItemScript.EquipItem((int)EquippedItemManager.Equippable.Knife, i.statPower);
+                } else if (i is DoorItem) {
+                    equippedItemScript.EquipItem((int)EquippedItemManager.Equippable.Door);
                 }
 
                 if (GameObject.Find("GUIButtons").GetComponent<OpenCloseGUIs>().controlsAreDisabled) {

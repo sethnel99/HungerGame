@@ -8,6 +8,9 @@ public class Dog : MonoBehaviour, IAgent
 	Tree m_tree;
 	public GameObject player;
 	public GameObject bite;
+
+    public AudioClip dogBiteClip;
+    public AudioClip dogDeathClip;
 	
 	private bool inAnimation; // are we already animating for a behavior?
 	
@@ -25,11 +28,11 @@ public class Dog : MonoBehaviour, IAgent
 	
 	// AI Vars
 	float sightCastRadius = 6f;
-	float sightDistance = 30;
+	float sightDistance = 40;
 	float alignRadius = 5f;
 	float attackRange = 3f;
     float senseRange = 20;
-    float leashDistance = 80;
+    float leashDistance = 60;
 
     public bool leashingBackToSpawn = false;
 
@@ -51,9 +54,6 @@ public class Dog : MonoBehaviour, IAgent
 	private Vector3[] PatrolPoints = new Vector3[3];
     private Vector3 spawnPoint;
 
-	private float takingHitTimer = 0f;
-	private float takingHitTimerMax = 1f;
-	
 	IEnumerator Start () {
         spawnPoint = this.gameObject.transform.position;
         PatrolPoints[0] = spawnPoint + new Vector3(Random.Range(5,8), Random.Range(5,8), 0);
@@ -86,10 +86,6 @@ public class Dog : MonoBehaviour, IAgent
          recentlyAttackedTimer -= Time.deltaTime;
         }
 
-		if(takingHitTimer>0)
-		{
-			takingHitTimer -= Time.deltaTime;
-		}
 
         
 	}
@@ -366,7 +362,7 @@ public class Dog : MonoBehaviour, IAgent
 	}
 	IEnumerator COChase() {
 		inAnimation = true;
-		gameObject.SendMessage("SetSpeed", 5f);
+		gameObject.SendMessage("SetSpeed", 7f);
 	    gameObject.animation.CrossFade("Run_Begin_1");
 	    yield return new WaitForSeconds(.2f);
 	    gameObject.animation.CrossFade("Run_Loop_1");
@@ -376,6 +372,8 @@ public class Dog : MonoBehaviour, IAgent
 		gameObject.animation.CrossFade("Poise_Loop_1");
 		yield return new WaitForSeconds(.4f);
 		bite.collider.enabled = true;
+        gameObject.audio.clip = dogBiteClip;
+        gameObject.audio.Play();
 	    gameObject.animation.CrossFade("Bite_1");
 		yield return new WaitForSeconds(.6f);
 		bite.collider.enabled = false;
@@ -383,15 +381,14 @@ public class Dog : MonoBehaviour, IAgent
 		inAnimation = false;
 	}
 	IEnumerator COHitRecoil() {
-		inAnimation = true;
 		gameObject.animation.CrossFade("Hit_Recoil_1");
 	    yield return new WaitForSeconds(.4f);
-		inAnimation = false;
 	}
 
     IEnumerator CODie() {
         inAnimation = true;
         Debug.Log("beginning death animation");
+        this.gameObject.audio.PlayOneShot(dogDeathClip);
         gameObject.animation.CrossFade("Death_1");
         yield return new WaitForSeconds(gameObject.animation.GetClip("Death_1").length);
     }
@@ -424,7 +421,6 @@ public class Dog : MonoBehaviour, IAgent
         if (!dead && col.gameObject.tag == "PlayerWeaponBone") {
             //Debug.Log("I've been hit!");
             StartCoroutine("COHitRecoil");
-            takingHitTimer = takingHitTimerMax;
             col.gameObject.transform.parent.parent.SendMessage("Hit");
             this.gameObject.SendMessage("TakeDamage", (col.gameObject.transform.parent.parent.GetComponent("DamageDealer") as DamageDealer).damage);
             recentlyAttackedTimer = 7f;
@@ -490,21 +486,25 @@ public class Dog : MonoBehaviour, IAgent
 
     public void setDaytime() {
         for (int i = 0; i < PatrolPoints.Length; i++) {
-            PatrolPoints[i] /= 2;
+            PatrolPoints[i] /= 5;
         }
 
-        this.gameObject.SendMessage("setDamageMultiplier", 1.0f);
-        this.sightDistance = 30f;
-        this.leashDistance = 40f;
+        this.gameObject.SendMessage("healthMultiply", 1/1.5f);
+        this.gameObject.BroadcastMessage("setDamageMultiplier", 1.0f);
+        this.sightDistance = 40f;
+        this.leashDistance = 60f;
     }
 
     public void setNightime() {
+        Debug.Log("setting night");
         for (int i = 0; i < PatrolPoints.Length; i++) {
-            PatrolPoints[i] *= 2;
+            PatrolPoints[i] *= 5;
         }
 
-        this.gameObject.SendMessage("setDamageMultiplier", 2.0f);
-        this.sightDistance = 45f;
-        this.leashDistance = 50f;
+
+        this.gameObject.SendMessage("healthMultiply", 1.5f);
+        this.gameObject.BroadcastMessage("setDamageMultiplier", 1.5f);
+        this.sightDistance = 55f;
+        this.leashDistance = 90;
     }
 }

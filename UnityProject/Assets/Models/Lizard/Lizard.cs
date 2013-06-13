@@ -26,10 +26,10 @@ public class Lizard : MonoBehaviour, IAgent
 	
 	// AI Vars
 	float sightCastRadius = 6f;
-	float sightDistance = 30;
+	float sightDistance = 55;
 	float attackRange = 7f;
     float senseRange = 20;
-    float leashDistance = 80; //change back to 40
+    float leashDistance = 80;
 
     public bool leashingBackToSpawn = false;
 
@@ -374,7 +374,7 @@ public class Lizard : MonoBehaviour, IAgent
 	IEnumerator COChase() {
         Debug.Log("COChase");
 		inAnimation = true;
-		gameObject.SendMessage("SetSpeed", 7f);
+		gameObject.SendMessage("SetSpeed", 9f);
 	    gameObject.animation.CrossFade("monster_ground_run");
         yield return new WaitForSeconds(gameObject.animation.GetClip("monster_ground_run").length / animationMultiplier);
 	}
@@ -403,11 +403,9 @@ public class Lizard : MonoBehaviour, IAgent
 
 	IEnumerator COHitRecoil() {
         Debug.Log("COHitRecoil");
-		inAnimation = true;
 		//gameObject.animation.CrossFade("Hit_Recoil");
         gameObject.animation.Play("Hit_Recoil");
         yield return new WaitForSeconds(gameObject.animation.GetClip("Hit_Recoil").length / animationMultiplier);
-		inAnimation = false;
 	}
 
     IEnumerator CODie() {
@@ -518,8 +516,8 @@ public class Lizard : MonoBehaviour, IAgent
         }
 
         this.gameObject.SendMessage("setDamageMultiplier", 1.0f);
-        this.sightDistance = 30f;
-        this.leashDistance = 40f;
+        this.sightDistance = 55f;
+        this.leashDistance = 80f;
     }
 
     public void setNightime() {
@@ -527,8 +525,8 @@ public class Lizard : MonoBehaviour, IAgent
             PatrolPoints[i] *= 2;
         }
 
-        this.gameObject.SendMessage("setDamageMultiplier", 2.0f);
-        this.sightDistance = 45f;
-        this.leashDistance = 50f;
+        this.gameObject.SendMessage("setDamageMultiplier", 1.5f);
+        this.sightDistance = 70f;
+        this.leashDistance = 120;
     }
 }

@@ -17,6 +17,7 @@ public class RandomTreeNode : MonoBehaviour {
 		transform.position -= new Vector3(0f, 2.2f, 0f);
 		transform.Rotate(new Vector3(0, rnd.Next(0, 360), 0));
 		GameObject newTree= (GameObject)Instantiate(Trees[tree], transform.position, transform.rotation);
+        newTree.transform.parent = transform;
 		newTree.transform.localScale = new Vector3(2, 2, 2);
 	}
 	

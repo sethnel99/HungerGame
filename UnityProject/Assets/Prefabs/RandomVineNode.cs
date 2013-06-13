@@ -15,7 +15,8 @@ public class RandomVineNode : MonoBehaviour {
 		vine = rnd.Next(0, Vines.Length-1);
 		transform.position -= new Vector3(0f, .5f, 0f);
 		transform.Rotate(new Vector3(0, rnd.Next(0, 360), 0));
-		Instantiate(Vines[vine], transform.position, transform.rotation);
+		GameObject v = Instantiate(Vines[vine], transform.position, transform.rotation) as GameObject;
+        v.transform.parent = transform;
 	}
 	
 	// Update is called once per frame
