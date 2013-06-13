@@ -591,6 +591,10 @@ function SetControllable (controllable : boolean) {
 	canControl = controllable;
 }
 
+function GetSpeed() {
+	return movement.maxForwardSpeed;
+}
+
 // Project a direction onto elliptical quater segments based on forward, sideways, and backwards speed.
 // The function returns the length of the resulting vector.
 function MaxSpeedInDirection (desiredMovementDirection : Vector3) : float {
