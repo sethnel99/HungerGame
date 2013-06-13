@@ -80,6 +80,10 @@ public class PlayerVitals : MonoBehaviour
         for (int i = 0; i < bodyPartHealth.Length; i++) {
             if (bodyPartHealth[i] > 0 && bodyPartHealth[i] < bodyPartMaxHealth[i]) {
                 bodyPartHealth[i] += Time.deltaTime/4f * bodyPartMaxHealth[i]/100;
+
+                if (bodyPartHealth[i] > bodyPartMaxHealth[i]) {
+                    bodyPartHealth[i] = bodyPartMaxHealth[i];
+                }
             }
         }
 		
