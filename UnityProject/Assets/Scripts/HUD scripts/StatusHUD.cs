@@ -14,7 +14,7 @@ public class StatusHUD : MonoBehaviour {
 	public Texture2D right_arm;
 	public Texture2D left_leg;
 	public Texture2D right_leg;
-    Texture2D barTexture;
+    public Texture2D barTexture;
 	
 	PlayerVitals vitals;
 	
@@ -38,7 +38,7 @@ public class StatusHUD : MonoBehaviour {
 	void Start () {
 		statusHUDRectNormalized = new Rect(statusHUDRect.x * Screen.width, statusHUDRect.y * Screen.height, statusHUDRect.width, statusHUDRect.height);
 		vitals = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerVitals>();
-        barTexture = new Texture2D(150, 20);
+        //barTexture = new Texture2D(150, 20);
 	}
 	
 	// Update is called once per frame
