@@ -14,7 +14,7 @@ public class Inventory : MonoBehaviour{
 	private Dictionary<string,Item> inventory = new Dictionary<string,Item>(); //an underlying dictionary from name->Item
 	private string[] inventoryNamesArray = new string[20]; //an array representing the order of the inventory.
 	
-	public int maxSize = 20;
+	public int maxSize;
 
     private EquipmentItem equippedEquipable;
     private EquipmentItem equippedSecondaryEquipable;
@@ -23,8 +23,8 @@ public class Inventory : MonoBehaviour{
 
     public Dictionary<Item, Item[]> craftingDictionary;
 
-    public GUIText InventoryTextGUI;
-    public AudioClip collectSound;
+   GameObject InventoryTextGUI;
+    AudioClip collectSound;
 
     EquippedItemManager equippedItemScript;
     PlayerVitals vitals;
@@ -34,11 +34,16 @@ public class Inventory : MonoBehaviour{
 
 
     void Start() {
+        maxSize = 20;
+
         initializeCraftingDictionary();
         equippedItemScript = GameObject.Find("EquippedItem").GetComponent<EquippedItemManager>();
 
         vitals = gameObject.transform.root.GetComponent<PlayerVitals>();
         textHints = GameObject.Find("TextHintGUI");
+
+        InventoryTextGUI = GameObject.Find("InventoryText");
+        collectSound = (AudioClip)UnityEngine.Resources.Load("item_collect_rustle");
 
         //EquipItem(new BowItem(1));
         //EquipItem(new ArrowItem(50));
@@ -127,7 +132,7 @@ public class Inventory : MonoBehaviour{
             }
         }
         if (displayMessage) {
-            InventoryTextGUI.gameObject.GetComponent<InventoryTextManager>().enqueueMessage("You collected " + i.quantity + " " + ((i.quantity > 1) ? i.pluralName : i.name));
+            InventoryTextGUI.GetComponent<InventoryTextManager>().enqueueMessage("You collected " + i.quantity + " " + ((i.quantity > 1) ? i.pluralName : i.name));
         }
             AudioSource.PlayClipAtPoint(collectSound, transform.position);
 		return true;

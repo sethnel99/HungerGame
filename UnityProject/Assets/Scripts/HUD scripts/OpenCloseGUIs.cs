@@ -69,7 +69,7 @@ public class OpenCloseGUIs : MonoBehaviour {
 	}
 
     public void disableControls(MonoBehaviour disabler) {
-        //controlsAreDisabled = true;
+        controlsAreDisabled = true;
 
         unlockCursor();
        GameObject.FindGameObjectWithTag("MainCamera").BroadcastMessage("DisableByGUI",true);
