@@ -17,7 +17,7 @@ public class PlayerVitals : MonoBehaviour
 	public float[] bodyPartHealth = new float[]{100.0f,500.0f,100.0f,100.0f,200.0f,200.0f};
     public float[] bodyPartMaxHealth = new float[] { 100.0f, 500.0f, 100.0f, 100.0f, 200.0f, 200.0f };
 
-	private const float MaxHealth = 100;
+	private const float MaxHunger = 100;
 	private const float MaxThirst = 100;
 	
 	public float CurrentHunger = 50;
@@ -85,16 +85,28 @@ public class PlayerVitals : MonoBehaviour
 		
 		
 	}
+	
+	public float GetMaxHunger()
+	{
+		return MaxHunger;
+	}
 
+	
     public float GetHealthRatio()
 	{
-		return CurrentHunger/MaxHealth;
+		return CurrentHunger/MaxHunger;
 	}
 	
 	public float GetThirstRatio()
 	{
 		return CurrentThirst/MaxThirst;
 	}
+	
+	public float GetMaxThirst()
+	{
+		return MaxThirst;
+ 	}
+
 	
 	public void setIsNearFire(bool nearFire)
 	{
@@ -114,7 +126,7 @@ public class PlayerVitals : MonoBehaviour
 
     public void HealHunger(float amount) {
         CurrentHunger += amount;
-        if (CurrentHunger > MaxHealth) CurrentHunger = MaxHealth;
+        if (CurrentHunger > MaxHunger) CurrentHunger = MaxHunger;
     }
 
     public bool bandage() {
