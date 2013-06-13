@@ -52,7 +52,7 @@ public class SpawnGatherableNodes : MonoBehaviour {
         while (numToSpawn > 0){
             int r = Random.Range(0, unSpawnedNodes.Count);
             if (Vector3.Distance(playerPosition, unSpawnedNodes[r].transform.position) > 20) {
-                unSpawnedNodes[r].GetComponent<GatherableNodeManager>().spawnNode();
+                unSpawnedNodes[r].GetComponent<GatherableNodeManager>().isSpawned = true;
                 numToSpawn--;
                 unSpawnedNodes.RemoveAt(r);
             }

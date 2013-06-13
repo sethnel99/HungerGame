@@ -8,6 +8,7 @@ public class GatherableNodeManager : MonoBehaviour {
     }
 
     public NodeType nodeType = NodeType.Random;
+    NodeType nodeToCreate = NodeType.Random;
 
     static string[] nodeTypes = {"Tree", "Sharp_Stone", "BerryBush" };
     
@@ -37,7 +38,6 @@ public class GatherableNodeManager : MonoBehaviour {
     }
 
     public bool spawnNode() {
-        NodeType nodeToCreate;
 
         if (nodeType == NodeType.Random) {
             nodeToCreate = (NodeType)Enum.GetValues(typeof(NodeType)).GetValue(UnityEngine.Random.Range(0, 3));
@@ -45,7 +45,6 @@ public class GatherableNodeManager : MonoBehaviour {
             nodeToCreate = nodeType;
         }
 
-        if (!isSpawned) {
             isSpawned = true;
             gatherable = Instantiate(UnityEngine.Resources.Load(nodeTypes[(int)nodeToCreate])) as GameObject;
 			
@@ -57,8 +56,22 @@ public class GatherableNodeManager : MonoBehaviour {
 
 
             return true;
-        }
+   
+    }
 
-        return false;
+    void OnTriggerEnter(Collider col) {
+        if (col.gameObject.tag == "PlayerEnabler") {
+            if (isSpawned) {
+                spawnNode();
+            }
+        }
+    }
+
+    void OnTriggerExit(Collider col) {
+        if (col.gameObject.tag == "PlayerEnabler") {
+            if (gatherable != null) {
+                Destroy(gatherable);
+            }
+        }
     }
 }

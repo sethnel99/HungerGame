@@ -8,8 +8,7 @@ public class EnemyNodeManager : MonoBehaviour {
     }
 
     public NodeType nodeType = NodeType.Dog;
-
-    public NodeType nodeToCreate = NodeType.Dog;
+     NodeType nodeToCreate = NodeType.Dog;
 
     static string[] nodeTypes = {"Dog", "Lizard"};
     
