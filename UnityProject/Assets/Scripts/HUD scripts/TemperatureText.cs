@@ -3,32 +3,44 @@
 public class TemperatureText : MonoBehaviour
 {
 	private const float SurvivalRange = 50.0f; //Temperature survival range
-	private const float NormalBodyTemp = 97.0f;
+	private const float NormalBodyTemp = 91.0f; //the average temperature of human skin
 	private const float DisplayWarningAt = 0.75f; //When warning 
 	private const float WarningRate = 1.5f; //Number of blinks per second
 	
     private GUIText DegreeText;
 	
-	private float CurrentTemp;
+	private float CurrentTemp;     //current temperature (takes into account clothing)
+    private float CurrentBaseTemp; //current base temperature
+
 	private float TempDifference; //Ratio of current temperature to normal body temp
 	
 	private float AlphaValue = 1.0f; 
 	
 	private bool TemperatureWarning, IncreasingAlpha;
-	
+    private Inventory inventory;
 
 	//Use this for initialization
     void Start()
     {
         DegreeText= GameObject.Find("TemperatureText").guiText;
 		DegreeText.font.material.color = new Color(0f,255f,0f);
+        CurrentBaseTemp = NormalBodyTemp;
 		CurrentTemp = NormalBodyTemp;
+        
+
+        inventory = GameObject.FindGameObjectWithTag("Player").GetComponent<Inventory>();
     }
 
 	//Update is called once per frame
     void Update()
     {
 		Color newColor;
+
+        //jackets increase temperature
+        JacketItem j = inventory.getEquippedJacket() as JacketItem;
+        if (j != null){
+            CurrentTemp = CurrentBaseTemp + j.statPower;
+        }
 		
 		//CurrentTemp-= 0.1f;
 		

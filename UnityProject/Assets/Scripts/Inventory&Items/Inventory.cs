@@ -46,12 +46,17 @@ public class Inventory : MonoBehaviour{
         craftingDictionary.Add(new FireItem(1), new Item[] { new SharpStoneItem(2), new WoodItem(3)});
         craftingDictionary.Add(new SmallCookedMeatItem(1), new Item[] { new SmallUncookedMeatItem(1) });
         craftingDictionary.Add(new LargeCookedMeatItem(1), new Item[] { new LargeUncookedMeatItem(1) });
-        craftingDictionary.Add(new LargeHideItem(1), new Item[] { new SmallHideItem(3) });
+        craftingDictionary.Add(new SmallHideItem(3), new Item[] { new LargeHideItem(1) });
         craftingDictionary.Add(new StringItem(2), new Item[] { new SmallHideItem(1) });
         craftingDictionary.Add(new AxeItem(1), new Item[] { new SharpStoneItem(2), new WoodItem(3) });
         craftingDictionary.Add(new SpearItem(1), new Item[] { new SharpStoneItem(1), new WoodItem(5) });
         craftingDictionary.Add(new BowItem(1), new Item[] { new WoodItem(4), new StringItem(4)});
         craftingDictionary.Add(new ArrowItem(1), new Item[] { new WoodItem(1) });
+        craftingDictionary.Add(new BootsItem(1, 5), new Item[] { new SmallHideItem(2), new StringItem(6) });
+        craftingDictionary.Add(new BootsItem(1, 10), new Item[] { new SmallHideItem(16), new StringItem(30) });
+        craftingDictionary.Add(new JacketItem(1, 10), new Item[] { new LargeHideItem(3), new SmallHideItem(6), new StringItem(6) });
+        craftingDictionary.Add(new JacketItem(1, 15), new Item[] { new LargeHideItem(8), new SmallHideItem(10), new StringItem(12) });
+        craftingDictionary.Add(new JacketItem(1, 30), new Item[] { new LargeHideItem(15), new SmallHideItem(24), new StringItem(30) });
     }
 	
 	void Update () {
@@ -273,6 +278,7 @@ public class Inventory : MonoBehaviour{
         inventoryNamesArray[i.inventoryLocation] = null;
 
         EquipmentItem curEquipped;
+        Debug.Log(i.equipmentType);
         switch (i.equipmentType) {
             case EquipmentItem.EquipmentType.equipable:
                 curEquipped = equippedEquipable;

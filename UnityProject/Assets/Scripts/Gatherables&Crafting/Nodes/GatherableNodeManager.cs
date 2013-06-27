@@ -45,8 +45,6 @@ public class GatherableNodeManager : MonoBehaviour {
             nodeToCreate = nodeType;
         }
 
-       // Debug.Log((int)nodeToCreate);
-
         if (!isSpawned) {
             isSpawned = true;
             gatherable = Instantiate(UnityEngine.Resources.Load(nodeTypes[(int)nodeToCreate])) as GameObject;
@@ -55,7 +53,7 @@ public class GatherableNodeManager : MonoBehaviour {
             float xz_scale = UnityEngine.Random.Range(.5f, .9f);
             gatherable.transform.localScale = Vector3.Scale(gatherable.transform.localScale, new Vector3(xz_scale, UnityEngine.Random.Range(.5f, .9f), xz_scale));
             gatherable.transform.localRotation = Quaternion.Euler(gatherable.transform.localRotation.eulerAngles.x, UnityEngine.Random.Range(0, 360), gatherable.transform.localRotation.eulerAngles.z);
-            gatherable.GetComponent<ItemManager>().interactionTimer = GameObject.FindGameObjectWithTag("InteractionTimer");
+
 
             return true;
         }

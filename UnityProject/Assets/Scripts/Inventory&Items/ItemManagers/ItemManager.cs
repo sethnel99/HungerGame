@@ -15,9 +15,9 @@ public class ItemManager : MonoBehaviour {
 	public float gatherTime = 1.0f;
 
 
-	public GameObject interactionTimer;
+	protected InteractionTimer interactionTimer;
 
-    InteractionManager interactionManager;
+    protected InteractionManager interactionManager;
 	
 	// Use this for initialization
 	virtual public void Start () {
@@ -26,6 +26,7 @@ public class ItemManager : MonoBehaviour {
         //Debug.Log(GameObject.FindGameObjectWithTag("Player"));
         //Debug.Log(GameObject.FindGameObjectWithTag("Player").GetComponent<InteractionManager>());
         interactionManager = GameObject.FindGameObjectWithTag("Player").GetComponent<InteractionManager>();
+        interactionTimer = GameObject.Find("InteractionTimer").GetComponent<InteractionTimer>();
 
         displayName = "TestObject";
 
@@ -43,7 +44,7 @@ public class ItemManager : MonoBehaviour {
 		if (inZone && Input.GetButton ("Interact")) {
 			buttonDownTime += Time.deltaTime;
             //Debug.Log(buttonDownTime / gatherTime);
-            if (!interactionTimer.GetComponent<InteractionTimer>().setInteractionTimerLevel(buttonDownTime / gatherTime, gameObject)) {
+            if (!interactionTimer.setInteractionTimerLevel(buttonDownTime / gatherTime, gameObject)) {
                 buttonDownTime = 0f;
             }
 			
@@ -58,13 +59,13 @@ public class ItemManager : MonoBehaviour {
                 }
 
                 interactionManager.removePotentialInteractor(gameObject);
-                interactionTimer.GetComponent<InteractionTimer>().setInteractionTimerLevel(0, gameObject);
+                interactionTimer.setInteractionTimerLevel(0, gameObject);
                 gameObject.transform.parent.SendMessage("removeNode");
 			}	
 		}
 		else {
 			buttonDownTime = 0.0f;
-            interactionTimer.GetComponent<InteractionTimer>().setInteractionTimerLevel(0, gameObject);
+            interactionTimer.setInteractionTimerLevel(0, gameObject);
 		}
 	}
 	
@@ -80,7 +81,7 @@ public class ItemManager : MonoBehaviour {
 		if (col.gameObject.tag == "Player") {
 			inZone = false;
             if (this.gameObject == interactionManager.interactTarget) {
-                interactionTimer.GetComponent<InteractionTimer>().setInteractionTimerLevel(0, gameObject);
+                interactionTimer.setInteractionTimerLevel(0, gameObject);
             }
             interactionManager.removePotentialInteractor(gameObject);
 		}

@@ -11,12 +11,14 @@ public class PlayerVitals : MonoBehaviour
 	
 	private bool isNearFire = false;
 	private skydomeScript2 GameTime;
+
 	
 	// Use this for initialization
 	void Start ()
 	{
 		GameTime = (skydomeScript2) GameObject.Find("Skybox Controller").GetComponent("skydomeScript2");
-	}
+
+    }
 	
 	// Update is called once per frame
 	void Update ()
@@ -68,13 +70,18 @@ public class PlayerVitals : MonoBehaviour
 	{
 		CurrentThirst += amount;
 	}
-	
+
+    public void HealHunger(float amount) {
+        CurrentHealth += amount;
+    }
 	
 	public void TakenHit(BodyHit bodyHitObject)
 	{
 		Debug.Log(bodyHitObject.BodyPart + " " + bodyHitObject.Col.gameObject.name + " "+ bodyHitObject.Col.gameObject.GetComponent<EnemyAttackBox>().Damage );
 	}
-	
+	   public void HealHunger(float amount) {
+        CurrentHealth += amount;
+    }
 }
 
 public class BodyHit
@@ -95,5 +102,9 @@ public class BodyHit
 		BodyPart = bodyPart;
 		Col = col;
 	}
+
+
+ 
+
 }
 

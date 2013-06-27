@@ -16,6 +16,6 @@ public class SmallCookedMeatItem : Item {
     }
 
     public override void useItem() {
-
+        GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerVitals>().HealHunger(25.0f);
     }
 }

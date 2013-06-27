@@ -21,7 +21,7 @@ public class WaterDrinkManager : ItemManager {
        
 		if (inZone && Input.GetButton ("Interact")) {
 			buttonDownTime += Time.deltaTime;
-            if (!interactionTimer.GetComponent<InteractionTimer>().setInteractionTimerLevel(buttonDownTime / gatherTime, gameObject)) {
+            if (!interactionTimer.setInteractionTimerLevel(buttonDownTime / gatherTime, gameObject)) {
                 buttonDownTime = 0f;
             }
 			
@@ -38,13 +38,13 @@ public class WaterDrinkManager : ItemManager {
 //                interactionManager.removePotentialInteractor(gameObject);
 				player.GetComponent<PlayerVitals>().HealThirst(30f);
 				buttonDownTime = 0f;
-                interactionTimer.GetComponent<InteractionTimer>().setInteractionTimerLevel(0, gameObject);
+                interactionTimer.setInteractionTimerLevel(0, gameObject);
 				//Destroy (gameObject);
 			}	
 		}
 		else {
 			buttonDownTime = 0.0f;
-            interactionTimer.GetComponent<InteractionTimer>().setInteractionTimerLevel(0, gameObject);
+            interactionTimer.setInteractionTimerLevel(0, gameObject);
 		}
 	}
 	

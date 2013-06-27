@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using System;
 
 public class CraftingGUI : MonoBehaviour {
 
@@ -14,8 +15,8 @@ public class CraftingGUI : MonoBehaviour {
 	Rect craftDetailRectNormalized;
 	
 	Item selectedItem;
-    Item currentlyCrafting;
     bool craftAll;
+    bool isCrafting;
 
     Texture2D selectedLabelTexture;
     Texture2D arrowTexture;
@@ -62,6 +63,7 @@ public class CraftingGUI : MonoBehaviour {
             } else {
                 //otherwise make it 0, crafting stops
                 craftAll = false;
+                isCrafting = false;
                 craftProgress = 0.0f;
                 inventory.resetMultiCraftCount();
             }
@@ -133,6 +135,14 @@ public class CraftingGUI : MonoBehaviour {
 
         return GameObject.FindWithTag("Player").GetComponent<PlayerVitals>().IsNearFire() ? canCraftLabelStyle : cannotCraftLabelStyle;
     }
+
+    int findScrollHeight() {
+        int scrollHeight = 0;
+        foreach (KeyValuePair<Item, Item[]> entry in inventory.craftingDictionary) {
+            scrollHeight += entry.Key.name.Length > 16 ? 36 : 22;
+        }
+        return scrollHeight + 20;
+    }
 	
 	void OnGUI(){
 		GUI.skin = craftingSkin;
@@ -145,7 +155,7 @@ public class CraftingGUI : MonoBehaviour {
 		GUI.BeginGroup(craftingRectNormalized);
 		
 		//Left scroll
-		scrollPosition = GUI.BeginScrollView (new Rect (0,0,craftingRect.width/4,craftingRect.height),scrollPosition, new Rect (0, 0,craftingRect.width/4-1, inventory.craftingDictionary.Keys.Count * 22));
+        scrollPosition = GUI.BeginScrollView(new Rect(0, 10, craftingRect.width / 4, craftingRect.height-20), scrollPosition, new Rect(0, 0, craftingRect.width / 4 - 40, findScrollHeight()));
         
 		int listYLoc = 20;
         foreach (KeyValuePair<Item, Item[]> entry in inventory.craftingDictionary)
@@ -154,7 +164,7 @@ public class CraftingGUI : MonoBehaviour {
             int yHeight = entry.Key.name.Length > 16 ? 36 : 22;
 
             //Draw the left-side "buttons" to choose what you want to craft. Don't let the player switch selected items which "craft all" is occuring, becuase that doesn't make sense.
-            if (GUI.Button(new Rect(10, listYLoc, craftingRect.width / 4 - 20, yHeight), entry.Key.name, chooseLeftLabelStyle(entry.Key)) && !craftAll) {
+            if (GUI.Button(new Rect(10, listYLoc, craftingRect.width / 4 - 20, yHeight), entry.Key.name, chooseLeftLabelStyle(entry.Key)) && !craftAll && !isCrafting) {
 				selectedItem = entry.Key;
 			}
 
@@ -179,7 +189,7 @@ public class CraftingGUI : MonoBehaviour {
         int i = 0;
         for (; i < ingredientsList.Length; i++) {
                GUI.DrawTexture(new Rect(paddingPixels + paddingWithinIconSection + i*pixelsPerIcon, craftDetailRectNormalized.height/3, 80, 80), ingredientsList[i].icon);
-               GUI.Label(new Rect(paddingPixels + paddingWithinIconSection + i * pixelsPerIcon + 69, craftDetailRectNormalized.height / 3 + 58, 30, 30), ingredientsList[i].quantity.ToString(), chooseQuantityLabelStyle(ingredientsList[i]));
+               GUI.Label(new Rect(paddingPixels + paddingWithinIconSection + i * pixelsPerIcon + 78 - 8 * (int)Math.Floor(Math.Log10(ingredientsList[i].quantity) + 1), craftDetailRectNormalized.height / 3 + 58, 30, 30), ingredientsList[i].quantity.ToString(), chooseQuantityLabelStyle(ingredientsList[i]));
         }
 
         //draw the arrow
@@ -187,7 +197,7 @@ public class CraftingGUI : MonoBehaviour {
         i++;
         //draw the crafted result
         GUI.DrawTexture(new Rect(paddingPixels + paddingWithinIconSection + i * pixelsPerIcon, craftDetailRectNormalized.height / 3, 80, 80), selectedItem.icon);
-        GUI.Label(new Rect(paddingPixels + paddingWithinIconSection + i * pixelsPerIcon + 69, craftDetailRectNormalized.height / 3 + 58, 30, 30), selectedItem.quantity.ToString(), chooseQuantityLabelStyle(null));
+        GUI.Label(new Rect(paddingPixels + paddingWithinIconSection + i * pixelsPerIcon + 78 - 8 * (int)Math.Floor(Math.Log10(selectedItem.quantity) + 1), craftDetailRectNormalized.height / 3 + 58, 30, 30), selectedItem.quantity.ToString(), chooseQuantityLabelStyle(null));
 
         //special case: the selected craft item is a cooked meat, add a label telling the player they need to be near fire
         if (selectedItem is SmallCookedMeatItem || selectedItem is LargeCookedMeatItem) {
@@ -204,7 +214,7 @@ public class CraftingGUI : MonoBehaviour {
         //draw the craft button
         if (GUI.Button(new Rect(craftDetailRectNormalized.width - 127, craftDetailRectNormalized.height - 37, 120, 30), "Craft!")) {
             craftProgress += Time.deltaTime;
-            currentlyCrafting = selectedItem;
+            isCrafting = true;
         }
 
         //enable the craft all button unless you can't craft the object
@@ -217,11 +227,12 @@ public class CraftingGUI : MonoBehaviour {
                 //already crafting all means this is the cancel button. So stop crafting
                 craftAll = false;
                 craftProgress = 0.0f;
+                isCrafting = false;
             } else {
                 //craft all
                 craftProgress += Time.deltaTime;
-                currentlyCrafting = selectedItem;
                 craftAll = true;
+                isCrafting = true;
             }
         }
 

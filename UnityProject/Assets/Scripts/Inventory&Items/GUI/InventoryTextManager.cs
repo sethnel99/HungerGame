@@ -18,7 +18,7 @@ public class InventoryTextManager : MonoBehaviour {
 
         if (guiText.enabled) {
             timer += Time.deltaTime;
-            Debug.Log("Timer: " + timer.ToString() + " downTime: " + downTime.ToString());
+            //Debug.Log("Timer: " + timer.ToString() + " downTime: " + downTime.ToString());
 
             //if either the message has been displayed long enough, or we are done with the break in-between messages
             if ((timer >= displayLength && !downTime) || (timer >= breakLength && downTime)) {
@@ -41,10 +41,10 @@ public class InventoryTextManager : MonoBehaviour {
 
     public void enqueueMessage(string message) {
         if (guiText.enabled) {
-            Debug.Log("enqueing message: " + message);
+            //Debug.Log("enqueing message: " + message);
             messageQueue.Enqueue(message);
         } else {
-            Debug.Log("just putting it up there");
+            //Debug.Log("just putting it up there");
             guiText.enabled = true;
             guiText.text = message;
         }

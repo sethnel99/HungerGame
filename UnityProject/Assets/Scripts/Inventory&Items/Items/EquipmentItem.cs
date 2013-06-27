@@ -13,6 +13,8 @@ public abstract class EquipmentItem : Item {
 
     public EquipmentItem(EquipmentItem other)
         : base(other) {
+            equipmentType = other.equipmentType;
+            statPower = other.statPower;
     }
 
 	
